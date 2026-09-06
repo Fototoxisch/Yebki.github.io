@@ -285,12 +285,39 @@
     .auth-card {
       background: var(--panel-bg);
       border: 2px solid var(--border-color);
-      width: 340px;
+      width: 350px;
       padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 12px;
       box-shadow: 0 0 20px rgba(201,42,42,0.3);
+    }
+
+    /* Password Toggle */
+    .password-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .password-wrap input {
+      width: 100%;
+      padding-right: 36px;
+    }
+    .toggle-pwd-btn {
+      position: absolute;
+      right: 2px;
+      background: transparent;
+      border: none;
+      color: var(--border-color);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px 6px;
+      width: auto;
+    }
+    .toggle-pwd-btn:hover {
+      background: transparent;
+      color: #fff;
     }
   </style>
 </head>
@@ -302,7 +329,12 @@
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
     <div style="font-size: 11px; color: var(--text-muted); text-align: center;">Вход в терминал боевого звена</div>
     <input type="text" id="loginUser" placeholder="Позывной / Никнейм" autocomplete="off">
-    <input type="password" id="loginPass" placeholder="Пароль" autocomplete="off">
+    
+    <div class="password-wrap">
+      <input type="password" id="loginPass" placeholder="Пароль" autocomplete="off">
+      <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility()" id="pwdToggleBtn">👁</button>
+    </div>
+
     <div style="display: flex; gap: 8px;">
       <button onclick="handleLogin()" style="flex:1;">ВОЙТИ</button>
       <button onclick="handleRegister()" style="flex:1;">РЕГИСТРАЦИЯ</button>
@@ -313,20 +345,17 @@
 
 <div class="container">
   
-  <!-- ТАБЫ ROLL20 -->
   <nav class="tabs-bar">
     <button class="tab-btn active" id="tabSheetBtn" onclick="switchTab('sheet')">Лист персонажа</button>
     <button class="tab-btn" id="tabAdminBtn" onclick="switchTab('admin')" style="display: none;">Штаб // Обзор звена</button>
   </nav>
 
-  <!-- ШАПКА ТЕРМИНАЛА -->
   <header class="header">
     <div class="header-brand">
       <h1>AEON // ТЕРМИНАЛ</h1>
       <span id="sync_status" class="sync-tag">[ ОЖИДАНИЕ ]</span>
     </div>
 
-    <!-- Селектор листов бойца -->
     <div style="display: flex; gap: 6px; align-items: center;" id="charControls">
       <select id="charSelect" onchange="switchCharacter(this.value)"></select>
       <button onclick="createNewCharacter()">+ НОВЫЙ</button>
@@ -504,8 +533,8 @@
 
   let currentUser = null;
   let currentSheetId = null;
+  let activeSubscription = null; // Канал Realtime
 
-  // Инициализация слотов ранца
   const packGrid = document.getElementById('pack_grid');
   if (packGrid && packGrid.children.length === 0) {
     for (let i = 1; i <= 10; i++) {
@@ -513,7 +542,18 @@
     }
   }
 
-  // --- АВТОРИЗАЦИЯ ---
+  function togglePasswordVisibility() {
+    const pwdInput = document.getElementById('loginPass');
+    const toggleBtn = document.getElementById('pwdToggleBtn');
+    if (pwdInput.type === 'password') {
+      pwdInput.type = 'text';
+      toggleBtn.innerText = '🚫';
+    } else {
+      pwdInput.type = 'password';
+      toggleBtn.innerText = '👁';
+    }
+  }
+
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
@@ -545,7 +585,6 @@
 
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
 
-    // Проверяем ник Lemming на автовыдачу прав админа
     const assignedRole = (u.toLowerCase() === 'lemming') ? 'admin' : 'player';
 
     const { error } = await supabaseClient
@@ -561,7 +600,6 @@
   }
 
   function setSessionUser(user) {
-    // Принудительное закрепление админских прав за Lemming
     if (user.username.toLowerCase() === 'lemming') {
       user.role = 'admin';
     }
@@ -603,7 +641,6 @@
     }
   }
 
-  // --- ВКЛАДКИ ROLL20 ---
   function switchTab(tab) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     if (tab === 'sheet') {
@@ -618,11 +655,9 @@
     }
   }
 
-  // --- МЕНЕДЖЕР ПЕРСОНАЖЕЙ ---
   async function refreshCharacterList() {
     let query = supabaseClient.from('vineta_sheets').select('id, data, owner');
     
-    // Обычный игрок видит только своих, админ — видит всю базу
     if (currentUser.role !== 'admin') {
       query = query.eq('owner', currentUser.username);
     }
@@ -659,6 +694,7 @@
   async function switchCharacter(id) {
     currentSheetId = id;
     await loadData();
+    setupRealtimeSubscription();
   }
 
   async function createNewCharacter() {
@@ -672,6 +708,7 @@
     document.getElementById('charName').value = name;
     await saveData(false);
     await refreshCharacterList();
+    setupRealtimeSubscription();
   }
 
   async function deleteCurrentCharacter() {
@@ -680,6 +717,7 @@
     currentSheetId = null;
     await refreshCharacterList();
     await loadData();
+    setupRealtimeSubscription();
   }
 
   function onNameChange() {
@@ -700,7 +738,6 @@
     calc();
   }
 
-  // --- АДМИН-ПАНЕЛЬ (ШТАБ) ---
   async function loadAdminRoster() {
     const tbody = document.getElementById('adminTableBody');
     tbody.innerHTML = '<tr><td colspan="7">Опрос терминалов...</td></tr>';
@@ -738,9 +775,9 @@
     document.getElementById('charSelect').value = id;
     await loadData();
     switchTab('sheet');
+    setupRealtimeSubscription();
   }
 
-  // --- МАТЕМАТИКА И ЛОГИКА ---
   function getMod(val) {
     if (val <= 3) return -2;
     if (val <= 7) return -1;
@@ -826,8 +863,10 @@
     return data;
   }
 
+  let isRemoteUpdating = false; // Флаг, чтобы избежать петли автосохранения при приеме чужих данных
   let saveTimeout = null;
   function autoSave() {
+    if (isRemoteUpdating) return;
     setSyncStatus('СОХРАНЕНИЕ...', '#f59e0b');
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(() => { saveData(false); }, 1200);
@@ -843,7 +882,7 @@
   }
 
   async function saveData(manual = false) {
-    if (!currentSheetId || !currentUser) return;
+    if (!currentSheetId || !currentUser || isRemoteUpdating) return;
     const payload = getFormData();
 
     try {
@@ -877,7 +916,9 @@
         .maybeSingle();
 
       if (!error && data && data.data) {
+        isRemoteUpdating = true;
         applyData(data.data);
+        isRemoteUpdating = false;
         setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
       } else {
         setSyncStatus('НОВЫЙ ЛИСТ', '#7b8390');
@@ -896,9 +937,42 @@
     }
   }
 
+  // --- НАСТРОЙКА REALTIME ПОДПИСКИ ---
+  function setupRealtimeSubscription() {
+    if (!supabaseClient) return;
+    
+    // Удаляем старую подписку, если она была
+    if (activeSubscription) {
+      supabaseClient.removeChannel(activeSubscription);
+    }
+
+    activeSubscription = supabaseClient
+      .channel('sheet-changes-' + currentSheetId)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'vineta_sheets',
+          filter: `id=eq.${currentSheetId}`
+        },
+        (payload) => {
+          if (payload.new && payload.new.data) {
+            isRemoteUpdating = true;
+            applyData(payload.new.data);
+            calc(); // Пересчитываем моды и здоровье под новые данные от ДМа
+            isRemoteUpdating = false;
+            setSyncStatus('ОБНОВЛЕНО ИЗВЕНОМ', '#38bdf8');
+          }
+        }
+      )
+      .subscribe();
+  }
+
   async function initApp() {
     await refreshCharacterList();
     await loadData();
+    setupRealtimeSubscription();
   }
 
   window.onload = checkSession;
