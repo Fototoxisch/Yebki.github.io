@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEON TERMINAL</title>
+<style>
+  :root {
+    --bg-main: #000000;
+    --panel-bg: #2a0000;
+    --border-main: #cc0000;
+    --border-dim: #7a0000;
+    --text-light: #ffffff;
+    --text-dim: #cccccc;
+    --input-bg: #0d0000;
+    --alert: #ff3333;
+  }
+  
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-light);
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0; padding: 10px; font-size: 13px;
+  }
+
+  /* Roll20 Layout */
+  .sheet-container { display: flex; flex-direction: column; gap: 10px; max-width: 1200px; margin: 0 auto; }
+  .header { border: 2px solid var(--border-main); background: var(--panel-bg); padding: 10px; display: flex; gap: 15px; align-items: center; }
+  .header input { font-size: 16px; font-weight: bold; }
+  
+  .columns { display: flex; gap: 10px; align-items: flex-start; }
+  .col { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 300px; }
+
+  /* Box Styles from Reference Image */
+  .box { border: 2px solid var(--border-main); background: var(--panel-bg); }
+  .box-title {
+    background-color: var(--border-main); color: #000;
+    text-transform: uppercase; font-weight: bold; text-align: center;
+    padding: 3px; font-size: 14px;
+  }
+  .box-content { padding: 8px; }
+
+  /* Inputs & Elements */
+  input, select, textarea {
+    background: var(--input-bg); border: 1px solid var(--border-dim);
+    color: var(--text-light); padding: 4px; font-family: inherit; width: 100%; box-sizing: border-box;
+  }
+  input[type="number"] { text-align: center; }
+  input:focus { border-color: var(--alert); outline: none; }
+  
+  button {
+    background: var(--input-bg); border: 1px solid var(--border-main);
+    color: var(--border-main); cursor: pointer; padding: 4px; font-weight: bold; width: 100%;
+  }
+  button:hover { background: var(--border-main); color: #000; }
+
+  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 5px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+
+  /* Custom UI components */
+  .stat-block { display: flex; flex-direction: column; align-items: center; border: 1px solid var(--border-dim); padding: 4px; background: var(--input-bg); }
+  .stat-block span { font-size: 10px; color: var(--border-main); }
+  .stat-block input { font-size: 16px; border: none; font-weight: bold; }
+  .mod-circle { background: var(--border-main); color: #000; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-top: -10px; z-index: 2; position: relative;}
+
+  .wound-track div { padding: 4px; border: 1px solid var(--border-dim); margin-bottom: 2px; font-size: 11px; text-align: center; }
+  .wound-active { background: var(--border-main); color: #000; font-weight: bold; }
+  
+  .inv-square { border: 1px solid var(--border-dim); text-align: center; padding: 4px; font-size: 10px; background: var(--input-bg);}
+  .overweight { background: var(--alert); color: #000; }
+</style>
+</head>
+<body>
+
+<div class="sheet-container">
+  
+  <!-- HEADER -->
+  <div class="header">
+    <div style="color: var(--border-main); font-size: 24px; font-weight: bold;">AEON</div>
+    <input type="text" id="charName" placeholder="ПОЗЫВНОЙ" style="flex: 2;">
+    <input type="text" id="charModel" placeholder="МОДЕЛЬ / КЛАСС" style="flex: 1;">
+    <button onclick="saveData()" style="width: 150px;">СОХРАНИТЬ ДАННЫЕ</button>
+  </div>
+
+  <div class="columns">
+    
+    <!-- LEFT COLUMN: STATS & SKILLS -->
+    <div class="col">
+      <div class="box">
+        <div class="box-title">Атрибуты</div>
+        <div class="box-content grid-2">
+          <div class="stat-block"><span>СИЛА (STR)</span><input type="number" id="str" value="10" onchange="calcStats()"><div class="mod-circle" id="str_m">+0</div></div>
+          <div class="stat-block"><span>ЛОВКОСТЬ (DEX)</span><input type="number" id="dex" value="10" onchange="calcStats()"><div class="mod-circle" id="dex_m">+0</div></div>
+          <div class="stat-block"><span>ТЕЛО (CON)</span><input type="number" id="con" value="10" onchange="calcStats()"><div class="mod-circle" id="con_m">+0</div></div>
+          <div class="stat-block"><span>ИНТЕЛЛЕКТ (INT)</span><input type="number" id="int" value="10" onchange="calcStats()"><div class="mod-circle" id="int_m">+0</div></div>
+          <div class="stat-block"><span>МУДРОСТЬ (WIS)</span><input type="number" id="wis" value="10" onchange="calcStats()"><div class="mod-circle" id="wis_m">+0</div></div>
+          <div class="stat-block"><span>ХАРИЗМА (CHA)</span><input type="number" id="cha" value="10" onchange="calcStats()"><div class="mod-circle" id="cha_m">+0</div></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Спасброски (Порог 15)</div>
+        <div class="box-content">
+          <div class="row"><span>Стойкость (STR/CON)</span><input type="text" id="save_phys" readonly style="width:40px; text-align:center;"></div>
+          <div class="row"><span>Рефлексы (DEX/INT)</span><input type="text" id="save_eva" readonly style="width:40px; text-align:center;"></div>
+          <div class="row"><span>Воля (WIS/CHA)</span><input type="text" id="save_men" readonly style="width:40px; text-align:center;"></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Системное напряжение</div>
+        <div class="box-content">
+          <div class="row"><span>Лимит (CON):</span><span id="strain_max" style="font-weight:bold; color:var(--border-main);">10</span></div>
+          <div class="row"><span>Постоянное (Хром)</span><input type="number" id="strain_perm" value="0" style="width:50px;"></div>
+          <div class="row"><span>Временное (Стимы)</span><input type="number" id="strain_temp" value="0" style="width:50px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLE COLUMN: COMBAT & HEALTH -->
+    <div class="col">
+      <div class="box">
+        <div class="box-title">Состояние Каркаса</div>
+        <div class="box-content">
+          <div class="row" style="margin-bottom: 10px;">
+            <span>HP МАКС: <input type="number" id="hp_max" value="20" style="width:60px;" onchange="calcWounds()"></span>
+            <span>ТЕКУЩИЕ: <input type="number" id="hp_cur" value="20" style="width:60px; color:var(--alert); font-weight:bold;" onchange="calcWounds()"></span>
+          </div>
+          <div class="wound-track">
+            <div id="w_light">100%-76%: НОРМА</div>
+            <div id="w_serious">75%-51%: СЕРЬЕЗНЫЕ (-1 к броскам)</div>
+            <div id="w_critical">50%-26%: КРИТИЧЕСКИЕ (-2 к броскам)</div>
+            <div id="w_mortal">25%-1%: СМЕРТЕЛЬНЫЕ (-3, риск отключения)</div>
+            <div id="w_dead" style="border-color:var(--alert);">0 HP: ОТКАЗ КАРКАСА (Таймер 6 раундов)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Броня по зонам (SP)</div>
+        <div class="box-content">
+          <div class="row"><span>Голова (-4)</span><input type="number" id="sp_head" value="10" style="width:50px;"><button onclick="ablate('sp_head')" style="width:50px;">-1 SP</button></div>
+          <div class="row"><span>Торс (0)</span><input type="number" id="sp_torso" value="15" style="width:50px;"><button onclick="ablate('sp_torso')" style="width:50px;">-1 SP</button></div>
+          <div class="row"><span>Конечности (-2)</span><input type="number" id="sp_limbs" value="12" style="width:50px;"><button onclick="ablate('sp_limbs')" style="width:50px;">-1 SP</button></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Оружие</div>
+        <div class="box-content">
+          <div class="row"><input type="text" id="w1_name" placeholder="Оружие 1"><input type="text" id="w1_dmg" placeholder="Урон" style="width:60px;"></div>
+          <div class="row"><input type="text" id="w2_name" placeholder="Оружие 2"><input type="text" id="w2_dmg" placeholder="Урон" style="width:60px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: STRESS & INVENTORY -->
+    <div class="col">
+      <div class="box" style="border-color: var(--alert);">
+        <div class="box-title" style="background: var(--alert);">ПСИХОМЕТРИЯ (Паника)</div>
+        <div class="box-content">
+          <div class="row"><span>УРОВЕНЬ СТРЕССА:</span><input type="number" id="stress" value="0" style="width:60px; font-size:16px; font-weight:bold; color:var(--alert);"></div>
+          <button onclick="rollPanic()" style="margin-top:5px; background:var(--alert); color:#000;">БРОСОК ПАНИКИ (1d6 + Стресс)</button>
+          <div id="panic_log" style="margin-top:8px; font-size:11px; min-height: 30px;"></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Маг-фиксаторы (Быстрый доступ)</div>
+        <div class="box-content">
+          <input type="text" id="mag1" placeholder="Слот 1 (Оружие)"><br>
+          <input type="text" id="mag2" placeholder="Слот 2 (Оружие)" style="margin: 4px 0;"><br>
+          <input type="text" id="mag3" placeholder="Слот 3 (Тяжелое)">
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Разгрузка (Вес: 0 кг)</div>
+        <div class="box-content grid-2">
+          <input type="text" id="p1" placeholder="Магазин"> <input type="text" id="p2" placeholder="Магазин">
+          <input type="text" id="p3" placeholder="Граната"> <input type="text" id="p4" placeholder="Наниты">
+          <input type="text" id="p5" placeholder="Стимулятор"> <input type="text" id="p6" placeholder="Lazarus Patch">
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Штурмовой ранец (Нагрузка)</div>
+        <div class="box-content">
+          <div class="row" style="font-size:11px; margin-bottom:4px;"><span>Использовано слотов:</span><span id="pack_status">0 / 10 кг</span></div>
+          <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 2px;" id="pack_grid">
+            <!-- Скрипт генерирует 10 ячеек -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const sheetId = new URLSearchParams(window.location.search).get('id') || '1';
+
+  function getMod(val) {
+    if(val <= 3) return -2; if(val <= 7) return -1;
+    if(val <= 13) return 0; if(val <= 17) return 1; return 2;
+  }
+
+  function calcStats() {
+    const s = parseInt(document.getElementById('str').value)||10;
+    const d = parseInt(document.getElementById('dex').value)||10;
+    const c = parseInt(document.getElementById('con').value)||10;
+    const i = parseInt(document.getElementById('int').value)||10;
+    const w = parseInt(document.getElementById('wis').value)||10;
+    const ch = parseInt(document.getElementById('cha').value)||10;
+
+    const sm=getMod(s), dm=getMod(d), cm=getMod(c), im=getMod(i), wm=getMod(w), chm=getMod(ch);
+
+    document.getElementById('str_m').innerText = (sm >= 0 ? '+' : '') + sm;
+    document.getElementById('dex_m').innerText = (dm >= 0 ? '+' : '') + dm;
+    document.getElementById('con_m').innerText = (cm >= 0 ? '+' : '') + cm;
+    document.getElementById('int_m').innerText = (im >= 0 ? '+' : '') + im;
+    document.getElementById('wis_m').innerText = (wm >= 0 ? '+' : '') + wm;
+    document.getElementById('cha_m').innerText = (chm >= 0 ? '+' : '') + chm;
+
+    document.getElementById('save_phys').value = 15 - Math.max(sm, cm);
+    document.getElementById('save_eva').value = 15 - Math.max(dm, im);
+    document.getElementById('save_men').value = 15 - Math.max(wm, chm);
+    
+    document.getElementById('strain_max').innerText = c;
+  }
+
+  function calcWounds() {
+    const max = parseInt(document.getElementById('hp_max').value)||20;
+    const cur = parseInt(document.getElementById('hp_cur').value)||0;
+    const pct = cur / max;
+
+    document.querySelectorAll('.wound-track div').forEach(el => el.classList.remove('wound-active'));
+    if (cur <= 0) document.getElementById('w_dead').classList.add('wound-active');
+    else if (pct <= 0.25) document.getElementById('w_mortal').classList.add('wound-active');
+    else if (pct <= 0.50) document.getElementById('w_critical').classList.add('wound-active');
+    else if (pct <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
+    else document.getElementById('w_light').classList.add('wound-active');
+  }
+
+  function ablate(id) {
+    let el = document.getElementById(id);
+    let v = parseInt(el.value)||0;
+    if(v > 0) { el.value = v - 1; saveData(); }
+  }
+
+  function rollPanic() {
+    const st = parseInt(document.getElementById('stress').value)||0;
+    const d6 = Math.floor(Math.random() * 6) + 1;
+    let res = `Бросок: ${d6} + ${st} = ${d6+st}. `;
+    if(d6+st <= 6) res += "Контроль сохранен.";
+    else if(d6+st == 7) res += "Тремор (+1 Стресс всем).";
+    else if(d6+st == 8) res += "Потеря хвата (оружие упало).";
+    else if(d6+st == 9) res += "Ступор (пропуск хода).";
+    else if(d6+st == 10) res += "Вопль (демаскировка, +1 всем).";
+    else if(d6+st == 11) res += "Бегство в укрытие.";
+    else if(d6+st == 12) res += "Панический огонь!";
+    else res += "СБОЙ ПЕРСОНЫ (Кататония).";
+    document.getElementById('panic_log').innerText = res;
+  }
+
+  const packGrid = document.getElementById('pack_grid');
+  for (let i = 1; i <= 10; i++) {
+    let div = document.createElement('div');
+    div.className = 'inv-square';
+    div.innerHTML = `<input type="text" id="pack_${i}" placeholder="${i}кг" style="font-size:9px; padding:2px; border:none; text-align:center;" onchange="updateWeight()">`;
+    packGrid.appendChild(div);
+  }
+
+  function updateWeight() {
+    let used = 0;
+    for (let i=1; i<=10; i++) {
+      if(document.getElementById(`pack_${i}`).value.trim() !== "") used++;
+    }
+    let st = document.getElementById('pack_status');
+    st.innerText = `${used} / 10 кг`;
+    st.className = used > 10 ? 'overweight' : '';
+    saveData();
+  }
+
+  function saveData() {
+    const inputs = document.querySelectorAll('input');
+    const data = {};
+    inputs.forEach(inp => data[inp.id] = inp.value);
+    localStorage.setItem('vineta_sheet_' + sheetId, JSON.stringify(data));
+  }
+
+  function loadData() {
+    const raw = localStorage.getItem('vineta_sheet_' + sheetId);
+    if(raw) {
+      const data = JSON.parse(raw);
+      for(let key in data) {
+        if(document.getElementById(key)) document.getElementById(key).value = data[key];
+      }
+    }
+    calcStats(); calcWounds(); updateWeight();
+  }
+
+  window.onload = loadData;
+</script>
+</body>
+</html>
