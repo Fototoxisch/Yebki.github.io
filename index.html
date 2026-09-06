@@ -52,12 +52,11 @@
       appearance: textfield !important;
     }
 
-    /* Roll20-Style Tabs */
+    /* Roll20 Tabs */
     .tabs-bar {
       display: flex;
       gap: 4px;
       border-bottom: 2px solid var(--border-color);
-      padding-bottom: 0px;
     }
 
     .tab-btn {
@@ -125,7 +124,7 @@
       background: #082f49;
     }
 
-    /* Controls */
+    /* Form Controls */
     select, input, button {
       font-family: inherit;
       font-size: 13px;
@@ -175,7 +174,7 @@
 
     .col { display: flex; flex-direction: column; gap: 15px; }
 
-    /* Box / Card */
+    /* Boxes */
     .box {
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
@@ -256,7 +255,7 @@
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
 
-    /* Admin View */
+    /* Admin Table */
     .admin-table {
       width: 100%;
       border-collapse: collapse;
@@ -297,7 +296,7 @@
 </head>
 <body>
 
-<!-- ОКНО ВХОДА -->
+<!-- ОКНО АВТОРИЗАЦИИ -->
 <div id="authModal" class="modal-overlay" style="display: none;">
   <div class="auth-card">
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
@@ -314,20 +313,20 @@
 
 <div class="container">
   
-  <!-- ТАБ-БАР В СТИЛЕ ROLL20 -->
+  <!-- ТАБЫ ROLL20 -->
   <nav class="tabs-bar">
     <button class="tab-btn active" id="tabSheetBtn" onclick="switchTab('sheet')">Лист персонажа</button>
     <button class="tab-btn" id="tabAdminBtn" onclick="switchTab('admin')" style="display: none;">Штаб // Обзор звена</button>
   </nav>
 
-  <!-- HEADER -->
+  <!-- ШАПКА ТЕРМИНАЛА -->
   <header class="header">
     <div class="header-brand">
       <h1>AEON // ТЕРМИНАЛ</h1>
       <span id="sync_status" class="sync-tag">[ ОЖИДАНИЕ ]</span>
     </div>
 
-    <!-- Менеджер листов игрока -->
+    <!-- Селектор листов бойца -->
     <div style="display: flex; gap: 6px; align-items: center;" id="charControls">
       <select id="charSelect" onchange="switchCharacter(this.value)"></select>
       <button onclick="createNewCharacter()">+ НОВЫЙ</button>
@@ -383,7 +382,7 @@
         </div>
       </section>
 
-      <!-- БОЙ -->
+      <!-- БОЙ И БРОНЯ -->
       <section class="col">
         <div class="box">
           <div class="box-title">Целостность Каркаса</div>
@@ -421,7 +420,7 @@
         </div>
       </section>
 
-      <!-- ПАНИКА И ИНВЕНТАРЬ -->
+      <!-- ПСИХОМЕТРИЯ И ИНВЕНТАРЬ -->
       <section class="col">
         <div class="box panic-box">
           <div class="box-title panic-title">Психометрия (Alien RPG)</div>
@@ -506,13 +505,15 @@
   let currentUser = null;
   let currentSheetId = null;
 
-  // Инициализация сетки ранца
+  // Инициализация слотов ранца
   const packGrid = document.getElementById('pack_grid');
-  for (let i = 1; i <= 10; i++) {
-    packGrid.innerHTML += `<div class="inv-slot"><input type="text" id="bag_${i}" placeholder="${i}кг" onchange="calc()"></div>`;
+  if (packGrid && packGrid.children.length === 0) {
+    for (let i = 1; i <= 10; i++) {
+      packGrid.innerHTML += `<div class="inv-slot"><input type="text" id="bag_${i}" placeholder="${i}кг" onchange="calc()"></div>`;
+    }
   }
 
-  // --- АВТОРИЗАЦИЯ (НИК + ПАРОЛЬ) ---
+  // --- АВТОРИЗАЦИЯ ---
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
@@ -524,7 +525,7 @@
     const { data, error } = await supabaseClient
       .from('vineta_users')
       .select('*')
-      .eq('username', u)
+      .ilike('username', u)
       .eq('password', p)
       .single();
 
@@ -544,26 +545,41 @@
 
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
 
+    // Проверяем ник Lemming на автовыдачу прав админа
+    const assignedRole = (u.toLowerCase() === 'lemming') ? 'admin' : 'player';
+
     const { error } = await supabaseClient
       .from('vineta_users')
-      .insert({ username: u, password: p, role: 'player' });
+      .insert({ username: u, password: p, role: assignedRole });
 
     if (error) {
       errEl.innerText = 'Позывной уже занят';
       return;
     }
 
-    setSessionUser({ username: u, role: 'player' });
+    setSessionUser({ username: u, role: assignedRole });
   }
 
   function setSessionUser(user) {
+    // Принудительное закрепление админских прав за Lemming
+    if (user.username.toLowerCase() === 'lemming') {
+      user.role = 'admin';
+    }
+
     currentUser = user;
     localStorage.setItem('vineta_user', JSON.stringify(user));
     document.getElementById('authModal').style.display = 'none';
-    document.getElementById('userBadge').innerText = `${user.username.toUpperCase()} [${user.role.toUpperCase()}]`;
+    
+    const badge = document.getElementById('userBadge');
+    badge.innerText = `${user.username.toUpperCase()} [${user.role.toUpperCase()}]`;
 
     if (user.role === 'admin') {
+      badge.style.borderColor = 'var(--border-color)';
+      badge.style.color = 'var(--border-color)';
+      badge.style.background = '#2a0000';
       document.getElementById('tabAdminBtn').style.display = 'block';
+    } else {
+      document.getElementById('tabAdminBtn').style.display = 'none';
     }
 
     initApp();
@@ -577,7 +593,11 @@
   function checkSession() {
     const saved = localStorage.getItem('vineta_user');
     if (saved) {
-      setSessionUser(JSON.parse(saved));
+      const user = JSON.parse(saved);
+      if (user.username.toLowerCase() === 'lemming') {
+        user.role = 'admin';
+      }
+      setSessionUser(user);
     } else {
       document.getElementById('authModal').style.display = 'flex';
     }
@@ -602,7 +622,7 @@
   async function refreshCharacterList() {
     let query = supabaseClient.from('vineta_sheets').select('id, data, owner');
     
-    // Обычный игрок видит только своих чаров, админ — всех
+    // Обычный игрок видит только своих, админ — видит всю базу
     if (currentUser.role !== 'admin') {
       query = query.eq('owner', currentUser.username);
     }
@@ -613,12 +633,12 @@
     if (!error && data && data.length > 0) {
       list = data.map(r => ({
         id: r.id,
-        name: (r.data && r.data.charName) ? r.data.charName : r.id
+        name: (r.data && r.data.charName && r.data.charName.trim() !== '') ? r.data.charName : r.id
       }));
     }
 
     if (list.length === 0) {
-      const defaultId = 'unit_' + currentUser.username + '_1';
+      const defaultId = 'unit_' + currentUser.username.toLowerCase() + '_1';
       list.push({ id: defaultId, name: 'Новый Боец' });
       currentSheetId = defaultId;
     } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
@@ -691,7 +711,7 @@
       .order('updated_at', { ascending: false });
 
     if (error || !data) {
-      tbody.innerHTML = '<tr><td colspan="7">Ошибка загрузки базы.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7">Ошибка опроса базы.</td></tr>';
       return;
     }
 
@@ -834,13 +854,13 @@
           owner: currentUser.username, 
           data: payload, 
           updated_at: new Date().toISOString() 
-        });
+        }, { onConflict: 'id' });
 
       if (error) throw error;
       setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
       if (manual) alert('Данные сохранены в базе.');
     } catch (err) {
-      console.error('Ошибка:', err);
+      console.error('Ошибка сохранения:', err);
       setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
     }
   }
@@ -854,14 +874,17 @@
         .from('vineta_sheets')
         .select('data')
         .eq('id', currentSheetId)
-        .single();
+        .maybeSingle();
 
       if (!error && data && data.data) {
         applyData(data.data);
         setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
+      } else {
+        setSyncStatus('НОВЫЙ ЛИСТ', '#7b8390');
       }
     } catch (err) {
-      setSyncStatus('НОВЫЙ ЛИСТ', '#7b8390');
+      console.warn('Ошибка чтения:', err);
+      setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
     }
     calc();
   }
