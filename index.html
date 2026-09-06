@@ -3,10 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AEON TERMINAL // VINETA FRONT</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Supabase JS Client -->
+  <title>AEON TERMINAL // VINETA</title>
+  <link rel="icon" href="Logo1.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg-color: #111215;         /* Графитовый приглушенный фон */
+      --panel-bg: #181a1f;        /* Темные панели */
+      --border-color: #c92a2a;    /* Красные контуры Signalis */
+      --text-color: #e1e4ea;
+      --text-muted: #7b8390;
+      --accent: #ff4d4d;
+      --input-bg: #0d0e11;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 15px;
+      font-size: 13px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* Полное скрытие стрелочек input[type=number] */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    /* Header */
+    .header {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      padding: 8px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 2px var(--border-color));
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 16px;
+      color: var(--border-color);
+      letter-spacing: 1.5px;
+    }
+
+    .sync-tag {
+      font-size: 10px;
+      color: #4ade80;
+      border: 1px solid #4ade80;
+      padding: 2px 5px;
+      white-space: nowrap;
+    }
+
+    .header input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed var(--border-color);
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 4px;
+    }
+    .header input:focus { outline: none; border-bottom-style: solid; }
+
+    /* Layout */
+    .row-3-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+      align-items: start;
+    }
+
+    .col { display: flex; flex-direction: column; gap: 15px; }
+
+    /* Box / Card */
+    .box {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+    }
+
+    .box-title {
+      background: var(--border-color);
+      color: #000;
+      text-transform: uppercase;
+      font-weight: bold;
+      text-align: center;
+      padding: 3px;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .box-content {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Form controls */
+    input[type="text"], input[type="number"], input[type="password"] {
+      background: var(--input-bg);
+      border: 1px solid #2d3139;
+      color: var(--text-color);
+      padding: 5px;
+      font-family: inherit;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    input[type="number"] { width: 50px; }
+    input:focus { border-color: var(--border-color); outline: none; }
+
+    button {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: var(--border-color);
+      cursor: pointer;
+      padding: 4px 8px;
+      font-family: inherit;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: 0.15s;
+    }
+    button:hover { background: var(--border-color); color: #000; }
+
+    .flex-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .accent-bold { color: var(--border-color); font-weight: bold; }
+    .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; }
+
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-item {
+      border: 1px solid #2d3139;
+      padding: 6px;
+      text-align: center;
+      position: relative;
+      background: var(--input-bg);
+    }
+    .stat-item span { display: block; font-size: 10px; color: var(--border-color); margin-bottom: 2px; }
+    .stat-item input { font-size: 16px; font-weight: bold; border: none; background: transparent; width: 100%; }
+    .stat-mod {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      background: var(--border-color);
+      color: #000;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    /* Wounds */
+    .hp-input { color: var(--accent); font-weight: bold; }
+    .wound-track {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      border: 1px solid #2d3139;
+      padding: 2px;
+    }
+    .wound-track div {
+      padding: 4px;
+      font-size: 11px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .wound-active { background: var(--border-color); color: #000 !important; font-weight: bold; }
+
+    /* Stress */
+    .panic-box { border-color: var(--accent); }
+    .panic-title { background: var(--accent); }
+    .stress-input { font-weight: bold; color: var(--accent); }
+    .panic-btn { border-color: var(--accent); color: var(--accent); }
+    .panic-log { font-size: 11px; min-height: 24px; border: 1px dashed #404652; padding: 4px; }
+
+    /* Inventory */
+    .sub-label { font-size: 10px; color: var(--border-color); }
+    .pouch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    .inv-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .inv-slot { border: 1px dashed #404652; text-align: center; padding: 2px; background: var(--input-bg); }
+    .inv-slot input { width: 100%; font-size: 10px; border: none; background: transparent; padding: 2px; }
+    .status-warn { color: #f59e0b; font-weight: bold; }
+    .status-crit { color: var(--accent); font-weight: bold; }
+  </style>
 </head>
 <body>
 
@@ -14,18 +233,24 @@
   
   <!-- HEADER -->
   <header class="header">
-    <div class="header-left">
+    <div class="header-brand">
+      <img src="Logo1.png" alt="Logo" class="header-logo" onerror="this.onerror=null; this.src='Logo1.svg';">
       <h1>AEON // ПРОФИЛЬ</h1>
       <span id="sync_status" class="sync-tag">[ СИНХРОНИЗИРОВАНО ]</span>
     </div>
-    <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" onchange="autoSave()">
-    <input type="text" id="charModel" placeholder="МОДЕЛЬ РЕПЛИКИ" onchange="autoSave()">
-    <button onclick="saveData(true)">[ СОХРАНИТЬ В ОБЛАКО ]</button>
+    
+    <input type="text" id="charName" placeholder="ПОЗЫВНОЙ" onchange="autoSave()">
+    <input type="text" id="charModel" placeholder="МОДЕЛЬ" style="width: 130px;" onchange="autoSave()">
+    
+    <div style="display: flex; gap: 6px; align-items: center;">
+      <input type="password" id="authToken" placeholder="ТОКЕН" title="Секретный токен доступа к БД" style="width: 100px;" onchange="initSupabase()">
+      <button onclick="saveData(true)">[ СОХРАНИТЬ ]</button>
+    </div>
   </header>
 
   <main class="row-3-col">
     
-    <!-- LEFT: STATS & SYSTEM -->
+    <!-- LEFT: ХАРАКТЕРИСТИКИ И НАПРЯЖЕНИЕ -->
     <section class="col">
       <div class="box">
         <div class="box-title">Атрибуты</div>
@@ -59,7 +284,7 @@
       </div>
     </section>
 
-    <!-- MIDDLE: HEALTH, ARMOR, SKILLS -->
+    <!-- MIDDLE: БОЙ, РАНЕНИЯ, БРОНЯ -->
     <section class="col">
       <div class="box">
         <div class="box-title">Целостность Каркаса</div>
@@ -88,7 +313,7 @@
       </div>
       
       <div class="box">
-        <div class="box-title">Навыки (2d6 + ХАР)</div>
+        <div class="box-title">Базовые Навыки</div>
         <div class="box-content">
           <div class="flex-row"><span>Стрельба (Shoot)</span><input type="number" id="sk_shoot" value="0" onchange="autoSave()"></div>
           <div class="flex-row"><span>Взлом (Program)</span><input type="number" id="sk_prog" value="0" onchange="autoSave()"></div>
@@ -97,7 +322,7 @@
       </div>
     </section>
 
-    <!-- RIGHT: STRESS & INVENTORY -->
+    <!-- RIGHT: ПАНИКА И ИНВЕНТАРЬ -->
     <section class="col">
       <div class="box panic-box">
         <div class="box-title panic-title">Психометрия (Alien RPG)</div>
@@ -131,7 +356,7 @@
       <div class="box">
         <div class="box-title">Штурмовой Ранец</div>
         <div class="box-content">
-          <div class="flex-row pack-info"><span>Загрузка (1 слот = 1 кг):</span><span id="pack_status">0 / 10 кг</span></div>
+          <div class="flex-row" style="font-size:11px;"><span>Загрузка (1 слот = 1 кг):</span><span id="pack_status">0 / 10 кг</span></div>
           <div class="inv-grid" id="pack_grid"></div>
         </div>
       </div>
@@ -140,6 +365,204 @@
   </main>
 </div>
 
-<script src="script.js"></script>
+<script>
+  // Конфигурация Supabase
+  const SUPABASE_URL = 'https://ВАШ-ПРОЕКТ.supabase.co';
+  const SUPABASE_ANON_KEY = 'ВАШ_ANON_KEY';
+  const DEFAULT_TOKEN = 'vineta-secret-2026'; // Запасной токен по умолчанию
+
+  let supabaseClient = null;
+  const sheetId = new URLSearchParams(window.location.search).get('id') || '1';
+  const lsKey = 'vineta_sheet_' + sheetId;
+
+  // Инициализация Supabase с передачей токена в headers
+  function initSupabase() {
+    const token = document.getElementById('authToken').value.trim() || DEFAULT_TOKEN;
+    if (window.supabase && SUPABASE_URL.indexOf('ВАШ') === -1) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        global: {
+          headers: { 'x-access-token': token }
+        }
+      });
+    }
+  }
+
+  // Сетка ранца (10 слотов)
+  const packGrid = document.getElementById('pack_grid');
+  for (let i = 1; i <= 10; i++) {
+    packGrid.innerHTML += `<div class="inv-slot"><input type="text" id="bag_${i}" placeholder="${i}кг" onchange="calc()"></div>`;
+  }
+
+  function getMod(val) {
+    if (val <= 3) return -2;
+    if (val <= 7) return -1;
+    if (val <= 13) return 0;
+    if (val <= 17) return 1;
+    return 2;
+  }
+
+  function calc() {
+    const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    const vals = {};
+
+    statIds.forEach(id => {
+      vals[id] = parseInt(document.getElementById(id).value) || 10;
+      const mod = getMod(vals[id]);
+      document.getElementById(id + '_m').innerText = (mod >= 0 ? '+' : '') + mod;
+    });
+
+    document.getElementById('sv_phys').value = 15 - Math.max(getMod(vals.str), getMod(vals.con));
+    document.getElementById('sv_eva').value = 15 - Math.max(getMod(vals.dex), getMod(vals.int));
+    document.getElementById('sv_men').value = 15 - Math.max(getMod(vals.wis), getMod(vals.cha));
+
+    document.getElementById('strain_limit').innerText = vals.con;
+    const perm = parseInt(document.getElementById('st_perm').value) || 0;
+    const temp = parseInt(document.getElementById('st_temp').value) || 0;
+    document.getElementById('strain_alert').style.display = (perm + temp >= vals.con) ? 'block' : 'none';
+
+    const maxHp = parseInt(document.getElementById('hp_max').value) || 20;
+    const curHp = parseInt(document.getElementById('hp_cur').value) || 0;
+    const ratio = curHp / maxHp;
+
+    document.querySelectorAll('.wound-track div').forEach(el => el.classList.remove('wound-active'));
+    if (curHp <= 0) document.getElementById('w_dead').classList.add('wound-active');
+    else if (ratio <= 0.25) document.getElementById('w_mortal').classList.add('wound-active');
+    else if (ratio <= 0.50) document.getElementById('w_critical').classList.add('wound-active');
+    else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
+    else document.getElementById('w_light').classList.add('wound-active');
+
+    let used = 0;
+    for (let i = 1; i <= 10; i++) {
+      const slot = document.getElementById('bag_' + i);
+      if (slot && slot.value.trim() !== '') used++;
+    }
+
+    const packStatus = document.getElementById('pack_status');
+    packStatus.innerText = `${used} / 10 кг`;
+    packStatus.className = used > 10 ? 'status-crit' : (used > 8 ? 'status-warn' : '');
+
+    autoSave();
+  }
+
+  function ablate(id) {
+    const el = document.getElementById(id);
+    const val = parseInt(el.value) || 0;
+    if (val > 0) el.value = val - 1;
+    calc();
+  }
+
+  function rollPanic() {
+    const st = parseInt(document.getElementById('stress').value) || 0;
+    const d6 = Math.floor(Math.random() * 6) + 1;
+    const total = d6 + st;
+    let res = `[${d6} + ${st}] = ${total}. `;
+
+    if (total <= 6) res += "НОРМА.";
+    else if (total === 7) res += "ТРЕМОР (+1 Стресс всем).";
+    else if (total === 8) res += "ПОТЕРЯ ХВАТА.";
+    else if (total === 9) res += "СТУПОР (-1 раунд).";
+    else if (total === 10) res += "ВОПЛЬ (Демаскировка).";
+    else if (total === 11) res += "БЕГСТВО.";
+    else if (total === 12) res += "ПАНИЧЕСКИЙ ОГОНЬ.";
+    else res += "СБОЙ ПЕРСОНЫ (Кататония).";
+
+    document.getElementById('panic_log').innerText = res;
+    autoSave();
+  }
+
+  function getFormData() {
+    const data = {};
+    document.querySelectorAll('input').forEach(inp => data[inp.id] = inp.value);
+    return data;
+  }
+
+  let saveTimeout = null;
+  function autoSave() {
+    setSyncStatus('СОХРАНЕНИЕ...', '#f59e0b');
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => { saveData(false); }, 1200);
+  }
+
+  function setSyncStatus(text, color) {
+    const tag = document.getElementById('sync_status');
+    if (tag) {
+      tag.innerText = `[ ${text} ]`;
+      tag.style.color = color;
+      tag.style.borderColor = color;
+    }
+  }
+
+  async function saveData(manual = false) {
+    const payload = getFormData();
+    localStorage.setItem(lsKey, JSON.stringify(payload));
+
+    if (!supabaseClient) {
+      setSyncStatus('ТОЛЬКО ЛОКАЛЬНО', '#7b8390');
+      return;
+    }
+
+    try {
+      const token = document.getElementById('authToken').value.trim() || DEFAULT_TOKEN;
+      const { error } = await supabaseClient
+        .from('vineta_sheets')
+        .upsert({ 
+          id: sheetId, 
+          data: payload, 
+          access_token: token,
+          updated_at: new Date().toISOString() 
+        });
+
+      if (error) throw error;
+      setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
+      if (manual) alert('Синхронизация с базой успешна.');
+    } catch (err) {
+      console.error('Ошибка безопасности Supabase:', err);
+      setSyncStatus('ОТКАЗ ДОСТУПА', '#ff4d4d');
+    }
+  }
+
+  async function loadData() {
+    initSupabase();
+    let loaded = false;
+
+    if (supabaseClient) {
+      setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
+      try {
+        const { data, error } = await supabaseClient
+          .from('vineta_sheets')
+          .select('data')
+          .eq('id', sheetId)
+          .single();
+
+        if (!error && data && data.data) {
+          applyData(data.data);
+          setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
+          loaded = true;
+        }
+      } catch (err) {
+        console.warn('Не удалось прочесть облако:', err);
+      }
+    }
+
+    if (!loaded) {
+      const local = localStorage.getItem(lsKey);
+      if (local) {
+        applyData(JSON.parse(local));
+        setSyncStatus('ИЗ КЭША', '#7b8390');
+      }
+    }
+
+    calc();
+  }
+
+  function applyData(data) {
+    for (let key in data) {
+      const el = document.getElementById(key);
+      if (el) el.value = data[key];
+    }
+  }
+
+  window.onload = loadData;
+</script>
 </body>
 </html>
