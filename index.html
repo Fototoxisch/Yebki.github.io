@@ -70,6 +70,12 @@
     .btn-danger { border-color: var(--accent); color: var(--accent); }
     .btn-danger:hover { background: var(--accent); color: #fff; }
 
+    /* Анимации и Интерактивы (Roll20 Style) */
+    .expandable { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, margin 0.3s ease, opacity 0.3s ease; opacity: 0; }
+    .expandable.open { max-height: 400px; opacity: 1; margin-top: 8px; overflow-y: auto; }
+    .val-interactive { cursor: pointer; transition: 0.2s; border: 1px solid transparent; border-radius: 4px; padding: 4px; }
+    .val-interactive:hover { color: var(--accent); border-color: #4a1111; background: rgba(255,77,77,0.05); }
+
     /* Боковая панель профилей */
     .side-panel {
       position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
@@ -104,11 +110,11 @@
     .stat-item input { font-size: 16px; font-weight: bold; width: 100%; border: none; border-bottom: 1px solid #333; }
     .stat-mod { position: absolute; top: -7px; right: -7px; background: var(--border-color); color: #000; border-radius: 50%; width: 20px; height: 20px; line-height: 20px; font-size: 11px; font-weight: bold; }
 
-    /* Калькуляторы (Roll20 Style) */
-    .speed-calc { display: flex; align-items: center; gap: 4px; font-size: 12px; margin-top: 5px; justify-content: center; }
-    .speed-calc input { width: 35px; padding: 2px; font-size: 12px; }
-    .speed-col { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-    .speed-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+    /* Калькуляторы */
+    .calc-row { display: flex; align-items: center; gap: 4px; font-size: 12px; margin-top: 5px; justify-content: center; }
+    .calc-row input { width: 35px; padding: 2px; font-size: 12px; }
+    .calc-col { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .calc-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
 
     /* Броня и Раны */
     .hp-input { color: var(--accent); font-weight: bold; }
@@ -127,12 +133,13 @@
     .sub-label { font-size: 10px; color: var(--border-color); }
     .pouch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
     
-    /* Умный инвентарь */
-    #dynamic_pack_grid { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-    .inv-item-display { background: #1f2229; border: 1px solid #3a3f4b; padding: 8px 10px; cursor: pointer; transition: 0.2s; }
-    .inv-item-display:hover { border-color: var(--border-color); }
-    .inv-item-edit { display: flex; flex-direction: column; gap: 6px; padding: 8px; border: 1px solid #c92a2a; background: #161719; }
-    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 4px; font-size: 14px; }
+    #dynamic_pack_grid { display: flex; flex-direction: column; gap: 0; border-top: 1px dashed #3a3f4b; padding-top: 4px; }
+    .inv-row { border-bottom: 1px solid #20232a; padding: 6px 4px; }
+    .inv-row:last-child { border-bottom: none; }
+    .inv-row-header { display: flex; justify-content: space-between; align-items: center; }
+    .item-name { font-weight: bold; font-size: 13px; }
+    .inv-item-edit { display: flex; flex-direction: column; gap: 6px; padding: 6px; background: #161719; border: 1px solid #3a3f4b; margin-bottom: 4px; }
+    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 6px; font-size: 14px; }
     .item-del:hover { color: #fff; background: transparent; }
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
@@ -160,9 +167,7 @@
     <h2>Профили Звена</h2>
     <button class="close-panel-btn" onclick="toggleSidePanel()">✕</button>
   </div>
-  <div id="sidePanelList" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1;">
-    <!-- Карточки бойцов -->
-  </div>
+  <div id="sidePanelList" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1;"></div>
   <div style="border-top: 1px dashed #3a3f4b; padding-top: 10px; display: flex; flex-direction: column; gap: 6px;">
     <button onclick="createNewCharacter()" style="width: 100%;">+ НОВЫЙ БОЕЦ</button>
   </div>
@@ -190,7 +195,7 @@
   
   <nav class="tabs-bar">
     <button class="tab-btn active" id="tabSheetBtn" onclick="switchTab('sheet')">Лист персонажа</button>
-    <button class="tab-btn" id="tabInvBtn" onclick="switchTab('inv')">Инвентарь</button>
+    <button class="tab-btn" id="tabInvBtn" onclick="switchTab('inv')">Снаряжение</button>
     <button class="tab-btn" id="tabAdminBtn" onclick="switchTab('admin')" style="display: none;">Штаб // Обзор звена</button>
   </nav>
 
@@ -232,80 +237,61 @@
           </div>
         </div>
 
-        <!-- СПАСБРОСКИ СО СКРЫТОЙ ФОРМУЛОЙ -->
         <div class="box">
-          <div class="box-title" style="cursor:pointer;" onclick="toggleElement('saves_details')" title="Нажмите, чтобы показать/скрыть формулу">Спасброски ▾</div>
+          <div class="box-title">Спасброски</div>
           <div class="box-content" style="padding-top: 4px;">
-            <!-- Основной компактный вид -->
-            <div class="flex-row" style="margin-bottom: 2px;">
-              <span style="font-size: 11px;">Стойкость (STR/CON)</span>
-              <input type="number" id="sv_phys" readonly class="accent-bold" style="width:40px;">
-            </div>
-            <div class="flex-row" style="margin-bottom: 2px;">
-              <span style="font-size: 11px;">Рефлексы (DEX/INT)</span>
-              <input type="number" id="sv_eva" readonly class="accent-bold" style="width:40px;">
-            </div>
-            <div class="flex-row">
-              <span style="font-size: 11px;">Воля (WIS/CHA)</span>
-              <input type="number" id="sv_men" readonly class="accent-bold" style="width:40px;">
+            <div class="val-interactive" onclick="toggleExpand('saves_details')" title="Нажмите для просмотра формулы">
+              <div class="flex-row" style="text-align:center; padding: 4px 10px;">
+                <div class="calc-col"><span class="calc-label">Стойкость</span><span id="sv_phys_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span></div>
+                <div class="calc-col"><span class="calc-label">Рефлексы</span><span id="sv_eva_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span></div>
+                <div class="calc-col"><span class="calc-label">Воля</span><span id="sv_men_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span></div>
+              </div>
             </div>
             
-            <!-- Скрытая формула Roll20 -->
-            <div id="saves_details" style="display:none; border-top:1px dashed #3a3f4b; margin-top:8px; padding-top:8px;">
-              <div class="speed-calc">
-                <span style="width: 55px; font-size:9px; color:var(--text-muted);">СТОЙК.</span>
-                <span>=</span>
-                <div class="speed-col"><input type="number" value="15" readonly style="width:30px;"><span class="speed-label">База</span></div>
-                <span>-</span>
-                <div class="speed-col"><input type="number" id="sv_phys_mod" readonly style="width:30px;"><span class="speed-label">Мод</span></div>
-                <span>+</span>
-                <div class="speed-col"><input type="number" id="sv_phys_misc" value="0" onchange="calc()" style="width:30px;"><span class="speed-label">Разн</span></div>
+            <div id="saves_details" class="expandable" style="border-top:1px dashed #3a3f4b;">
+              <div class="calc-row">
+                <span style="width: 45px; font-size:10px; color:var(--text-muted);">СТК</span><span>=</span>
+                <div class="calc-col"><input type="number" value="15" readonly style="width:30px;"><span class="calc-label">База</span></div><span>-</span>
+                <div class="calc-col"><input type="number" id="sv_phys_mod" readonly style="width:30px;"><span class="calc-label">Мод</span></div><span>+</span>
+                <div class="calc-col"><input type="number" id="sv_phys_misc" value="0" onchange="calc()" style="width:30px;" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
               </div>
-              <div class="speed-calc">
-                <span style="width: 55px; font-size:9px; color:var(--text-muted);">РЕФЛ.</span>
-                <span>=</span>
-                <div class="speed-col"><input type="number" value="15" readonly style="width:30px;"><span class="speed-label">База</span></div>
-                <span>-</span>
-                <div class="speed-col"><input type="number" id="sv_eva_mod" readonly style="width:30px;"><span class="speed-label">Мод</span></div>
-                <span>+</span>
-                <div class="speed-col"><input type="number" id="sv_eva_misc" value="0" onchange="calc()" style="width:30px;"><span class="speed-label">Разн</span></div>
+              <div class="calc-row">
+                <span style="width: 45px; font-size:10px; color:var(--text-muted);">РЕФЛ</span><span>=</span>
+                <div class="calc-col"><input type="number" value="15" readonly style="width:30px;"><span class="calc-label">База</span></div><span>-</span>
+                <div class="calc-col"><input type="number" id="sv_eva_mod" readonly style="width:30px;"><span class="calc-label">Мод</span></div><span>+</span>
+                <div class="calc-col"><input type="number" id="sv_eva_misc" value="0" onchange="calc()" style="width:30px;" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
               </div>
-              <div class="speed-calc">
-                <span style="width: 55px; font-size:9px; color:var(--text-muted);">ВОЛЯ</span>
-                <span>=</span>
-                <div class="speed-col"><input type="number" value="15" readonly style="width:30px;"><span class="speed-label">База</span></div>
-                <span>-</span>
-                <div class="speed-col"><input type="number" id="sv_men_mod" readonly style="width:30px;"><span class="speed-label">Мод</span></div>
-                <span>+</span>
-                <div class="speed-col"><input type="number" id="sv_men_misc" value="0" onchange="calc()" style="width:30px;"><span class="speed-label">Разн</span></div>
+              <div class="calc-row">
+                <span style="width: 45px; font-size:10px; color:var(--text-muted);">ВОЛЯ</span><span>=</span>
+                <div class="calc-col"><input type="number" value="15" readonly style="width:30px;"><span class="calc-label">База</span></div><span>-</span>
+                <div class="calc-col"><input type="number" id="sv_men_mod" readonly style="width:30px;"><span class="calc-label">Мод</span></div><span>+</span>
+                <div class="calc-col"><input type="number" id="sv_men_misc" value="0" onchange="calc()" style="width:30px;" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- СКОРОСТЬ СО СКРЫТОЙ ФОРМУЛОЙ -->
         <div class="box">
-          <div class="box-title" style="cursor:pointer;" onclick="toggleElement('speed_details')" title="Нажмите, чтобы показать/скрыть формулу">Скорость Перемещения ▾</div>
+          <div class="box-title">Скорость Перемещения</div>
           <div class="box-content" style="padding-top: 4px; display:flex; flex-direction:column; align-items:center;">
+            <div id="overencumber_alert" class="alert-box" style="display:none; font-weight:bold; width:100%; margin-bottom:5px;">[!] ПЕРЕГРУЗ (СКОРОСТЬ 2М)</div>
             
-            <div id="overencumber_alert" class="alert-box" style="display:none; font-weight:bold; width:100%; margin-bottom:5px;">[!] ПЕРЕГРУЗ (2м)</div>
-            <div style="font-size:24px; font-weight:bold; color:var(--accent);" id="spd_main_display">10 м</div>
+            <div class="val-interactive" onclick="toggleExpand('speed_details')" style="text-align:center; width: 100%;" title="Нажмите для просмотра формулы">
+              <span id="spd_main_display" style="font-size:24px; font-weight:bold; color:var(--accent);">10 м</span>
+            </div>
             
-            <div id="speed_details" style="display:none; border-top:1px dashed #3a3f4b; padding-top:8px; width:100%;">
-              <div class="speed-calc">
-                <div class="speed-col"><input type="number" id="spd_total" value="10" readonly class="accent-bold"><span class="speed-label">Итого</span></div>
-                <span>=</span>
-                <div class="speed-col"><input type="number" id="spd_base" value="10" onchange="calc()"><span class="speed-label">База</span></div>
+            <div id="speed_details" class="expandable" style="border-top:1px dashed #3a3f4b; width:100%;">
+              <div class="calc-row">
+                <div class="calc-col"><input type="number" id="spd_base" value="10" onchange="calc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                 <span>+</span>
-                <div class="speed-col"><input type="number" id="spd_gear" value="0" readonly title="Снаряжение (РПС + Рюкзак)"><span class="speed-label">Снаряж</span></div>
+                <div class="calc-col"><input type="number" id="spd_gear" value="0" readonly title="Снаряжение (РПС + Рюкзак)"><span class="calc-label">Снаряж</span></div>
                 <span>+</span>
-                <div class="speed-col"><input type="number" id="spd_misc" value="0" onchange="calc()"><span class="speed-label">Разн</span></div>
+                <div class="calc-col"><input type="number" id="spd_misc" value="0" onchange="calc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- СЧЕТЧИК / РЕСУРС -->
         <div class="box">
           <div class="box-title">Счетчик / Ресурс</div>
           <div class="box-content" style="gap: 4px;">
@@ -313,13 +299,12 @@
               <input type="text" id="counter_name" placeholder="Название (напр. Удача)" style="flex: 1; font-weight:bold; text-align:left; border:none; border-bottom:1px solid #333;" onchange="autoSave()">
               <input type="text" id="counter_val" placeholder="0" style="width: 50px; font-weight:bold; color:var(--accent);" onchange="autoSave()">
             </div>
-            <textarea id="counter_desc" placeholder="Описание или условия использования..." rows="2" style="resize:none; font-size:11px;" onchange="autoSave()"></textarea>
+            <textarea id="counter_desc" placeholder="Описание или условия..." rows="2" style="resize:none; font-size:11px;" onchange="autoSave()"></textarea>
           </div>
         </div>
-
       </section>
 
-      <!-- КОЛОНКА 2: ЗДОРОВЬЕ, БРОНЯ, НАВЫКИ -->
+      <!-- КОЛОНКА 2: ЗДОРОВЬЕ, НАПРЯЖЕНИЕ -->
       <section class="col">
         <div class="box">
           <div class="box-title">Целостность Каркаса</div>
@@ -339,24 +324,6 @@
         </div>
 
         <div class="box">
-          <div class="box-title">Броня (Stopping Power)</div>
-          <div class="box-content">
-            <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_head" value="10" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
-            <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_torso" value="15" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
-            <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_limb" value="12" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
-          </div>
-        </div>
-        
-        <div class="box">
-          <div class="box-title">Базовые Навыки</div>
-          <div class="box-content">
-            <div class="flex-row"><span>Стрельба (Shoot)</span><input type="number" id="sk_shoot" value="0" onchange="autoSave()"></div>
-            <div class="flex-row"><span>Взлом (Program)</span><input type="number" id="sk_prog" value="0" onchange="autoSave()"></div>
-            <div class="flex-row"><span>Ремонт (Fix)</span><input type="number" id="sk_fix" value="0" onchange="autoSave()"></div>
-          </div>
-        </div>
-
-        <div class="box">
           <div class="box-title">Системное напряжение</div>
           <div class="box-content">
             <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold">10</span></div>
@@ -367,8 +334,17 @@
         </div>
       </section>
 
-      <!-- КОЛОНКА 3: ПАНИКА -->
+      <!-- КОЛОНКА 3: НАВЫКИ, ПАНИКА -->
       <section class="col">
+        <div class="box">
+          <div class="box-title">Базовые Навыки</div>
+          <div class="box-content">
+            <div class="flex-row"><span>Стрельба (Shoot)</span><input type="number" id="sk_shoot" value="0" onchange="autoSave()"></div>
+            <div class="flex-row"><span>Взлом (Program)</span><input type="number" id="sk_prog" value="0" onchange="autoSave()"></div>
+            <div class="flex-row"><span>Ремонт (Fix)</span><input type="number" id="sk_fix" value="0" onchange="autoSave()"></div>
+          </div>
+        </div>
+
         <div class="box panic-box">
           <div class="box-title panic-title">Психометрия (Alien RPG)</div>
           <div class="box-content">
@@ -381,10 +357,20 @@
     </main>
   </div>
 
-  <!-- ВКЛАДКА 2: ИНВЕНТАРЬ -->
+  <!-- ВКЛАДКА 2: СНАРЯЖЕНИЕ -->
   <div id="viewInv" style="display: none;">
     <div class="row-3-col">
+      <!-- Броня и Фиксаторы -->
       <section class="col">
+        <div class="box">
+          <div class="box-title">Броня (Stopping Power)</div>
+          <div class="box-content">
+            <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_head" value="10" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
+            <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_torso" value="15" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
+            <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_limb" value="12" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
+          </div>
+        </div>
+
         <div class="box">
           <div class="box-title">Фиксаторы (На броне)</div>
           <div class="box-content">
@@ -394,7 +380,10 @@
             <input type="text" id="mag_3" placeholder="Спецсредство" onchange="autoSave()">
           </div>
         </div>
+      </section>
 
+      <!-- Разгрузка -->
+      <section class="col">
         <div class="box">
           <div class="box-title">Разгрузочная система (РПС)</div>
           <div class="box-content">
@@ -418,25 +407,22 @@
       </section>
 
       <!-- УМНЫЙ РЮКЗАК -->
-      <section class="col" style="grid-column: span 2;">
+      <section class="col">
         <div class="box">
-          <div class="box-title">Система Рюкзака</div>
+          <div class="box-title">Инвентарь / Рюкзак</div>
           <div class="box-content">
-            <div class="flex-row" style="gap: 10px; margin-bottom: 8px;">
+            <div class="flex-row" style="gap: 10px; margin-bottom: 4px;">
               <select id="bag_type" onchange="renderInventory(); calc(); autoSave();" style="flex: 1;">
-                <option value="sling">Рюкзак однолямка (Лимит: 5 | Штраф: 0м)</option>
-                <option value="bag">Сумка (Лимит: 10 | Штраф: -1м)</option>
-                <option value="assault">Штурмовой вещмешок (Лимит: 16 | Штраф: -2м)</option>
+                <option value="sling">Рюкзак однолямка (Лимит: 5)</option>
+                <option value="bag">Сумка (Лимит: 10)</option>
+                <option value="assault">Штурмовой вещмешок (Лимит: 16)</option>
               </select>
-              <div style="font-size:11px;">
-                Слоты: <span id="pack_status" class="accent-bold">0 / 5</span>
-              </div>
+              <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size: 14px;" title="Разблокировать редактирование">🔒</button>
             </div>
-
-            <!-- Кнопки управления -->
-            <div class="flex-row" style="margin-bottom: 10px; gap: 8px;">
-              <button id="inv_lock_btn" onclick="toggleInvLock()" style="flex: 1;">🔒 ЗАБЛОКИРОВАНО</button>
-              <button id="inv_add_btn" onclick="addBagItem()" style="display:none; flex: 1;">+ ДОБАВИТЬ ПРЕДМЕТ</button>
+            
+            <div class="flex-row" style="font-size:10px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px;">
+              <span style="flex:1;">ПРЕДМЕТЫ</span>
+              <span>ВЕС: <span id="pack_status" class="accent-bold" style="font-size:12px;">0 / 5</span></span>
             </div>
 
             <div id="dynamic_pack_grid"></div>
@@ -492,9 +478,9 @@
   let bagItemsArray = []; 
   let invLocked = true;
 
-  function toggleElement(id) {
+  function toggleExpand(id) {
     const el = document.getElementById(id);
-    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    if (el) el.classList.toggle('open');
   }
 
   function togglePasswordVisibility() {
@@ -593,6 +579,10 @@
       document.getElementById('viewAdmin').style.display = 'block';
       loadAdminRoster();
     }
+  }
+
+  function formatIDToName(id) {
+    return id.replace(/^unit_|^char_/, 'ID: ');
   }
 
   async function refreshCharacterList() {
@@ -722,7 +712,7 @@
       } else if (inp.type === 'number') {
         if (inp.id.includes('hp')) inp.value = 20;
         else if (inp.id.includes('sp_') || inp.id === 'spd_base') inp.value = 10;
-        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc') || inp.id === 'new_item_weight') inp.value = 0;
+        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc')) inp.value = 0;
         else inp.value = 10;
       } else {
         inp.value = '';
@@ -793,9 +783,17 @@
     const evaMisc  = parseInt(document.getElementById('sv_eva_misc').value) || 0;
     const menMisc  = parseInt(document.getElementById('sv_men_misc').value) || 0;
 
-    document.getElementById('sv_phys').value = 15 - physMod + physMisc;
-    document.getElementById('sv_eva').value  = 15 - evaMod + evaMisc;
-    document.getElementById('sv_men').value  = 15 - menMod + menMisc;
+    const finalPhys = 15 - physMod + physMisc;
+    const finalEva = 15 - evaMod + evaMisc;
+    const finalMen = 15 - menMod + menMisc;
+
+    document.getElementById('sv_phys').value = finalPhys;
+    document.getElementById('sv_eva').value  = finalEva;
+    document.getElementById('sv_men').value  = finalMen;
+
+    document.getElementById('sv_phys_display').innerText = finalPhys;
+    document.getElementById('sv_eva_display').innerText = finalEva;
+    document.getElementById('sv_men_display').innerText = finalMen;
 
     // Напряжение
     document.getElementById('strain_limit').innerText = vals.con;
@@ -860,7 +858,7 @@
     let res = `[${d6} + ${st}] = ${total}. `;
 
     if (total <= 6) res += "НОРМА.";
-    else if (total === 7) res += "ТРЕМОР (+1 Стресс).";
+    else if (total === 7) res += "ТРЕМОР (+1 Стресс всем).";
     else if (total === 8) res += "ПОТЕРЯ ХВАТА.";
     else if (total === 9) res += "СТУПОР (-1 раунд).";
     else if (total === 10) res += "ВОПЛЬ (Демаскировка).";
@@ -872,22 +870,16 @@
     autoSave();
   }
 
-  // --- ИНВЕНТАРЬ С ЗАМКОМ И ОПИСАНИЯМИ ---
+  // --- ИНВЕНТАРЬ ---
   function toggleInvLock() {
     invLocked = !invLocked;
-    const btnLock = document.getElementById('inv_lock_btn');
-    const btnAdd = document.getElementById('inv_add_btn');
-    
+    const btn = document.getElementById('inv_toggle_btn');
     if (invLocked) {
-      btnLock.innerText = '🔒 ЗАБЛОКИРОВАНО';
-      btnLock.style.color = 'var(--border-color)';
-      btnLock.style.borderColor = 'var(--border-color)';
-      btnAdd.style.display = 'none';
+      btn.innerHTML = '🔒';
+      btn.title = 'Разблокировать редактирование';
     } else {
-      btnLock.innerText = '🔓 РЕДАКТИРОВАТЬ';
-      btnLock.style.color = '#fff';
-      btnLock.style.borderColor = '#fff';
-      btnAdd.style.display = 'block';
+      btn.innerHTML = '🔓';
+      btn.title = 'Заблокировать и скрыть меню';
     }
     renderInventory();
   }
@@ -915,11 +907,6 @@
     autoSave();
   }
 
-  function toggleItemDesc(id) {
-    const el = document.getElementById('desc_' + id);
-    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
-  }
-
   function renderInventory() {
     const bagType = document.getElementById('bag_type').value;
     let maxSlots = 5;
@@ -934,32 +921,38 @@
       used += item.size;
       
       if (invLocked) {
-        // Режим Чтения
         grid.innerHTML += `
-          <div class="inv-item-display" onclick="toggleItemDesc(${item.id})">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span class="item-name">${item.name || 'Пустой слот'}</span>
-              <span style="font-size:11px; color:var(--text-muted);">Вес: ${item.size}</span>
+          <div class="inv-row">
+            <div class="inv-row-header val-interactive" onclick="toggleExpand('desc_${item.id}')">
+              <span class="item-name">${item.name || 'Безымянный предмет'}</span>
+              <span style="font-size:12px; color:var(--text-muted); white-space:nowrap;">${item.size} - кг</span>
             </div>
-            <div id="desc_${item.id}" style="display:none; margin-top:8px; font-size:11px; color:#aaa; border-top:1px dashed #3a3f4b; padding-top:4px;">
-              ${item.desc || 'Нет описания.'}
+            <div id="desc_${item.id}" class="expandable" style="font-size:11px; color:#aaa;">
+              ${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}
             </div>
           </div>
         `;
       } else {
-        // Режим Редактирования
         grid.innerHTML += `
           <div class="inv-item-edit">
             <div style="display:flex; gap:6px;">
-              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1;" onchange="updateBagItem(${item.id}, 'name', this.value)">
-              <input type="number" value="${item.size}" step="0.5" title="Вес/Размер" onchange="updateBagItem(${item.id}, 'size', this.value)">
+              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; text-align:left; padding-left:8px;" onchange="updateBagItem(${item.id}, 'name', this.value)">
+              <input type="number" value="${item.size}" step="0.5" title="Вес (кг)" style="width:50px;" onchange="updateBagItem(${item.id}, 'size', this.value)">
               <button class="item-del" onclick="removeBagItem(${item.id})">✕</button>
             </div>
-            <textarea placeholder="Описание или свойства предмета..." rows="1" onchange="updateBagItem(${item.id}, 'desc', this.value)" style="resize:vertical;">${item.desc || ''}</textarea>
+            <textarea placeholder="Описание предмета..." rows="1" onchange="updateBagItem(${item.id}, 'desc', this.value)" style="resize:vertical;">${item.desc || ''}</textarea>
           </div>
         `;
       }
     });
+
+    if (!invLocked) {
+      grid.innerHTML += `
+        <button onclick="addBagItem()" style="margin-top: 8px; width: 100%; border: 1px dashed var(--text-muted); background: transparent; color: var(--text-muted);">
+          ⊕ ДОБАВИТЬ ПРЕДМЕТ
+        </button>
+      `;
+    }
 
     const packStatus = document.getElementById('pack_status');
     const displayUsed = Math.round(used * 10) / 10;
