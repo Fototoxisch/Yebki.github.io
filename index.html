@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AEON TERMINAL // VINETA</title>
-  <link rel="icon" href="Logo1.png" type="image/png">
+  <link rel="icon" href="Logo1.jpg" type="image/jpeg">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --bg-color: #111215;         /* Графитовый приглушенный фон */
-      --panel-bg: #181a1f;        /* Темные панели */
-      --border-color: #c92a2a;    /* Красные контуры Signalis */
+      --bg-color: #161719;
+      --panel-bg: #1c1e22;
+      --border-color: #c92a2a;
       --text-color: #e1e4ea;
       --text-muted: #7b8390;
-      --accent: #ff4d4d;
-      --input-bg: #0d0e11;
+      --accent: #e53e3e;
+      --input-bg: #111215;
     }
 
     * { box-sizing: border-box; }
@@ -37,17 +37,6 @@
       gap: 15px;
     }
 
-    /* Полное скрытие стрелочек input[type=number] */
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    input[type="number"] {
-      -moz-appearance: textfield;
-      appearance: textfield;
-    }
-
     /* Header */
     .header {
       background: var(--panel-bg);
@@ -62,14 +51,15 @@
     .header-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .header-logo {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
-      filter: drop-shadow(0 0 2px var(--border-color));
+      border: 1px solid var(--border-color);
+      background: #000;
     }
 
     .header h1 {
@@ -120,7 +110,7 @@
       text-transform: uppercase;
       font-weight: bold;
       text-align: center;
-      padding: 3px;
+      padding: 4px;
       font-size: 12px;
       letter-spacing: 1px;
     }
@@ -133,9 +123,9 @@
     }
 
     /* Form controls */
-    input[type="text"], input[type="number"], input[type="password"] {
+    input[type="text"], input[type="number"] {
       background: var(--input-bg);
-      border: 1px solid #2d3139;
+      border: 1px solid #3a3f4b;
       color: var(--text-color);
       padding: 5px;
       font-family: inherit;
@@ -143,7 +133,7 @@
       text-align: center;
     }
 
-    input[type="number"] { width: 50px; }
+    input[type="number"] { width: 60px; padding-right: 2px; }
     input:focus { border-color: var(--border-color); outline: none; }
 
     button {
@@ -159,26 +149,21 @@
     }
     button:hover { background: var(--border-color); color: #000; }
 
-    .flex-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+    .flex-row { display: flex; justify-content: space-between; align-items: center; }
     .accent-bold { color: var(--border-color); font-weight: bold; }
-    .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; }
+    .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 4px; }
 
     /* Stats */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .stat-item {
-      border: 1px solid #2d3139;
+      border: 1px solid #3a3f4b;
       padding: 6px;
       text-align: center;
       position: relative;
       background: var(--input-bg);
     }
-    .stat-item span { display: block; font-size: 10px; color: var(--border-color); margin-bottom: 2px; }
-    .stat-item input { font-size: 16px; font-weight: bold; border: none; background: transparent; width: 100%; }
+    .stat-item span { display: block; font-size: 10px; color: var(--border-color); margin-bottom: 4px; }
+    .stat-item input { font-size: 16px; font-weight: bold; width: 100%; border: none; border-bottom: 1px solid #333; }
     .stat-mod {
       position: absolute;
       top: -7px;
@@ -199,15 +184,10 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
-      border: 1px solid #2d3139;
+      border: 1px solid #3a3f4b;
       padding: 2px;
     }
-    .wound-track div {
-      padding: 4px;
-      font-size: 11px;
-      text-align: center;
-      color: var(--text-muted);
-    }
+    .wound-track div { padding: 4px; font-size: 11px; text-align: center; color: var(--text-muted); }
     .wound-active { background: var(--border-color); color: #000 !important; font-weight: bold; }
 
     /* Stress */
@@ -215,7 +195,7 @@
     .panic-title { background: var(--accent); }
     .stress-input { font-weight: bold; color: var(--accent); }
     .panic-btn { border-color: var(--accent); color: var(--accent); }
-    .panic-log { font-size: 11px; min-height: 24px; border: 1px dashed #404652; padding: 4px; }
+    .panic-log { font-size: 11px; min-height: 24px; border: 1px dashed #404652; padding: 4px; margin-top: 4px; }
 
     /* Inventory */
     .sub-label { font-size: 10px; color: var(--border-color); }
@@ -230,27 +210,21 @@
 <body>
 
 <div class="container">
-  
   <!-- HEADER -->
   <header class="header">
     <div class="header-brand">
-      <img src="Logo1.png" alt="Logo" class="header-logo" onerror="this.onerror=null; this.src='Logo1.svg';">
+      <img src="Logo1.jpg" alt="AEON Logo" class="header-logo">
       <h1>AEON // ПРОФИЛЬ</h1>
-      <span id="sync_status" class="sync-tag">[ СИНХРОНИЗИРОВАНО ]</span>
+      <span id="sync_status" class="sync-tag">[ ОЖИДАНИЕ СЕТИ ]</span>
     </div>
     
     <input type="text" id="charName" placeholder="ПОЗЫВНОЙ" onchange="autoSave()">
     <input type="text" id="charModel" placeholder="МОДЕЛЬ" style="width: 130px;" onchange="autoSave()">
-    
-    <div style="display: flex; gap: 6px; align-items: center;">
-      <input type="password" id="authToken" placeholder="ТОКЕН" title="Секретный токен доступа к БД" style="width: 100px;" onchange="initSupabase()">
-      <button onclick="saveData(true)">[ СОХРАНИТЬ ]</button>
-    </div>
+    <button onclick="saveData(true)">[ СОХРАНИТЬ В БАЗУ ]</button>
   </header>
 
   <main class="row-3-col">
-    
-    <!-- LEFT: ХАРАКТЕРИСТИКИ И НАПРЯЖЕНИЕ -->
+    <!-- LEFT: ХАРАКТЕРИСТИКИ -->
     <section class="col">
       <div class="box">
         <div class="box-title">Атрибуты</div>
@@ -284,7 +258,7 @@
       </div>
     </section>
 
-    <!-- MIDDLE: БОЙ, РАНЕНИЯ, БРОНЯ -->
+    <!-- MIDDLE: БОЙ -->
     <section class="col">
       <div class="box">
         <div class="box-title">Целостность Каркаса</div>
@@ -306,9 +280,9 @@
       <div class="box">
         <div class="box-title">Броня (Stopping Power)</div>
         <div class="box-content">
-          <div class="flex-row"><span>Голова (-4)</span><div><input type="number" id="sp_head" value="10" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
-          <div class="flex-row"><span>Торс (0)</span><div><input type="number" id="sp_torso" value="15" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
-          <div class="flex-row"><span>Конечности (-2)</span><div><input type="number" id="sp_limb" value="12" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
+          <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_head" value="10" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
+          <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_torso" value="15" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
+          <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_limb" value="12" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
         </div>
       </div>
       
@@ -361,33 +335,22 @@
         </div>
       </div>
     </section>
-    
   </main>
 </div>
 
 <script>
   // Конфигурация Supabase
-  const SUPABASE_URL = 'https://ВАШ-ПРОЕКТ.supabase.co';
-  const SUPABASE_ANON_KEY = 'ВАШ_ANON_KEY';
-  const DEFAULT_TOKEN = 'vineta-secret-2026'; // Запасной токен по умолчанию
-
+  const SUPABASE_URL = 'https://gpblfglgvxlfqhoavzlr.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_LDTJVEcaBH1m4a47pOTJZQ_qy3fk76C';
+  
   let supabaseClient = null;
+  if (window.supabase) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
   const sheetId = new URLSearchParams(window.location.search).get('id') || '1';
   const lsKey = 'vineta_sheet_' + sheetId;
 
-  // Инициализация Supabase с передачей токена в headers
-  function initSupabase() {
-    const token = document.getElementById('authToken').value.trim() || DEFAULT_TOKEN;
-    if (window.supabase && SUPABASE_URL.indexOf('ВАШ') === -1) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        global: {
-          headers: { 'x-access-token': token }
-        }
-      });
-    }
-  }
-
-  // Сетка ранца (10 слотов)
   const packGrid = document.getElementById('pack_grid');
   for (let i = 1; i <= 10; i++) {
     packGrid.innerHTML += `<div class="inv-slot"><input type="text" id="bag_${i}" placeholder="${i}кг" onchange="calc()"></div>`;
@@ -472,7 +435,9 @@
 
   function getFormData() {
     const data = {};
-    document.querySelectorAll('input').forEach(inp => data[inp.id] = inp.value);
+    document.querySelectorAll('input').forEach(inp => {
+      data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
+    });
     return data;
   }
 
@@ -497,32 +462,25 @@
     localStorage.setItem(lsKey, JSON.stringify(payload));
 
     if (!supabaseClient) {
-      setSyncStatus('ТОЛЬКО ЛОКАЛЬНО', '#7b8390');
+      setSyncStatus('ТОЛЬКО КЭШ', '#7b8390');
       return;
     }
 
     try {
-      const token = document.getElementById('authToken').value.trim() || DEFAULT_TOKEN;
       const { error } = await supabaseClient
         .from('vineta_sheets')
-        .upsert({ 
-          id: sheetId, 
-          data: payload, 
-          access_token: token,
-          updated_at: new Date().toISOString() 
-        });
+        .upsert({ id: sheetId, data: payload, updated_at: new Date().toISOString() });
 
       if (error) throw error;
       setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
-      if (manual) alert('Синхронизация с базой успешна.');
+      if (manual) alert('Профиль сохранен в облачную базу.');
     } catch (err) {
-      console.error('Ошибка безопасности Supabase:', err);
-      setSyncStatus('ОТКАЗ ДОСТУПА', '#ff4d4d');
+      console.error('Ошибка сохранения:', err);
+      setSyncStatus('ОШИБКА СЕТИ', '#e53e3e');
     }
   }
 
   async function loadData() {
-    initSupabase();
     let loaded = false;
 
     if (supabaseClient) {
@@ -540,7 +498,7 @@
           loaded = true;
         }
       } catch (err) {
-        console.warn('Не удалось прочесть облако:', err);
+        console.warn('Облако пока недоступно, читаем кэш:', err);
       }
     }
 
@@ -548,10 +506,11 @@
       const local = localStorage.getItem(lsKey);
       if (local) {
         applyData(JSON.parse(local));
-        setSyncStatus('ИЗ КЭША', '#7b8390');
+        setSyncStatus('ДАННЫЕ ИЗ КЭША', '#7b8390');
+      } else {
+        setSyncStatus('НОВЫЙ ПРОФИЛЬ', '#7b8390');
       }
     }
-
     calc();
   }
 
