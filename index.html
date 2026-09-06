@@ -30,9 +30,9 @@
       margin: 0;
       padding: 12px;
       font-size: 13px;
+      overflow-x: hidden;
     }
 
-    /* ПОЛНОЕ УДАЛЕНИЕ СТРЕЛОЧЕК ЧИСЛОВЫХ ПОЛЕЙ */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none !important;
@@ -48,7 +48,7 @@
 
     /* Табы */
     .tabs-bar { display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); }
-    .tab-btn { background: #15171c; border: 1px solid #333; border-bottom: none; color: var(--text-muted); padding: 6px 16px; font-family: inherit; font-size: 12px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+    .tab-btn { background: #15171c; border: 1px solid #333; border-bottom: none; color: var(--text-muted); padding: 6px 16px; font-family: inherit; font-size: 12px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
     .tab-btn:hover { color: #fff; background: #20232a; }
     .tab-btn.active { background: var(--tab-active); border-color: var(--border-color); color: var(--border-color); border-bottom: 2px solid var(--tab-active); margin-bottom: -2px; }
 
@@ -57,66 +57,90 @@
     .header-brand { display: flex; align-items: center; gap: 10px; }
     .header h1 { margin: 0; font-size: 15px; color: var(--border-color); letter-spacing: 1.5px; }
     .sync-tag { font-size: 10px; color: #4ade80; border: 1px solid #4ade80; padding: 2px 5px; white-space: nowrap; }
-    .user-tag { font-size: 11px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; }
+    .user-tag { font-size: 11px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; text-transform: uppercase;}
 
-    /* Поля ввода и Кнопки */
-    select, input, button { font-family: inherit; font-size: 13px; }
+    /* Элементы управления */
+    select, input, button, textarea { font-family: inherit; font-size: 13px; }
     select { background: var(--input-bg); border: 1px solid var(--border-color); color: #fff; padding: 4px; outline: none; cursor: pointer; }
-    input[type="text"], input[type="number"], input[type="password"] { background: var(--input-bg); border: 1px solid #3a3f4b; color: var(--text-color); padding: 5px; text-align: center; }
-    input[type="number"] { width: 50px; }
-    input:focus { border-color: var(--border-color); outline: none; }
+    input[type="text"], input[type="number"], input[type="password"], textarea { background: var(--input-bg); border: 1px solid #3a3f4b; color: var(--text-color); padding: 5px; text-align: center; }
+    input[type="number"] { width: 45px; }
+    input:focus, textarea:focus { border-color: var(--border-color); outline: none; }
     button { background: var(--input-bg); border: 1px solid var(--border-color); color: var(--border-color); cursor: pointer; padding: 4px 8px; font-weight: bold; text-transform: uppercase; transition: 0.15s; }
     button:hover { background: var(--border-color); color: #000; }
     .btn-danger { border-color: var(--accent); color: var(--accent); }
     .btn-danger:hover { background: var(--accent); color: #fff; }
 
-    /* Каркас колонок */
+    /* Боковая панель профилей */
+    .side-panel {
+      position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
+      background: #111215; border-left: 2px solid var(--border-color);
+      z-index: 1000; transition: right 0.3s ease; padding: 15px;
+      box-shadow: -5px 0 15px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px;
+    }
+    .side-panel.open { right: 0; }
+    .side-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a3f4b; padding-bottom: 10px; }
+    .side-panel-header h2 { margin: 0; color: var(--border-color); font-size: 14px; text-transform: uppercase; }
+    .close-panel-btn { background: transparent; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; padding: 0; }
+    .close-panel-btn:hover { color: var(--accent); background: transparent;}
+    .char-card { background: var(--panel-bg); border: 1px solid #3a3f4b; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .char-card.active { border-color: var(--border-color); box-shadow: inset 0 0 10px rgba(201,42,42,0.1); }
+    .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .char-actions { display: flex; gap: 5px; }
+
+    /* Сетка и блоки */
     .row-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: start; }
     .col { display: flex; flex-direction: column; gap: 15px; }
-
-    /* Блоки */
     .box { background: var(--panel-bg); border: 1px solid var(--border-color); }
     .box-title { background: var(--border-color); color: #000; text-transform: uppercase; font-weight: bold; text-align: center; padding: 3px; font-size: 12px; letter-spacing: 1px; }
     .box-content { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
     .flex-row { display: flex; justify-content: space-between; align-items: center; }
     .accent-bold { color: var(--border-color); font-weight: bold; }
-    .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 4px; }
+    .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 4px; border: 1px dashed var(--accent); padding: 4px; }
 
-    /* Статы и Броня */
+    /* Статы */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .stat-item { border: 1px solid #3a3f4b; padding: 6px; text-align: center; position: relative; background: var(--input-bg); }
     .stat-item span { display: block; font-size: 10px; color: var(--border-color); margin-bottom: 4px; }
     .stat-item input { font-size: 16px; font-weight: bold; width: 100%; border: none; border-bottom: 1px solid #333; }
     .stat-mod { position: absolute; top: -7px; right: -7px; background: var(--border-color); color: #000; border-radius: 50%; width: 20px; height: 20px; line-height: 20px; font-size: 11px; font-weight: bold; }
+
+    /* Скорость */
+    .speed-calc { display: flex; align-items: center; gap: 4px; font-size: 12px; margin-top: 5px; justify-content: center; }
+    .speed-calc input { width: 35px; padding: 2px; font-size: 12px; }
+    .speed-col { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .speed-label { font-size: 9px; color: var(--text-muted); }
+
+    /* Броня и Раны */
     .hp-input { color: var(--accent); font-weight: bold; }
     .wound-track { display: flex; flex-direction: column; gap: 2px; border: 1px solid #3a3f4b; padding: 2px; }
     .wound-track div { padding: 4px; font-size: 11px; text-align: center; color: var(--text-muted); }
     .wound-active { background: var(--border-color); color: #000 !important; font-weight: bold; }
 
-    /* Инвентарь и Паника */
+    /* Паника */
     .panic-box { border-color: var(--accent); }
     .panic-title { background: var(--accent); }
     .stress-input { font-weight: bold; color: var(--accent); }
     .panic-btn { border-color: var(--accent); color: var(--accent); }
     .panic-log { font-size: 11px; min-height: 24px; border: 1px dashed #404652; padding: 4px; margin-top: 4px; }
+
+    /* Инвентарь */
     .sub-label { font-size: 10px; color: var(--border-color); }
     .pouch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    #dynamic_pack_grid { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+    .inv-item { background: #1f2229; border: 1px solid #3a3f4b; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; font-size: 13px; }
+    .item-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; flex: 1; text-align: left; margin-right: 10px; }
+    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 4px; font-size: 14px; }
+    .item-del:hover { color: #fff; background: transparent; }
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
 
-    /* Кастомный скроллбар для инвентаря */
-    #pack_grid { display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto; padding-right: 4px; }
-    #pack_grid::-webkit-scrollbar { width: 4px; }
-    #pack_grid::-webkit-scrollbar-track { background: #111215; }
-    #pack_grid::-webkit-scrollbar-thumb { background: #3a3f4b; }
-
     /* Таблица Админа */
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 8px; text-align: center; }
+    .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 8px; text-align: center; font-size: 12px; }
     .admin-table th { background: #1d2127; color: var(--border-color); }
     .admin-table tr:hover { background: #15181e; }
 
-    /* Модалка Авторизации */
+    /* Окно Авторизации */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 999; }
     .auth-card { background: var(--panel-bg); border: 2px solid var(--border-color); width: 350px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 0 20px rgba(201,42,42,0.3); }
     .password-wrap { position: relative; display: flex; align-items: center; width: 100%; }
@@ -127,17 +151,28 @@
 </head>
 <body>
 
+<!-- БОКОВАЯ ПАНЕЛЬ МЕНЕДЖМЕНТА ПРОФИЛЕЙ -->
+<div id="sidePanel" class="side-panel">
+  <div class="side-panel-header">
+    <h2>Профили Звена</h2>
+    <button class="close-panel-btn" onclick="toggleSidePanel()">✕</button>
+  </div>
+  <div id="sidePanelList" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1;"></div>
+  <div style="border-top: 1px dashed #3a3f4b; padding-top: 10px; display: flex; flex-direction: column; gap: 6px;">
+    <button onclick="createNewCharacter()" style="width: 100%;">+ НОВЫЙ БОЕЦ</button>
+  </div>
+</div>
+
+<!-- ОКНО АВТОРИЗАЦИИ -->
 <div id="authModal" class="modal-overlay" style="display: none;">
   <div class="auth-card">
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
     <div style="font-size: 11px; color: var(--text-muted); text-align: center;">Вход в терминал боевого звена</div>
     <input type="text" id="loginUser" placeholder="Позывной / Никнейм" autocomplete="off">
-    
     <div class="password-wrap">
       <input type="password" id="loginPass" placeholder="Пароль" autocomplete="off">
       <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility()" id="pwdToggleBtn">👁</button>
     </div>
-
     <div style="display: flex; gap: 8px;">
       <button onclick="handleLogin()" style="flex:1;">ВОЙТИ</button>
       <button onclick="handleRegister()" style="flex:1;">РЕГИСТРАЦИЯ</button>
@@ -147,8 +182,10 @@
 </div>
 
 <div class="container">
+  
   <nav class="tabs-bar">
     <button class="tab-btn active" id="tabSheetBtn" onclick="switchTab('sheet')">Лист персонажа</button>
+    <button class="tab-btn" id="tabInvBtn" onclick="switchTab('inv')">Инвентарь</button>
     <button class="tab-btn" id="tabAdminBtn" onclick="switchTab('admin')" style="display: none;">Штаб // Обзор звена</button>
   </nav>
 
@@ -157,10 +194,8 @@
       <h1>AEON // ТЕРМИНАЛ</h1>
       <span id="sync_status" class="sync-tag">[ ОЖИДАНИЕ ]</span>
     </div>
-    <div style="display: flex; gap: 6px; align-items: center;" id="charControls">
-      <select id="charSelect" onchange="switchCharacter(this.value)"></select>
-      <button onclick="createNewCharacter()">+ НОВЫЙ</button>
-      <button onclick="deleteCurrentCharacter()" class="btn-danger" title="Удалить профиль">✕</button>
+    <div style="display: flex; gap: 6px; align-items: center;">
+      <button onclick="toggleSidePanel()">[ ПРОФИЛИ ]</button>
     </div>
     <div style="display: flex; gap: 10px; align-items: center;">
       <span id="userBadge" class="user-tag">НЕ АВТОРИЗОВАН</span>
@@ -168,10 +203,12 @@
     </div>
   </header>
 
+  <!-- ВКЛАДКА 1: ЛИСТ ПЕРСОНАЖА -->
   <div id="viewSheet">
     <div class="header" style="margin-bottom: 12px; border-top: none;">
       <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" style="flex: 2;" onchange="onNameChange()" autocomplete="off">
       <input type="text" id="charModel" placeholder="МОДЕЛЬ (STCR, STAR...)" style="flex: 1;" onchange="autoSave()" autocomplete="off">
+      <input type="text" id="sheetOwner" placeholder="Владелец (ник/почта)" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off" title="Кому принадлежит этот лист">
       <button onclick="saveData(true)">[ СОХРАНИТЬ В БАЗУ ]</button>
     </div>
 
@@ -199,12 +236,57 @@
         </div>
 
         <div class="box">
+          <div class="box-title">Скорость Перемещения</div>
+          <div class="box-content" style="padding-top: 4px;">
+            <div id="overencumber_alert" class="alert-box" style="display:none; font-weight:bold;">[!] ПЕРЕГРУЗ: СКОРОСТЬ УПАЛА ДО 2М</div>
+            <div class="speed-calc">
+              <span style="font-weight:bold; color:var(--border-color); font-size:14px;">=</span>
+              <div class="speed-col">
+                <input type="number" id="spd_total" value="10" style="color:var(--accent); font-weight:bold; border-color:var(--accent);" readonly>
+                <span class="speed-label">Итого</span>
+              </div>
+              <span>=</span>
+              <div class="speed-col">
+                <input type="number" id="spd_base" value="10" onchange="calc()">
+                <span class="speed-label">База</span>
+              </div>
+              <span>+</span>
+              <div class="speed-col">
+                <input type="number" id="spd_vest" value="0" readonly title="Штраф от разгрузки">
+                <span class="speed-label">РПС</span>
+              </div>
+              <span>+</span>
+              <div class="speed-col">
+                <input type="number" id="spd_bag" value="0" readonly title="Штраф от рюкзака">
+                <span class="speed-label">Рюкзак</span>
+              </div>
+              <span>+</span>
+              <div class="speed-col">
+                <input type="number" id="spd_misc" value="0" onchange="calc()">
+                <span class="speed-label">Разное</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-title">Счетчик / Ресурс</div>
+          <div class="box-content" style="gap: 4px;">
+            <div class="flex-row">
+              <input type="text" id="counter_name" placeholder="Название (напр. Удача)" style="flex: 1; font-weight:bold; text-align:left; border:none; border-bottom:1px solid #333;" onchange="autoSave()">
+              <input type="text" id="counter_val" placeholder="0" style="width: 50px; font-weight:bold; color:var(--accent);" onchange="autoSave()">
+            </div>
+            <textarea id="counter_desc" placeholder="Описание или условия использования..." rows="2" style="resize:none; font-size:11px;" onchange="autoSave()"></textarea>
+          </div>
+        </div>
+
+        <div class="box">
           <div class="box-title">Системное напряжение</div>
           <div class="box-content">
             <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold">10</span></div>
             <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" onchange="calc()"></div>
             <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" onchange="calc()"></div>
-            <div id="strain_alert" class="alert-box">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
+            <div id="strain_alert" class="alert-box" style="border:none;">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
           </div>
         </div>
       </section>
@@ -248,52 +330,84 @@
 
       <section class="col">
         <div class="box panic-box">
-          <div class="box-title panic-title">Психометрия</div>
+          <div class="box-title panic-title">Психометрия (Alien RPG)</div>
           <div class="box-content">
             <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" class="stress-input" onchange="autoSave()"></div>
             <button class="panic-btn" onclick="rollPanic()">БРОСОК ПАНИКИ (1d6 + СТРЕСС)</button>
             <div id="panic_log" class="panic-log"></div>
           </div>
         </div>
+      </section>
+    </main>
+  </div>
 
+  <!-- ВКЛАДКА 2: ИНВЕНТАРЬ -->
+  <div id="viewInv" style="display: none;">
+    <div class="row-3-col">
+      <section class="col">
         <div class="box">
-          <div class="box-title">Фиксаторы & Разгрузка (На броне)</div>
+          <div class="box-title">Фиксаторы (На броне)</div>
           <div class="box-content">
             <span class="sub-label">3 КРУПНЫХ ПРЕДМЕТА:</span>
             <input type="text" id="mag_1" placeholder="Оружие 1" onchange="autoSave()">
             <input type="text" id="mag_2" placeholder="Оружие 2" onchange="autoSave()">
             <input type="text" id="mag_3" placeholder="Спецсредство" onchange="autoSave()">
-            <span class="sub-label" style="margin-top:5px;">6 МАЛЫХ ПРЕДМЕТОВ (Вес: 0 кг):</span>
-            <div class="pouch-grid">
-              <input type="text" id="pouch_1" placeholder="Магазин" onchange="autoSave()"> 
-              <input type="text" id="pouch_2" placeholder="Магазин" onchange="autoSave()">
-              <input type="text" id="pouch_3" placeholder="Граната" onchange="autoSave()"> 
-              <input type="text" id="pouch_4" placeholder="Наниты" onchange="autoSave()">
-              <input type="text" id="pouch_5" placeholder="Стимулятор" onchange="autoSave()"> 
-              <input type="text" id="pouch_6" placeholder="Lazarus" onchange="autoSave()">
-            </div>
           </div>
         </div>
 
         <div class="box">
-          <div class="box-title">Вместимость: Рюкзак</div>
+          <div class="box-title">Разгрузочная система (РПС)</div>
           <div class="box-content">
-            <select id="bag_type" onchange="calc()" style="width: 100%; border-color: #3a3f4b; margin-bottom: 4px;">
-              <option value="sling">Рюкзак однолямка (5 слотов | 0м | Без крупных)</option>
-              <option value="bag">Сумка (10 слотов | -1м | Без крупных)</option>
-              <option value="assault">Штурмовой вещмешок (16 слотов | -2м | Любые)</option>
+            <select id="vest_type" onchange="updateVest(); calc(); autoSave();" style="margin-bottom: 5px;">
+              <option value="basic">Стандартная РПС (4 слота | Штраф: 0м)</option>
+              <option value="heavy">Штурмовой бронежилет (8 слотов | Штраф: -1м)</option>
             </select>
-            <div class="flex-row" style="font-size:11px;">
-              <span>Занято: <span id="pack_status">0 / 5</span></span>
-              <span style="color:var(--accent);">Штраф бега: <span id="pack_penalty">0 м</span></span>
+            <span class="sub-label">МЕЛКИЕ ПРЕДМЕТЫ (Вес: 0):</span>
+            <div class="pouch-grid" id="vest_grid">
+              <input type="text" id="pouch_1" placeholder="Подсумок 1" onchange="autoSave()"> 
+              <input type="text" id="pouch_2" placeholder="Подсумок 2" onchange="autoSave()">
+              <input type="text" id="pouch_3" placeholder="Подсумок 3" onchange="autoSave()"> 
+              <input type="text" id="pouch_4" placeholder="Подсумок 4" onchange="autoSave()">
+              <input type="text" id="pouch_5" placeholder="Подсумок 5" onchange="autoSave()"> 
+              <input type="text" id="pouch_6" placeholder="Подсумок 6" onchange="autoSave()">
+              <input type="text" id="pouch_7" placeholder="Подсумок 7" onchange="autoSave()"> 
+              <input type="text" id="pouch_8" placeholder="Подсумок 8" onchange="autoSave()">
             </div>
-            <div id="pack_grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- УМНЫЙ РЮКЗАК -->
+      <section class="col" style="grid-column: span 2;">
+        <div class="box">
+          <div class="box-title">Система Рюкзака</div>
+          <div class="box-content">
+            <div class="flex-row" style="gap: 10px; margin-bottom: 8px;">
+              <select id="bag_type" onchange="renderInventory(); calc(); autoSave();" style="flex: 1;">
+                <option value="sling">Рюкзак однолямка (Лимит: 5 | Штраф: 0м)</option>
+                <option value="bag">Сумка (Лимит: 10 | Штраф: -1м)</option>
+                <option value="assault">Штурмовой вещмешок (Лимит: 16 | Штраф: -2м)</option>
+              </select>
+              <div style="font-size:11px;">
+                Занято слотов: <span id="pack_status" class="accent-bold">0 / 5</span>
+              </div>
+            </div>
+
+            <div class="flex-row" style="gap: 6px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 10px; margin-bottom: 5px;">
+              <input type="text" id="new_item_name" placeholder="Название предмета..." style="flex: 1;" autocomplete="off">
+              <input type="number" id="new_item_weight" placeholder="Слоты" style="width: 70px;" value="1" step="0.5" title="Вес/Размер предмета">
+              <button onclick="addBagItem()">[ ДОБАВИТЬ ]</button>
+            </div>
+
+            <div id="dynamic_pack_grid"></div>
+            <input type="hidden" id="bag_items_json" value="[]">
           </div>
         </div>
       </section>
     </main>
   </div>
 
+  <!-- ВКЛАДКА 3: АДМИН-ПАНЕЛЬ ШТАБА -->
   <div id="viewAdmin" style="display: none;">
     <div class="box">
       <div class="box-title">МОНИТОРИНГ ЗВЕНА // ПАНЕЛЬ МАСТЕРА</div>
@@ -333,35 +447,19 @@
 
   let currentUser = null;
   let currentSheetId = null;
+  let currentSheetOwner = null; 
   let activeSubscription = null;
-
-  // Динамическая генерация инвентаря
-  const packGrid = document.getElementById('pack_grid');
-  if (packGrid && packGrid.children.length === 0) {
-    for (let i = 1; i <= 16; i++) {
-      packGrid.innerHTML += `
-        <div class="flex-row" style="gap: 4px;">
-          <input type="text" id="bag_name_${i}" placeholder="Предмет ${i}" style="flex: 1;" onchange="calc()">
-          <select id="bag_size_${i}" onchange="calc()" style="width: 55px; padding: 2px; height: 26px;">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-      `;
-    }
-  }
+  let bagItemsArray = []; 
 
   function togglePasswordVisibility() {
     const pwdInput = document.getElementById('loginPass');
     const toggleBtn = document.getElementById('pwdToggleBtn');
-    if (pwdInput.type === 'password') {
-      pwdInput.type = 'text';
-      toggleBtn.innerText = '🚫';
-    } else {
-      pwdInput.type = 'password';
-      toggleBtn.innerText = '👁';
-    }
+    if (pwdInput.type === 'password') { pwdInput.type = 'text'; toggleBtn.innerText = '🚫'; } 
+    else { pwdInput.type = 'password'; toggleBtn.innerText = '👁'; }
+  }
+
+  function toggleSidePanel() {
+    document.getElementById('sidePanel').classList.toggle('open');
   }
 
   async function handleLogin() {
@@ -396,15 +494,17 @@
     document.getElementById('authModal').style.display = 'none';
     
     const badge = document.getElementById('userBadge');
-    badge.innerText = `${user.username.toUpperCase()} [${user.role.toUpperCase()}]`;
+    badge.innerText = `${user.username}`;
 
     if (user.role === 'admin') {
       badge.style.borderColor = 'var(--border-color)';
       badge.style.color = 'var(--border-color)';
       badge.style.background = '#2a0000';
       document.getElementById('tabAdminBtn').style.display = 'block';
+      document.getElementById('sheetOwner').style.display = 'block';
     } else {
       document.getElementById('tabAdminBtn').style.display = 'none';
+      document.getElementById('sheetOwner').style.display = 'none';
     }
     initApp();
   }
@@ -432,16 +532,25 @@
 
   function switchTab(tab) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('viewSheet').style.display = 'none';
+    document.getElementById('viewInv').style.display = 'none';
+    document.getElementById('viewAdmin').style.display = 'none';
+
     if (tab === 'sheet') {
       document.getElementById('tabSheetBtn').classList.add('active');
       document.getElementById('viewSheet').style.display = 'block';
-      document.getElementById('viewAdmin').style.display = 'none';
+    } else if (tab === 'inv') {
+      document.getElementById('tabInvBtn').classList.add('active');
+      document.getElementById('viewInv').style.display = 'block';
     } else {
       document.getElementById('tabAdminBtn').classList.add('active');
-      document.getElementById('viewSheet').style.display = 'none';
       document.getElementById('viewAdmin').style.display = 'block';
       loadAdminRoster();
     }
+  }
+
+  function formatIDToName(id) {
+    return id.replace(/^unit_|^char_/, 'ID: ');
   }
 
   async function refreshCharacterList() {
@@ -451,82 +560,135 @@
     const { data, error } = await query;
     let list = [];
     if (!error && data && data.length > 0) {
-      list = data.map(r => ({ id: r.id, name: (r.data && r.data.charName && r.data.charName.trim() !== '') ? r.data.charName : r.id }));
+      list = data.map(r => ({ 
+        id: r.id, 
+        name: (r.data && r.data.charName && r.data.charName.trim() !== '') ? r.data.charName : formatIDToName(r.id),
+        owner: r.owner
+      }));
     }
 
     if (list.length === 0) {
-      const defaultId = 'unit_' + currentUser.username.toLowerCase() + '_1';
-      list.push({ id: defaultId, name: 'Новый Боец' });
+      const defaultId = Date.now().toString(36);
+      list.push({ id: defaultId, name: 'Новый Боец', owner: currentUser.username });
       currentSheetId = defaultId;
+      currentSheetOwner = currentUser.username;
     } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
       currentSheetId = list[0].id;
+      currentSheetOwner = list[0].owner;
+    } else {
+      const activeObj = list.find(x => x.id === currentSheetId);
+      if (activeObj) currentSheetOwner = activeObj.owner;
     }
 
-    const select = document.getElementById('charSelect');
-    select.innerHTML = '';
+    const panelList = document.getElementById('sidePanelList');
+    panelList.innerHTML = '';
     list.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.id;
-      opt.innerText = c.name;
-      if (c.id === currentSheetId) opt.selected = true;
-      select.appendChild(opt);
+      const isActive = c.id === currentSheetId ? 'active' : '';
+      panelList.innerHTML += `
+        <div class="char-card ${isActive}">
+          <div class="char-name" title="${c.name}">${c.name}</div>
+          <div class="char-actions">
+            <button style="flex:1;" onclick="switchCharacter('${c.id}')">${isActive ? 'ВЫБРАН' : 'ВЫБРАТЬ'}</button>
+            <button class="btn-danger" title="Удалить" onclick="deleteCharacterById('${c.id}', '${c.name.replace(/'/g, "\\'")}')">✕</button>
+          </div>
+        </div>
+      `;
     });
+
     localStorage.setItem('vineta_active_id', currentSheetId);
+    if (currentUser.role === 'admin') {
+      document.getElementById('sheetOwner').value = currentSheetOwner || '';
+    }
   }
 
   async function switchCharacter(id) {
     currentSheetId = id;
     localStorage.setItem('vineta_active_id', currentSheetId);
+    toggleSidePanel();
     await loadData();
     setupRealtimeSubscription();
+    refreshCharacterList(); 
   }
 
   async function createNewCharacter() {
     const name = prompt('Позывной нового бойца / НПС:', 'Боец');
     if (!name) return;
-    currentSheetId = 'unit_' + Date.now().toString(36);
+    currentSheetId = Date.now().toString(36);
+    currentSheetOwner = currentUser.username;
     localStorage.setItem('vineta_active_id', currentSheetId);
+    
     resetForm();
     document.getElementById('charName').value = name;
+    if (currentUser.role === 'admin') document.getElementById('sheetOwner').value = currentSheetOwner;
+    
     await saveData(false);
     await refreshCharacterList();
     setupRealtimeSubscription();
   }
 
-  async function deleteCurrentCharacter() {
-    const sheetName = document.getElementById('charName').value || currentSheetId;
-    if (!confirm(`Точно удалить профиль [ ${sheetName} ]? Это действие необратимо.`)) return;
-
+  async function deleteCharacterById(id, name) {
+    if (!confirm(`Точно удалить профиль [ ${name} ]? Это действие необратимо.`)) return;
     const verify = prompt(`Защита от случайного удаления.\nВведите ваш никнейм (${currentUser.username}), чтобы подтвердить:`);
     if (verify !== currentUser.username) { alert('Удаление отменено: никнейм введен неверно.'); return; }
 
-    await supabaseClient.from('vineta_sheets').delete().eq('id', currentSheetId);
-    localStorage.removeItem('vineta_sheet_' + currentSheetId);
-    currentSheetId = null;
+    await supabaseClient.from('vineta_sheets').delete().eq('id', id);
+    localStorage.removeItem('vineta_sheet_' + id);
+    
+    if (currentSheetId === id) currentSheetId = null;
+    
     await refreshCharacterList();
     await loadData();
     setupRealtimeSubscription();
   }
 
   function onNameChange() {
-    const select = document.getElementById('charSelect');
-    const opt = select.querySelector(`option[value="${currentSheetId}"]`);
-    if (opt) opt.innerText = document.getElementById('charName').value || currentSheetId;
     autoSave();
+    setTimeout(refreshCharacterList, 1500); 
+  }
+
+  function changeOwner() {
+    const newOwner = document.getElementById('sheetOwner').value.trim();
+    if (newOwner) {
+      currentSheetOwner = newOwner;
+      autoSave();
+    }
+  }
+
+  function updateVest() {
+    const vestType = document.getElementById('vest_type').value;
+    const limit = vestType === 'basic' ? 4 : 8;
+    for (let i = 1; i <= 8; i++) {
+      const el = document.getElementById('pouch_' + i);
+      if (i > limit) {
+        el.style.display = 'none';
+        el.value = '';
+      } else {
+        el.style.display = 'block';
+      }
+    }
   }
 
   function resetForm() {
-    document.querySelectorAll('#viewSheet input, #viewSheet select').forEach(inp => {
+    bagItemsArray = [];
+    document.getElementById('bag_items_json').value = '[]';
+    
+    document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
+      if (inp.id === 'sheetOwner') return; 
       if (inp.tagName.toLowerCase() === 'select') {
-        if (inp.id.startsWith('bag_size_')) inp.value = '1';
-        else if (inp.id === 'bag_type') inp.value = 'sling';
+        if (inp.id === 'bag_type') inp.value = 'sling';
+        if (inp.id === 'vest_type') inp.value = 'basic';
       } else if (inp.type === 'number') {
-        inp.value = inp.id.includes('hp') ? 20 : (inp.id.includes('sp_') ? 10 : (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' ? 0 : 10));
+        if (inp.id.includes('hp')) inp.value = 20;
+        else if (inp.id.includes('sp_') || inp.id === 'spd_base') inp.value = 10;
+        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id === 'spd_misc' || inp.id === 'new_item_weight') inp.value = 0;
+        else inp.value = 10;
       } else {
         inp.value = '';
       }
     });
+    updateVest();
     calc();
+    renderInventory();
   }
 
   async function loadAdminRoster() {
@@ -539,10 +701,11 @@
     tbody.innerHTML = '';
     data.forEach(row => {
       const d = row.data || {};
+      const charName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(row.id);
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="color:#38bdf8;">${row.owner || '—'}</td>
-        <td style="font-weight:bold; color:var(--border-color);">${d.charName || row.id}</td>
+        <td style="font-weight:bold; color:var(--border-color);">${charName}</td>
         <td>${d.charModel || '—'}</td>
         <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': '#fff'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
         <td style="color:${(d.stress >= 6)? 'var(--accent)': '#fff'}">${d.stress || 0} / 10</td>
@@ -557,7 +720,6 @@
     currentSheetId = id;
     localStorage.setItem('vineta_active_id', id);
     await refreshCharacterList();
-    document.getElementById('charSelect').value = id;
     await loadData();
     switchTab('sheet');
     setupRealtimeSubscription();
@@ -568,7 +730,6 @@
   }
 
   function calc() {
-    // Статы
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
     statIds.forEach(id => {
@@ -581,13 +742,11 @@
     document.getElementById('sv_eva').value = 15 - Math.max(getMod(vals.dex), getMod(vals.int));
     document.getElementById('sv_men').value = 15 - Math.max(getMod(vals.wis), getMod(vals.cha));
 
-    // Напряжение
     document.getElementById('strain_limit').innerText = vals.con;
     const perm = parseInt(document.getElementById('st_perm').value) || 0;
     const temp = parseInt(document.getElementById('st_temp').value) || 0;
     document.getElementById('strain_alert').style.display = (perm + temp >= vals.con) ? 'block' : 'none';
 
-    // Здоровье
     const maxHp = parseInt(document.getElementById('hp_max').value) || 20;
     const curHp = parseInt(document.getElementById('hp_cur').value) || 0;
     const ratio = curHp / maxHp;
@@ -599,40 +758,33 @@
     else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
     else document.getElementById('w_light').classList.add('wound-active');
 
-    // Логика нового Инвентаря
-    const bagType = document.getElementById('bag_type').value;
-    let maxSlots = 5, penalty = 0, forbidLarge = true;
-    if (bagType === 'bag') { maxSlots = 10; penalty = -1; }
-    else if (bagType === 'assault') { maxSlots = 16; penalty = -2; forbidLarge = false; }
+    // Расчет скорости
+    const spdBase = parseInt(document.getElementById('spd_base').value) || 10;
+    const spdMisc = parseInt(document.getElementById('spd_misc').value) || 0;
     
-    document.getElementById('pack_penalty').innerText = penalty + ' м';
+    const vestType = document.getElementById('vest_type').value;
+    const vestPenalty = (vestType === 'heavy') ? -1 : 0;
 
-    let used = 0;
-    for (let i = 1; i <= 16; i++) {
-      const nameInp = document.getElementById('bag_name_' + i);
-      const sizeInp = document.getElementById('bag_size_' + i);
-      
-      nameInp.style.color = 'var(--text-color)';
-      nameInp.style.borderColor = '#3a3f4b';
-      
-      if (nameInp && nameInp.value.trim() !== '') {
-        const sz = parseInt(sizeInp.value) || 1;
-        
-        if (forbidLarge && sz === 3) {
-          nameInp.style.color = 'var(--accent)';
-          nameInp.style.borderColor = 'var(--accent)';
-          nameInp.title = 'Рюкзак не вмещает крупные предметы!';
-        } else {
-          nameInp.title = '';
-        }
-        used += sz;
-      }
+    const bagType = document.getElementById('bag_type').value;
+    let bagPenalty = 0, maxSlots = 5;
+    if (bagType === 'bag') { bagPenalty = -1; maxSlots = 10; }
+    else if (bagType === 'assault') { bagPenalty = -2; maxSlots = 16; }
+
+    document.getElementById('spd_vest').value = vestPenalty;
+    document.getElementById('spd_bag').value = bagPenalty;
+
+    let currentWeight = bagItemsArray.reduce((sum, item) => sum + item.size, 0);
+    let finalSpeed = spdBase + vestPenalty + bagPenalty + spdMisc;
+    
+    const overAlert = document.getElementById('overencumber_alert');
+    if (currentWeight > maxSlots) {
+      finalSpeed = 2; // Перегруз
+      overAlert.style.display = 'block';
+    } else {
+      overAlert.style.display = 'none';
     }
 
-    const packStatus = document.getElementById('pack_status');
-    packStatus.innerText = `${used} / ${maxSlots}`;
-    packStatus.className = used > maxSlots ? 'status-crit' : (used > maxSlots - 2 ? 'status-warn' : '');
-
+    document.getElementById('spd_total').value = finalSpeed;
     autoSave();
   }
 
@@ -662,9 +814,62 @@
     autoSave();
   }
 
+  function addBagItem() {
+    const nameEl = document.getElementById('new_item_name');
+    const name = nameEl.value.trim();
+    const size = parseFloat(document.getElementById('new_item_weight').value) || 0;
+
+    if (!name) return;
+
+    bagItemsArray.push({ id: Date.now(), name, size });
+    nameEl.value = '';
+    renderInventory();
+    calc(); 
+    autoSave();
+  }
+
+  function removeBagItem(id) {
+    bagItemsArray = bagItemsArray.filter(i => i.id !== id);
+    renderInventory();
+    calc();
+    autoSave();
+  }
+
+  function renderInventory() {
+    const bagType = document.getElementById('bag_type').value;
+    let maxSlots = 5;
+    if (bagType === 'bag') maxSlots = 10;
+    else if (bagType === 'assault') maxSlots = 16;
+
+    const grid = document.getElementById('dynamic_pack_grid');
+    grid.innerHTML = '';
+
+    let used = 0;
+    bagItemsArray.forEach(item => {
+      used += item.size;
+      grid.innerHTML += `
+        <div class="inv-item">
+          <span class="item-name" title="${item.name}">${item.name}</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:11px; color:var(--text-muted);">Вес/Слоты: ${item.size}</span>
+            <button class="item-del" onclick="removeBagItem(${item.id})">✕</button>
+          </div>
+        </div>
+      `;
+    });
+
+    const packStatus = document.getElementById('pack_status');
+    const displayUsed = Math.round(used * 10) / 10;
+    packStatus.innerText = `${displayUsed} / ${maxSlots}`;
+    packStatus.className = used > maxSlots ? 'status-crit' : (used === maxSlots ? 'status-warn' : '');
+
+    document.getElementById('bag_items_json').value = JSON.stringify(bagItemsArray);
+  }
+
   function getFormData() {
     const data = {};
-    document.querySelectorAll('#viewSheet input, #viewSheet select').forEach(inp => {
+    document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
+      if (inp.id === 'new_item_name' || inp.id === 'new_item_weight' || inp.id === 'sheetOwner') return; 
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
     return data;
@@ -692,7 +897,10 @@
 
     try {
       const { error } = await supabaseClient.from('vineta_sheets').upsert({ 
-        id: currentSheetId, owner: currentUser.username, data: payload, updated_at: new Date().toISOString() 
+        id: currentSheetId, 
+        owner: currentSheetOwner || currentUser.username, 
+        data: payload, 
+        updated_at: new Date().toISOString() 
       }, { onConflict: 'id' });
 
       if (error) throw error;
@@ -708,12 +916,17 @@
     setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
 
     try {
-      const { data, error } = await supabaseClient.from('vineta_sheets').select('data').eq('id', currentSheetId).maybeSingle();
-      if (!error && data && data.data) {
-        isRemoteUpdating = true;
-        applyData(data.data);
-        isRemoteUpdating = false;
-        setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
+      const { data, error } = await supabaseClient.from('vineta_sheets').select('data, owner').eq('id', currentSheetId).maybeSingle();
+      if (!error && data) {
+        currentSheetOwner = data.owner;
+        if (currentUser.role === 'admin') document.getElementById('sheetOwner').value = currentSheetOwner || '';
+
+        if (data.data) {
+          isRemoteUpdating = true;
+          applyData(data.data);
+          isRemoteUpdating = false;
+          setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
+        }
       } else {
         const local = localStorage.getItem('vineta_sheet_' + currentSheetId);
         if (local) {
@@ -726,14 +939,21 @@
     } catch (err) {
       setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
     }
+    updateVest();
+    renderInventory();
     calc();
   }
 
   function applyData(data) {
     for (let key in data) {
       const el = document.getElementById(key);
-      if (el) el.value = data[key];
+      if (el && key !== 'new_item_name' && key !== 'new_item_weight' && key !== 'sheetOwner') {
+        el.value = data[key];
+      }
     }
+    if (data.bag_items_json) {
+      try { bagItemsArray = JSON.parse(data.bag_items_json); } catch(e) { bagItemsArray = []; }
+    } else { bagItemsArray = []; }
   }
 
   function setupRealtimeSubscription() {
@@ -746,9 +966,11 @@
           if (payload.new && payload.new.data) {
             isRemoteUpdating = true;
             applyData(payload.new.data);
+            updateVest();
+            renderInventory();
             calc();
             isRemoteUpdating = false;
-            setSyncStatus('ОБНОВЛЕНО ШТАБОМ', '#38bdf8');
+            setSyncStatus('ОБНОВЛЕНО СЕТЬЮ', '#38bdf8');
           }
         }
       ).subscribe();
