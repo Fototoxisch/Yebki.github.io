@@ -5,21 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AEON TERMINAL // VINETA</title>
   
-  <!-- Иконка вкладки браузера (Favicon) -->
   <link rel="icon" type="image/jpeg" href="logo1.jpg?v=2">
   <link rel="shortcut icon" type="image/jpeg" href="logo1.jpg?v=2">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --bg-color: #161719;
-      --panel-bg: #1c1e22;
+      --bg-color: #111215;
+      --panel-bg: #181a1f;
       --border-color: #c92a2a;
       --text-color: #e1e4ea;
       --text-muted: #7b8390;
-      --accent: #e53e3e;
-      --input-bg: #111215;
+      --accent: #ff4d4d;
+      --input-bg: #0d0e11;
+      --tab-active: #2a1114;
     }
 
     * { box-sizing: border-box; }
@@ -29,16 +28,60 @@
       color: var(--text-color);
       font-family: 'Courier New', Courier, monospace;
       margin: 0;
-      padding: 15px;
+      padding: 12px;
       font-size: 13px;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1250px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 10px;
+    }
+
+    /* ПОЛНОЕ УДАЛЕНИЕ СТРЕЛОЧЕК ЧИСЛОВЫХ ПОЛЕЙ */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+      display: none !important;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield !important;
+      appearance: textfield !important;
+    }
+
+    /* Roll20-Style Tabs */
+    .tabs-bar {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0px;
+    }
+
+    .tab-btn {
+      background: #15171c;
+      border: 1px solid #333;
+      border-bottom: none;
+      color: var(--text-muted);
+      padding: 6px 16px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .tab-btn:hover { color: #fff; background: #20232a; }
+
+    .tab-btn.active {
+      background: var(--tab-active);
+      border-color: var(--border-color);
+      color: var(--border-color);
+      border-bottom: 2px solid var(--tab-active);
+      margin-bottom: -2px;
     }
 
     /* Header */
@@ -50,17 +93,18 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .header-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .header h1 {
       margin: 0;
-      font-size: 16px;
+      font-size: 15px;
       color: var(--border-color);
       letter-spacing: 1.5px;
     }
@@ -73,16 +117,53 @@
       white-space: nowrap;
     }
 
-    .header input {
-      background: transparent;
-      border: none;
-      border-bottom: 1px dashed var(--border-color);
-      color: #fff;
-      font-family: inherit;
-      font-size: 14px;
-      padding: 4px;
+    .user-tag {
+      font-size: 11px;
+      color: #38bdf8;
+      border: 1px solid #0284c7;
+      padding: 2px 6px;
+      background: #082f49;
     }
-    .header input:focus { outline: none; border-bottom-style: solid; }
+
+    /* Controls */
+    select, input, button {
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    select {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 4px 8px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="text"], input[type="number"], input[type="password"] {
+      background: var(--input-bg);
+      border: 1px solid #3a3f4b;
+      color: var(--text-color);
+      padding: 5px;
+      text-align: center;
+    }
+
+    input[type="number"] { width: 50px; }
+    input:focus { border-color: var(--border-color); outline: none; }
+
+    button {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: var(--border-color);
+      cursor: pointer;
+      padding: 4px 8px;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: 0.15s;
+    }
+    button:hover { background: var(--border-color); color: #000; }
+    .btn-danger { border-color: var(--accent); color: var(--accent); }
+    .btn-danger:hover { background: var(--accent); color: #fff; }
 
     /* Layout */
     .row-3-col {
@@ -106,7 +187,7 @@
       text-transform: uppercase;
       font-weight: bold;
       text-align: center;
-      padding: 4px;
+      padding: 3px;
       font-size: 12px;
       letter-spacing: 1px;
     }
@@ -117,33 +198,6 @@
       flex-direction: column;
       gap: 8px;
     }
-
-    /* Form controls */
-    input[type="text"], input[type="number"] {
-      background: var(--input-bg);
-      border: 1px solid #3a3f4b;
-      color: var(--text-color);
-      padding: 5px;
-      font-family: inherit;
-      font-size: 13px;
-      text-align: center;
-    }
-
-    input[type="number"] { width: 60px; padding-right: 2px; }
-    input:focus { border-color: var(--border-color); outline: none; }
-
-    button {
-      background: var(--input-bg);
-      border: 1px solid var(--border-color);
-      color: var(--border-color);
-      cursor: pointer;
-      padding: 4px 8px;
-      font-family: inherit;
-      font-weight: bold;
-      text-transform: uppercase;
-      transition: 0.15s;
-    }
-    button:hover { background: var(--border-color); color: #000; }
 
     .flex-row { display: flex; justify-content: space-between; align-items: center; }
     .accent-bold { color: var(--border-color); font-weight: bold; }
@@ -201,136 +255,243 @@
     .inv-slot input { width: 100%; font-size: 10px; border: none; background: transparent; padding: 2px; }
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
+
+    /* Admin View */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .admin-table th, .admin-table td {
+      border: 1px solid #3a3f4b;
+      padding: 8px;
+      text-align: center;
+    }
+    .admin-table th {
+      background: #1d2127;
+      color: var(--border-color);
+    }
+    .admin-table tr:hover { background: #15181e; }
+
+    /* Auth Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .auth-card {
+      background: var(--panel-bg);
+      border: 2px solid var(--border-color);
+      width: 340px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 0 20px rgba(201,42,42,0.3);
+    }
   </style>
 </head>
 <body>
 
+<!-- ОКНО ВХОДА -->
+<div id="authModal" class="modal-overlay" style="display: none;">
+  <div class="auth-card">
+    <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
+    <div style="font-size: 11px; color: var(--text-muted); text-align: center;">Вход в терминал боевого звена</div>
+    <input type="text" id="loginUser" placeholder="Позывной / Никнейм" autocomplete="off">
+    <input type="password" id="loginPass" placeholder="Пароль" autocomplete="off">
+    <div style="display: flex; gap: 8px;">
+      <button onclick="handleLogin()" style="flex:1;">ВОЙТИ</button>
+      <button onclick="handleRegister()" style="flex:1;">РЕГИСТРАЦИЯ</button>
+    </div>
+    <div id="authError" style="color: var(--accent); font-size: 11px; text-align: center; min-height: 14px;"></div>
+  </div>
+</div>
+
 <div class="container">
+  
+  <!-- ТАБ-БАР В СТИЛЕ ROLL20 -->
+  <nav class="tabs-bar">
+    <button class="tab-btn active" id="tabSheetBtn" onclick="switchTab('sheet')">Лист персонажа</button>
+    <button class="tab-btn" id="tabAdminBtn" onclick="switchTab('admin')" style="display: none;">Штаб // Обзор звена</button>
+  </nav>
+
   <!-- HEADER -->
   <header class="header">
     <div class="header-brand">
-      <h1>AEON // ПРОФИЛЬ</h1>
-      <span id="sync_status" class="sync-tag">[ ОЖИДАНИЕ СЕТИ ]</span>
+      <h1>AEON // ТЕРМИНАЛ</h1>
+      <span id="sync_status" class="sync-tag">[ ОЖИДАНИЕ ]</span>
+    </div>
+
+    <!-- Менеджер листов игрока -->
+    <div style="display: flex; gap: 6px; align-items: center;" id="charControls">
+      <select id="charSelect" onchange="switchCharacter(this.value)"></select>
+      <button onclick="createNewCharacter()">+ НОВЫЙ</button>
+      <button onclick="deleteCurrentCharacter()" class="btn-danger" title="Удалить профиль">✕</button>
     </div>
     
-    <input type="text" id="charName" placeholder="ПОЗЫВНОЙ" onchange="autoSave()">
-    <input type="text" id="charModel" placeholder="МОДЕЛЬ" style="width: 130px;" onchange="autoSave()">
-    <button onclick="saveData(true)">[ СОХРАНИТЬ В БАЗУ ]</button>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <span id="userBadge" class="user-tag">НЕ АВТОРИЗОВАН</span>
+      <button onclick="logout()" style="font-size: 11px;">ВЫХОД</button>
+    </div>
   </header>
 
-  <main class="row-3-col">
-    <!-- LEFT: ХАРАКТЕРИСТИКИ -->
-    <section class="col">
-      <div class="box">
-        <div class="box-title">Атрибуты</div>
-        <div class="box-content stats-grid">
-          <div class="stat-item"><span>СИЛА</span><input type="number" id="str" value="10" onchange="calc()"><div class="stat-mod" id="str_m">+0</div></div>
-          <div class="stat-item"><span>ЛОВКОСТЬ</span><input type="number" id="dex" value="10" onchange="calc()"><div class="stat-mod" id="dex_m">+0</div></div>
-          <div class="stat-item"><span>ТЕЛО</span><input type="number" id="con" value="10" onchange="calc()"><div class="stat-mod" id="con_m">+0</div></div>
-          <div class="stat-item"><span>ИНТЕЛЛЕКТ</span><input type="number" id="int" value="10" onchange="calc()"><div class="stat-mod" id="int_m">+0</div></div>
-          <div class="stat-item"><span>МУДРОСТЬ</span><input type="number" id="wis" value="10" onchange="calc()"><div class="stat-mod" id="wis_m">+0</div></div>
-          <div class="stat-item"><span>ХАРИЗМА</span><input type="number" id="cha" value="10" onchange="calc()"><div class="stat-mod" id="cha_m">+0</div></div>
-        </div>
-      </div>
+  <!-- ВКЛАДКА 1: ЛИСТ ПЕРСОНАЖА -->
+  <div id="viewSheet">
+    <div class="header" style="margin-bottom: 12px; border-top: none;">
+      <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" style="flex: 2;" onchange="onNameChange()" autocomplete="off">
+      <input type="text" id="charModel" placeholder="МОДЕЛЬ (STCR, STAR...)" style="flex: 1;" onchange="autoSave()" autocomplete="off">
+      <button onclick="saveData(true)">[ СОХРАНИТЬ В БАЗУ ]</button>
+    </div>
 
-      <div class="box">
-        <div class="box-title">Спасброски (База 15)</div>
-        <div class="box-content">
-          <div class="flex-row"><span>Стойкость (STR/CON)</span><input type="text" id="sv_phys" readonly></div>
-          <div class="flex-row"><span>Рефлексы (DEX/INT)</span><input type="text" id="sv_eva" readonly></div>
-          <div class="flex-row"><span>Воля (WIS/CHA)</span><input type="text" id="sv_men" readonly></div>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Системное напряжение</div>
-        <div class="box-content">
-          <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold">10</span></div>
-          <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" onchange="calc()"></div>
-          <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" onchange="calc()"></div>
-          <div id="strain_alert" class="alert-box">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MIDDLE: БОЙ -->
-    <section class="col">
-      <div class="box">
-        <div class="box-title">Целостность Каркаса</div>
-        <div class="box-content">
-          <div class="flex-row">
-            <span>MAX HP: <input type="number" id="hp_max" value="20" onchange="calc()"></span>
-            <span>CUR HP: <input type="number" id="hp_cur" value="20" class="hp-input" onchange="calc()"></span>
-          </div>
-          <div class="wound-track">
-            <div id="w_light">[100-76%] Легкие: Норма</div>
-            <div id="w_serious">[75-51%] Серьезные: -1 к броскам</div>
-            <div id="w_critical">[50-26%] Критические: -2 к броскам</div>
-            <div id="w_mortal">[25-1%] Смертельные: -3, спасбросок</div>
-            <div id="w_dead">[0 HP] ОТКАЗ: 6 раундов на ребут</div>
+    <main class="row-3-col">
+      <!-- ХАРАКТЕРИСТИКИ -->
+      <section class="col">
+        <div class="box">
+          <div class="box-title">Атрибуты</div>
+          <div class="box-content stats-grid">
+            <div class="stat-item"><span>СИЛА</span><input type="number" id="str" value="10" onchange="calc()"><div class="stat-mod" id="str_m">+0</div></div>
+            <div class="stat-item"><span>ЛОВКОСТЬ</span><input type="number" id="dex" value="10" onchange="calc()"><div class="stat-mod" id="dex_m">+0</div></div>
+            <div class="stat-item"><span>ТЕЛО</span><input type="number" id="con" value="10" onchange="calc()"><div class="stat-mod" id="con_m">+0</div></div>
+            <div class="stat-item"><span>ИНТЕЛЛЕКТ</span><input type="number" id="int" value="10" onchange="calc()"><div class="stat-mod" id="int_m">+0</div></div>
+            <div class="stat-item"><span>МУДРОСТЬ</span><input type="number" id="wis" value="10" onchange="calc()"><div class="stat-mod" id="wis_m">+0</div></div>
+            <div class="stat-item"><span>ХАРИЗМА</span><input type="number" id="cha" value="10" onchange="calc()"><div class="stat-mod" id="cha_m">+0</div></div>
           </div>
         </div>
-      </div>
 
-      <div class="box">
-        <div class="box-title">Броня (Stopping Power)</div>
-        <div class="box-content">
-          <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_head" value="10" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
-          <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_torso" value="15" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
-          <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_limb" value="12" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
-        </div>
-      </div>
-      
-      <div class="box">
-        <div class="box-title">Базовые Навыки</div>
-        <div class="box-content">
-          <div class="flex-row"><span>Стрельба (Shoot)</span><input type="number" id="sk_shoot" value="0" onchange="autoSave()"></div>
-          <div class="flex-row"><span>Взлом (Program)</span><input type="number" id="sk_prog" value="0" onchange="autoSave()"></div>
-          <div class="flex-row"><span>Ремонт (Fix)</span><input type="number" id="sk_fix" value="0" onchange="autoSave()"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RIGHT: ПАНИКА И ИНВЕНТАРЬ -->
-    <section class="col">
-      <div class="box panic-box">
-        <div class="box-title panic-title">Психометрия (Alien RPG)</div>
-        <div class="box-content">
-          <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" class="stress-input" onchange="autoSave()"></div>
-          <button class="panic-btn" onclick="rollPanic()">БРОСОК ПАНИКИ (1d6 + СТРЕСС)</button>
-          <div id="panic_log" class="panic-log"></div>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Фиксаторы & Разгрузка</div>
-        <div class="box-content">
-          <span class="sub-label">3 КРУПНЫХ ПРЕДМЕТА (На броне):</span>
-          <input type="text" id="mag_1" placeholder="Оружие 1" onchange="autoSave()">
-          <input type="text" id="mag_2" placeholder="Оружие 2" onchange="autoSave()">
-          <input type="text" id="mag_3" placeholder="Спецсредство" onchange="autoSave()">
-          
-          <span class="sub-label" style="margin-top:5px;">6 МАЛЫХ ПРЕДМЕТОВ (Вес: 0 кг):</span>
-          <div class="pouch-grid">
-            <input type="text" id="pouch_1" placeholder="Магазин" onchange="autoSave()"> 
-            <input type="text" id="pouch_2" placeholder="Магазин" onchange="autoSave()">
-            <input type="text" id="pouch_3" placeholder="Граната" onchange="autoSave()"> 
-            <input type="text" id="pouch_4" placeholder="Наниты" onchange="autoSave()">
-            <input type="text" id="pouch_5" placeholder="Стимулятор" onchange="autoSave()"> 
-            <input type="text" id="pouch_6" placeholder="Lazarus" onchange="autoSave()">
+        <div class="box">
+          <div class="box-title">Спасброски (База 15)</div>
+          <div class="box-content">
+            <div class="flex-row"><span>Стойкость (STR/CON)</span><input type="text" id="sv_phys" readonly></div>
+            <div class="flex-row"><span>Рефлексы (DEX/INT)</span><input type="text" id="sv_eva" readonly></div>
+            <div class="flex-row"><span>Воля (WIS/CHA)</span><input type="text" id="sv_men" readonly></div>
           </div>
         </div>
-      </div>
 
-      <div class="box">
-        <div class="box-title">Штурмовой Ранец</div>
-        <div class="box-content">
-          <div class="flex-row" style="font-size:11px;"><span>Загрузка (1 слот = 1 кг):</span><span id="pack_status">0 / 10 кг</span></div>
-          <div class="inv-grid" id="pack_grid"></div>
+        <div class="box">
+          <div class="box-title">Системное напряжение</div>
+          <div class="box-content">
+            <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold">10</span></div>
+            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" onchange="calc()"></div>
+            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" onchange="calc()"></div>
+            <div id="strain_alert" class="alert-box">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
+          </div>
         </div>
+      </section>
+
+      <!-- БОЙ -->
+      <section class="col">
+        <div class="box">
+          <div class="box-title">Целостность Каркаса</div>
+          <div class="box-content">
+            <div class="flex-row">
+              <span>MAX HP: <input type="number" id="hp_max" value="20" onchange="calc()"></span>
+              <span>CUR HP: <input type="number" id="hp_cur" value="20" class="hp-input" onchange="calc()"></span>
+            </div>
+            <div class="wound-track">
+              <div id="w_light">[100-76%] Легкие: Норма</div>
+              <div id="w_serious">[75-51%] Серьезные: -1 к броскам</div>
+              <div id="w_critical">[50-26%] Критические: -2 к броскам</div>
+              <div id="w_mortal">[25-1%] Смертельные: -3, спасбросок</div>
+              <div id="w_dead">[0 HP] ОТКАЗ: 6 раундов на ребут</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-title">Броня (Stopping Power)</div>
+          <div class="box-content">
+            <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_head" value="10" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
+            <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_torso" value="15" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
+            <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_limb" value="12" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
+          </div>
+        </div>
+        
+        <div class="box">
+          <div class="box-title">Базовые Навыки</div>
+          <div class="box-content">
+            <div class="flex-row"><span>Стрельба (Shoot)</span><input type="number" id="sk_shoot" value="0" onchange="autoSave()"></div>
+            <div class="flex-row"><span>Взлом (Program)</span><input type="number" id="sk_prog" value="0" onchange="autoSave()"></div>
+            <div class="flex-row"><span>Ремонт (Fix)</span><input type="number" id="sk_fix" value="0" onchange="autoSave()"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ПАНИКА И ИНВЕНТАРЬ -->
+      <section class="col">
+        <div class="box panic-box">
+          <div class="box-title panic-title">Психометрия (Alien RPG)</div>
+          <div class="box-content">
+            <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" class="stress-input" onchange="autoSave()"></div>
+            <button class="panic-btn" onclick="rollPanic()">БРОСОК ПАНИКИ (1d6 + СТРЕСС)</button>
+            <div id="panic_log" class="panic-log"></div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-title">Фиксаторы & Разгрузка</div>
+          <div class="box-content">
+            <span class="sub-label">3 КРУПНЫХ ПРЕДМЕТА (На броне):</span>
+            <input type="text" id="mag_1" placeholder="Оружие 1" onchange="autoSave()">
+            <input type="text" id="mag_2" placeholder="Оружие 2" onchange="autoSave()">
+            <input type="text" id="mag_3" placeholder="Спецсредство" onchange="autoSave()">
+            
+            <span class="sub-label" style="margin-top:5px;">6 МАЛЫХ ПРЕДМЕТОВ (Вес: 0 кг):</span>
+            <div class="pouch-grid">
+              <input type="text" id="pouch_1" placeholder="Магазин" onchange="autoSave()"> 
+              <input type="text" id="pouch_2" placeholder="Магазин" onchange="autoSave()">
+              <input type="text" id="pouch_3" placeholder="Граната" onchange="autoSave()"> 
+              <input type="text" id="pouch_4" placeholder="Наниты" onchange="autoSave()">
+              <input type="text" id="pouch_5" placeholder="Стимулятор" onchange="autoSave()"> 
+              <input type="text" id="pouch_6" placeholder="Lazarus" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-title">Штурмовой Ранец</div>
+          <div class="box-content">
+            <div class="flex-row" style="font-size:11px;"><span>Загрузка (1 слот = 1 кг):</span><span id="pack_status">0 / 10 кг</span></div>
+            <div class="inv-grid" id="pack_grid"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ВКЛАДКА 2: АДМИН-ПАНЕЛЬ ШТАБА -->
+  <div id="viewAdmin" style="display: none;">
+    <div class="box">
+      <div class="box-title">МОНИТОРИНГ ЗВЕНА // ПАНЕЛЬ МАСТЕРА</div>
+      <div class="box-content">
+        <div class="flex-row">
+          <span>СВОДКА СОСТОЯНИЯ ВСЕХ БОЙЦОВ И НПС В РЕАЛЬНОМ ВРЕМЕНИ</span>
+          <button onclick="loadAdminRoster()">[ ОБНОВИТЬ СПИСОК ]</button>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ИГРОК / ВЛАДЕЛЕЦ</th>
+              <th>ПОЗЫВНОЙ</th>
+              <th>МОДЕЛЬ</th>
+              <th>HP</th>
+              <th>СТРЕСС</th>
+              <th>SP (Г/Т/К)</th>
+              <th>ДЕЙСТВИЯ</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+            <tr><td colspan="7">Загрузка данных штаба...</td></tr>
+          </tbody>
+        </table>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -342,14 +503,224 @@
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
-  const sheetId = new URLSearchParams(window.location.search).get('id') || '1';
-  const lsKey = 'vineta_sheet_' + sheetId;
+  let currentUser = null;
+  let currentSheetId = null;
 
+  // Инициализация сетки ранца
   const packGrid = document.getElementById('pack_grid');
   for (let i = 1; i <= 10; i++) {
     packGrid.innerHTML += `<div class="inv-slot"><input type="text" id="bag_${i}" placeholder="${i}кг" onchange="calc()"></div>`;
   }
 
+  // --- АВТОРИЗАЦИЯ (НИК + ПАРОЛЬ) ---
+  async function handleLogin() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
+    const errEl = document.getElementById('authError');
+    errEl.innerText = '';
+
+    if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
+
+    const { data, error } = await supabaseClient
+      .from('vineta_users')
+      .select('*')
+      .eq('username', u)
+      .eq('password', p)
+      .single();
+
+    if (error || !data) {
+      errEl.innerText = 'Неверный позывной или пароль';
+      return;
+    }
+
+    setSessionUser(data);
+  }
+
+  async function handleRegister() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
+    const errEl = document.getElementById('authError');
+    errEl.innerText = '';
+
+    if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
+
+    const { error } = await supabaseClient
+      .from('vineta_users')
+      .insert({ username: u, password: p, role: 'player' });
+
+    if (error) {
+      errEl.innerText = 'Позывной уже занят';
+      return;
+    }
+
+    setSessionUser({ username: u, role: 'player' });
+  }
+
+  function setSessionUser(user) {
+    currentUser = user;
+    localStorage.setItem('vineta_user', JSON.stringify(user));
+    document.getElementById('authModal').style.display = 'none';
+    document.getElementById('userBadge').innerText = `${user.username.toUpperCase()} [${user.role.toUpperCase()}]`;
+
+    if (user.role === 'admin') {
+      document.getElementById('tabAdminBtn').style.display = 'block';
+    }
+
+    initApp();
+  }
+
+  function logout() {
+    localStorage.removeItem('vineta_user');
+    location.reload();
+  }
+
+  function checkSession() {
+    const saved = localStorage.getItem('vineta_user');
+    if (saved) {
+      setSessionUser(JSON.parse(saved));
+    } else {
+      document.getElementById('authModal').style.display = 'flex';
+    }
+  }
+
+  // --- ВКЛАДКИ ROLL20 ---
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if (tab === 'sheet') {
+      document.getElementById('tabSheetBtn').classList.add('active');
+      document.getElementById('viewSheet').style.display = 'block';
+      document.getElementById('viewAdmin').style.display = 'none';
+    } else {
+      document.getElementById('tabAdminBtn').classList.add('active');
+      document.getElementById('viewSheet').style.display = 'none';
+      document.getElementById('viewAdmin').style.display = 'block';
+      loadAdminRoster();
+    }
+  }
+
+  // --- МЕНЕДЖЕР ПЕРСОНАЖЕЙ ---
+  async function refreshCharacterList() {
+    let query = supabaseClient.from('vineta_sheets').select('id, data, owner');
+    
+    // Обычный игрок видит только своих чаров, админ — всех
+    if (currentUser.role !== 'admin') {
+      query = query.eq('owner', currentUser.username);
+    }
+
+    const { data, error } = await query;
+    let list = [];
+
+    if (!error && data && data.length > 0) {
+      list = data.map(r => ({
+        id: r.id,
+        name: (r.data && r.data.charName) ? r.data.charName : r.id
+      }));
+    }
+
+    if (list.length === 0) {
+      const defaultId = 'unit_' + currentUser.username + '_1';
+      list.push({ id: defaultId, name: 'Новый Боец' });
+      currentSheetId = defaultId;
+    } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
+      currentSheetId = list[0].id;
+    }
+
+    const select = document.getElementById('charSelect');
+    select.innerHTML = '';
+    list.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.innerText = c.name;
+      if (c.id === currentSheetId) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+
+  async function switchCharacter(id) {
+    currentSheetId = id;
+    await loadData();
+  }
+
+  async function createNewCharacter() {
+    const name = prompt('Позывной нового бойца / НПС:', 'Боец');
+    if (!name) return;
+
+    const newId = 'unit_' + Date.now().toString(36);
+    currentSheetId = newId;
+
+    resetForm();
+    document.getElementById('charName').value = name;
+    await saveData(false);
+    await refreshCharacterList();
+  }
+
+  async function deleteCurrentCharacter() {
+    if (!confirm('Удалить выбранный профиль?')) return;
+    await supabaseClient.from('vineta_sheets').delete().eq('id', currentSheetId);
+    currentSheetId = null;
+    await refreshCharacterList();
+    await loadData();
+  }
+
+  function onNameChange() {
+    const select = document.getElementById('charSelect');
+    const opt = select.querySelector(`option[value="${currentSheetId}"]`);
+    if (opt) opt.innerText = document.getElementById('charName').value || currentSheetId;
+    autoSave();
+  }
+
+  function resetForm() {
+    document.querySelectorAll('#viewSheet input').forEach(inp => {
+      if (inp.type === 'number') {
+        inp.value = inp.id.includes('hp') ? 20 : (inp.id.includes('sp_') ? 10 : (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' ? 0 : 10));
+      } else {
+        inp.value = '';
+      }
+    });
+    calc();
+  }
+
+  // --- АДМИН-ПАНЕЛЬ (ШТАБ) ---
+  async function loadAdminRoster() {
+    const tbody = document.getElementById('adminTableBody');
+    tbody.innerHTML = '<tr><td colspan="7">Опрос терминалов...</td></tr>';
+
+    const { data, error } = await supabaseClient
+      .from('vineta_sheets')
+      .select('*')
+      .order('updated_at', { ascending: false });
+
+    if (error || !data) {
+      tbody.innerHTML = '<tr><td colspan="7">Ошибка загрузки базы.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = '';
+    data.forEach(row => {
+      const d = row.data || {};
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="color:#38bdf8;">${row.owner || '—'}</td>
+        <td style="font-weight:bold; color:var(--border-color);">${d.charName || row.id}</td>
+        <td>${d.charModel || '—'}</td>
+        <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': '#fff'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
+        <td style="color:${(d.stress >= 6)? 'var(--accent)': '#fff'}">${d.stress || 0} / 10</td>
+        <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
+        <td><button onclick="inspectCharacter('${row.id}')">ОТКРЫТЬ</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function inspectCharacter(id) {
+    currentSheetId = id;
+    await refreshCharacterList();
+    document.getElementById('charSelect').value = id;
+    await loadData();
+    switchTab('sheet');
+  }
+
+  // --- МАТЕМАТИКА И ЛОГИКА ---
   function getMod(val) {
     if (val <= 3) return -2;
     if (val <= 7) return -1;
@@ -429,7 +800,7 @@
 
   function getFormData() {
     const data = {};
-    document.querySelectorAll('input').forEach(inp => {
+    document.querySelectorAll('#viewSheet input').forEach(inp => {
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
     return data;
@@ -452,58 +823,45 @@
   }
 
   async function saveData(manual = false) {
+    if (!currentSheetId || !currentUser) return;
     const payload = getFormData();
-    localStorage.setItem(lsKey, JSON.stringify(payload));
-
-    if (!supabaseClient) {
-      setSyncStatus('ТОЛЬКО КЭШ', '#7b8390');
-      return;
-    }
 
     try {
       const { error } = await supabaseClient
         .from('vineta_sheets')
-        .upsert({ id: sheetId, data: payload, updated_at: new Date().toISOString() });
+        .upsert({ 
+          id: currentSheetId, 
+          owner: currentUser.username, 
+          data: payload, 
+          updated_at: new Date().toISOString() 
+        });
 
       if (error) throw error;
       setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
-      if (manual) alert('Профиль сохранен в облачную базу.');
+      if (manual) alert('Данные сохранены в базе.');
     } catch (err) {
-      console.error('Ошибка сохранения:', err);
-      setSyncStatus('ОШИБКА СЕТИ', '#e53e3e');
+      console.error('Ошибка:', err);
+      setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
     }
   }
 
   async function loadData() {
-    let loaded = false;
+    if (!currentSheetId) return;
+    setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
 
-    if (supabaseClient) {
-      setSyncStatus('ЗАГРУЗКА БД...', '#f59e0b');
-      try {
-        const { data, error } = await supabaseClient
-          .from('vineta_sheets')
-          .select('data')
-          .eq('id', sheetId)
-          .single();
+    try {
+      const { data, error } = await supabaseClient
+        .from('vineta_sheets')
+        .select('data')
+        .eq('id', currentSheetId)
+        .single();
 
-        if (!error && data && data.data) {
-          applyData(data.data);
-          setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
-          loaded = true;
-        }
-      } catch (err) {
-        console.warn('Облако пока недоступно, читаем кэш:', err);
+      if (!error && data && data.data) {
+        applyData(data.data);
+        setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
       }
-    }
-
-    if (!loaded) {
-      const local = localStorage.getItem(lsKey);
-      if (local) {
-        applyData(JSON.parse(local));
-        setSyncStatus('ДАННЫЕ ИЗ КЭША', '#7b8390');
-      } else {
-        setSyncStatus('НОВЫЙ ПРОФИЛЬ', '#7b8390');
-      }
+    } catch (err) {
+      setSyncStatus('НОВЫЙ ЛИСТ', '#7b8390');
     }
     calc();
   }
@@ -515,7 +873,12 @@
     }
   }
 
-  window.onload = loadData;
+  async function initApp() {
+    await refreshCharacterList();
+    await loadData();
+  }
+
+  window.onload = checkSession;
 </script>
 </body>
 </html>
