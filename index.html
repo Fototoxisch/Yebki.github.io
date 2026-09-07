@@ -47,7 +47,7 @@
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; display: none !important; }
     input[type="number"] { -moz-appearance: textfield !important; appearance: textfield !important; }
 
-    .container { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+    .container { max-width: 1050px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
 
     .tabs-bar { display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); }
     .tab-btn { background: #13151a; border: 1px solid #333; border-bottom: none; color: var(--text-muted); padding: 6px 16px; font-family: inherit; font-size: 13px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
@@ -115,7 +115,6 @@
     .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .char-actions { display: flex; gap: 5px; }
 
-    /* Эластичные колонки предотвращают расползание на планшете */
     .row-3-col { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: start; }
     .col { display: flex; flex-direction: column; gap: 8px; }
     .box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
@@ -150,7 +149,7 @@
     .inv-item-card { border: 1px solid #3a3f4b; border-radius: 4px; background: #111215; margin-bottom: 4px; animation: fadeInRow 0.2s ease-out forwards; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
     
-    .inv-edit-row { display: flex; gap: 6px; align-items: center; padding: 6px; background: #161719; }
+    .inv-edit-row { display: flex; gap: 6px; align-items: center; padding: 6px; background: #161719; flex-wrap: wrap; }
     .inv-edit-desc { padding: 0 8px 8px 35px; background: #161719; }
     .inv-edit-desc textarea { width: 100%; font-size: 11px; height: 40px; }
     .inv-view-row { display: flex; gap: 6px; align-items: center; padding: 6px; }
@@ -271,14 +270,13 @@
               <div class="val-interactive" style="position:relative;" onclick="toggleExpand('str_details')">
                 <span class="item-name interactive-text" style="flex:1;">СИЛ</span>
                 <span id="str_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('str', 'str_total', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('str', 'str_display', event)">🎲</span>
               </div>
               <div id="str_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" id="str_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
                   <div class="calc-col"><input type="number" id="str_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
-                  <input type="hidden" id="str_total">
                 </div>
               </div>
             </div>
@@ -288,14 +286,13 @@
               <div class="val-interactive" style="position:relative;" onclick="toggleExpand('dex_details')">
                 <span class="item-name interactive-text" style="flex:1;">ЛОВ</span>
                 <span id="dex_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('dex', 'dex_total', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('dex', 'dex_display', event)">🎲</span>
               </div>
               <div id="dex_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" id="dex_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
                   <div class="calc-col"><input type="number" id="dex_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
-                  <input type="hidden" id="dex_total">
                 </div>
               </div>
             </div>
@@ -305,14 +302,13 @@
               <div class="val-interactive" style="position:relative;" onclick="toggleExpand('con_details')">
                 <span class="item-name interactive-text" style="flex:1;">ТЕЛ</span>
                 <span id="con_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('con', 'con_total', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('con', 'con_display', event)">🎲</span>
               </div>
               <div id="con_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" id="con_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
                   <div class="calc-col"><input type="number" id="con_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
-                  <input type="hidden" id="con_total">
                 </div>
               </div>
             </div>
@@ -322,14 +318,13 @@
               <div class="val-interactive" style="position:relative;" onclick="toggleExpand('int_details')">
                 <span class="item-name interactive-text" style="flex:1;">ИНТ</span>
                 <span id="int_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('int', 'int_total', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('int', 'int_display', event)">🎲</span>
               </div>
               <div id="int_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" id="int_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
                   <div class="calc-col"><input type="number" id="int_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
-                  <input type="hidden" id="int_total">
                 </div>
               </div>
             </div>
@@ -339,14 +334,13 @@
               <div class="val-interactive" style="position:relative;" onclick="toggleExpand('wis_details')">
                 <span class="item-name interactive-text" style="flex:1;">МУД</span>
                 <span id="wis_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('wis', 'wis_total', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('wis', 'wis_display', event)">🎲</span>
               </div>
               <div id="wis_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" id="wis_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
                   <div class="calc-col"><input type="number" id="wis_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
-                  <input type="hidden" id="wis_total">
                 </div>
               </div>
             </div>
@@ -356,18 +350,16 @@
               <div class="val-interactive" style="position:relative;" onclick="toggleExpand('cha_details')">
                 <span class="item-name interactive-text" style="flex:1;">ХАР</span>
                 <span id="cha_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('cha', 'cha_total', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('cha', 'cha_display', event)">🎲</span>
               </div>
               <div id="cha_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" id="cha_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
                   <div class="calc-col"><input type="number" id="cha_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
-                  <input type="hidden" id="cha_total">
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -375,7 +367,7 @@
           <div class="box-title">Спасброски</div>
           <div class="box-content" style="padding-top: 4px; gap: 0;">
             
-            <div class="inv-item-card" style="margin-bottom:4px; border:none; border-bottom:1px solid #20232a; border-radius:0;">
+            <div class="inv-item-card" style="border:none; border-bottom:1px solid #20232a; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_phys_details')">
                 <span class="item-name interactive-text" style="flex:1;">Стойкость <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(STR/CON)</span></span>
                 <span id="sv_phys_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
@@ -394,7 +386,7 @@
               </div>
             </div>
 
-            <div class="inv-item-card" style="margin-bottom:4px; border:none; border-bottom:1px solid #20232a; border-radius:0;">
+            <div class="inv-item-card" style="border:none; border-bottom:1px solid #20232a; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_eva_details')">
                 <span class="item-name interactive-text" style="flex:1;">Рефлексы <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(DEX/INT)</span></span>
                 <span id="sv_eva_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
@@ -442,8 +434,8 @@
           <div class="box-title">Целостность Каркаса</div>
           <div class="box-content">
             <div class="flex-row">
-              <span>MAX HP: <input type="number" id="hp_max" value="20" oninput="fastCalc(); autoSave();"></span>
-              <span>CUR HP: <input type="number" id="hp_cur" value="20" class="hp-input" oninput="fastCalc(); autoSave();"></span>
+              <span>MAX HP: <input type="number" id="hp_max" value="20" onchange="fastCalc(); autoSave();"></span>
+              <span>CUR HP: <input type="number" id="hp_cur" value="20" class="hp-input" onchange="fastCalc(); autoSave();"></span>
             </div>
             <div class="wound-track">
               <div id="w_light">[100-76%] Легкие: Норма</div>
@@ -459,8 +451,8 @@
           <div class="box-title">Системное напряжение</div>
           <div class="box-content">
             <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold" style="font-size:16px;">10</span></div>
-            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" oninput="fastCalc(); autoSave();"></div>
-            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" oninput="fastCalc(); autoSave();"></div>
+            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" onchange="fastCalc(); autoSave();"></div>
+            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" onchange="fastCalc(); autoSave();"></div>
             <div id="strain_alert" class="alert-box" style="border:none;">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
           </div>
         </div>
@@ -537,6 +529,7 @@
   <!-- ВКЛАДКА 2: СНАРЯЖЕНИЕ -->
   <div id="viewInv" style="display: none;">
     
+    <!-- ОБЩАЯ СВОДКА СНАРЯЖЕНИЯ НАВЕРХУ -->
     <div class="box" style="margin-bottom: 15px;">
       <div class="box-title">Сводка Снаряжения</div>
       <div class="box-content" style="padding-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -568,7 +561,7 @@
               <div class="calc-col"><span class="math-sign">+</span></div>
               <div class="calc-col"><input type="number" id="penalty_bag" readonly><span class="calc-label">Рюкзак</span></div>
               <div class="calc-col"><span class="math-sign">+</span></div>
-              <div class="calc-col"><input type="number" id="armor_penalty" value="0" oninput="fastCalc(); autoSave();"><span class="calc-label">Броня</span></div>
+              <div class="calc-col"><input type="number" id="armor_penalty" value="0" onchange="fastCalc(); autoSave();"><span class="calc-label">Броня</span></div>
               <div class="calc-col"><span class="math-sign">=</span></div>
               <div class="calc-col"><input type="number" id="penalty_total" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
             </div>
@@ -595,15 +588,15 @@
             <span class="sub-label">КРУПНЫЕ ПРЕДМЕТЫ:</span>
             <div class="flex-row">
               <input type="text" id="mag_1" placeholder="Оружие 1" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_1_wt" placeholder="кг" oninput="fastCalc(); autoSave();">
+              <input type="number" id="mag_1_wt" placeholder="кг" onchange="fastCalc(); autoSave();">
             </div>
             <div class="flex-row">
               <input type="text" id="mag_2" placeholder="Оружие 2" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_2_wt" placeholder="кг" oninput="fastCalc(); autoSave();">
+              <input type="number" id="mag_2_wt" placeholder="кг" onchange="fastCalc(); autoSave();">
             </div>
             <div class="flex-row">
               <input type="text" id="mag_3" placeholder="Спецсредство" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_3_wt" placeholder="кг" oninput="fastCalc(); autoSave();">
+              <input type="number" id="mag_3_wt" placeholder="кг" onchange="fastCalc(); autoSave();">
             </div>
           </div>
         </div>
@@ -613,19 +606,19 @@
         <div class="box">
           <div class="box-title">Разгрузочная система (РПС)</div>
           <div class="box-content">
-            <div class="flex-row" style="margin-bottom: 5px;">
+            <div class="flex-row" style="margin-bottom: 5px; flex-wrap: wrap;">
               <div id="vest_config_view" style="flex:1; font-size:12px; color:var(--text-muted);">
                 <span id="vest_name_display" style="color:#fff; font-weight:bold; font-size:14px; margin-right:10px; text-transform:uppercase;">СТАНДАРТНАЯ РПС</span><br>
                 Слоты: <span id="vest_slots_display" style="color:#fff;">4</span> | Штраф: <span id="vest_penalty_display" style="color:var(--accent);">0</span>
               </div>
-              <div id="vest_config_edit" style="flex:1; display:none; gap:4px; align-items:center;">
-                <input type="text" id="vest_name" value="Стандартная РПС" placeholder="Название..." style="flex:1; padding:2px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
+              <div id="vest_config_edit" style="flex:1; display:none; gap:4px; align-items:center; flex-wrap: wrap;">
+                <input type="text" id="vest_name" value="Стандартная РПС" placeholder="Название..." style="flex:1; padding:2px; min-width: 100px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
                 <span style="font-size:10px; color:var(--text-muted);">СЛОТЫ:</span> 
-                <input type="number" id="vest_slots" value="4" style="padding:2px;" onchange="updateVestLimit(); fastCalc(); autoSave();">
+                <input type="number" id="vest_slots" value="4" style="padding:2px; width:40px;" onchange="updateVestLimit(); fastCalc(); autoSave();">
                 <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span> 
-                <input type="number" id="vest_penalty" value="0" style="padding:2px;" onchange="fastCalc(); autoSave();">
+                <input type="number" id="vest_penalty" value="0" style="padding:2px; width:40px;" onchange="fastCalc(); autoSave();">
               </div>
-              <button id="vest_toggle_btn" onclick="toggleVestLock()" style="padding: 2px 6px; font-size: 16px; margin-left: 4px;" title="Разблокировать редактирование">🔒</button>
+              <button id="vest_toggle_btn" onclick="toggleVestLock()" style="padding: 2px 6px; font-size: 16px; margin-left: 4px; flex-shrink: 0;" title="Разблокировать редактирование">🔒</button>
             </div>
             
             <div class="flex-row" style="font-size:11px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; margin-top: 6px;">
@@ -642,19 +635,19 @@
         <div class="box">
           <div class="box-title">Инвентарь / Рюкзак</div>
           <div class="box-content">
-            <div class="flex-row" style="margin-bottom: 4px;">
+            <div class="flex-row" style="margin-bottom: 4px; flex-wrap: wrap;">
               <div id="bag_config_view" style="flex:1; font-size:12px; color:var(--text-muted);">
                 <span id="bag_name_display" style="color:#fff; font-weight:bold; font-size:14px; margin-right:10px; text-transform:uppercase;">РЮКЗАК ОДНОЛЯМКА</span><br>
                 Лимит: <span id="bag_limit_display" style="color:#fff;">5</span> кг | Штраф: <span id="bag_penalty_display" style="color:var(--accent);">0</span>
               </div>
-              <div id="bag_config_edit" style="flex:1; display:none; gap:4px; align-items:center;">
-                <input type="text" id="bag_name" value="Рюкзак однолямка" placeholder="Название..." style="flex:1; padding:2px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
+              <div id="bag_config_edit" style="flex:1; display:none; gap:4px; align-items:center; flex-wrap: wrap;">
+                <input type="text" id="bag_name" value="Рюкзак однолямка" placeholder="Название..." style="flex:1; padding:2px; min-width: 100px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
                 <span style="font-size:10px; color:var(--text-muted);">ЛИМИТ(КГ):</span> 
-                <input type="number" id="bag_limit" value="5" style="padding:2px;" onchange="fastCalc(); autoSave();">
+                <input type="number" id="bag_limit" value="5" style="padding:2px; width:40px;" onchange="fastCalc(); autoSave();">
                 <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span> 
-                <input type="number" id="bag_penalty" value="0" style="padding:2px;" onchange="fastCalc(); autoSave();">
+                <input type="number" id="bag_penalty" value="0" style="padding:2px; width:40px;" onchange="fastCalc(); autoSave();">
               </div>
-              <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size: 16px; margin-left: 4px;" title="Разблокировать редактирование">🔒</button>
+              <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size: 16px; margin-left: 4px; flex-shrink: 0;" title="Разблокировать редактирование">🔒</button>
             </div>
             
             <div class="flex-row" style="font-size:11px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; margin-top: 6px;">
@@ -713,10 +706,11 @@
   let vestItemsArray = [null, null, null, null, null, null, null, null]; 
   let invLocked = true;
   let vestLocked = true;
+  let isPolling = false;
 
   const DOM = {};
   function initDOM() {
-    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'vest_name', 'vest_name_display', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'bag_name', 'bag_name_display', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle', 'armor_penalty'];
+    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'vest_name', 'vest_name_display', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'bag_name', 'bag_name_display', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle', 'armor_penalty', 'sk_shoot', 'sk_prog', 'sk_fix', 'stress'];
     ids.forEach(id => { DOM[id] = document.getElementById(id); });
   }
   document.addEventListener("DOMContentLoaded", initDOM);
@@ -785,13 +779,18 @@
     'sk_shoot': 'НАВЫК: СТРЕЛЬБА', 'sk_prog': 'НАВЫК: ВЗЛОМ', 'sk_fix': 'НАВЫК: РЕМОНТ', 'panic': 'БРОСОК ПАНИКИ'
   };
 
-  function rollUniversal(statCode, inputId, event) {
+  function rollUniversal(statCode, elementId, event) {
     if (event) event.stopPropagation();
     let val = 0;
-    if (inputId) { val = document.getElementById(inputId).value || 0; } 
-    else { val = document.getElementById('stress').value || 0; }
+    if (elementId) {
+        const el = document.getElementById(elementId);
+        if (el) {
+            val = parseInt(el.value) || parseInt(el.innerText) || 0;
+        }
+    } else {
+        val = parseInt(document.getElementById('stress').value) || 0;
+    }
     
-    // В URL пишем английский код, Lua сам переведет
     window.location.hash = `#roll?stat=${statCode}&val=${val}&t=${Date.now()}`;
     
     const log = document.getElementById('panic_log');
@@ -1173,7 +1172,6 @@
       const bonus = parseInt(DOM[id + '_bonus'].value) || 0;
       const total = base + bonus;
       
-      if(DOM[id + '_total']) DOM[id + '_total'].value = total;
       if(DOM[id + '_display']) DOM[id + '_display'].innerText = total;
       
       vals[id] = total;
@@ -1225,7 +1223,7 @@
 
     const spdBase = parseInt(DOM.spd_base.value) || 10;
     DOM.spd_base_top.value = spdBase;
-    const spdMisc = Math.abs(parseInt(DOM.spd_misc.value) || 0); // Положительные штрафы
+    const spdMisc = Math.abs(parseInt(DOM.spd_misc.value) || 0); 
     
     const vestPenalty = Math.abs(parseInt(DOM.vest_penalty.value) || 0);
     const bagPenalty = Math.abs(parseInt(DOM.bag_penalty.value) || 0);
@@ -1634,7 +1632,6 @@
     
     for (let key in data) {
       const el = document.getElementById(key);
-      // ЗАЩИТА: Не перезаписываем поле, если юзер в нем сейчас печатает
       if (el && key !== 'sheetOwner' && !key.startsWith('bag_total_')) {
         if (el !== activeEl) {
             el.value = data[key];
@@ -1644,7 +1641,6 @@
     
     const isInvFocused = activeEl && (activeEl.closest('#dynamic_pack_grid') || activeEl.closest('#vest_grid'));
     
-    // Перерисовываем инвентарь, только если юзер в нем ничего не печатает в данный момент
     if (!isInvFocused) {
         if (data.bag_items_json) { try { bagItemsArray = JSON.parse(data.bag_items_json); } catch(e) { bagItemsArray = []; } } 
         else { bagItemsArray = []; }
@@ -1665,7 +1661,6 @@
   let fetchInProgress = false;
   function startPolling() {
     setTimeout(async () => {
-      // Обновляем в фоне
       if (currentSheetId && !fetchInProgress && document.getElementById('viewSheet').style.display !== 'none') {
         fetchInProgress = true;
         await loadData(false);
