@@ -13,8 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   
   <script>if (typeof globalThis === 'undefined') { window.globalThis = window; }</script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>if (!window.supabase) { document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>'); }</script>
 
   <style>
     :root {
@@ -37,7 +35,7 @@
       color: var(--text-color);
       font-family: 'Share Tech Mono', monospace;
       margin: 0;
-      padding: 10px;
+      padding: 6px;
       font-size: 13px;
       overflow-x: hidden;
       letter-spacing: 0.5px;
@@ -47,26 +45,25 @@
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; display: none !important; }
     input[type="number"] { -moz-appearance: textfield !important; appearance: textfield !important; }
 
-    .container { max-width: 1050px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
 
     .tabs-bar { display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); }
-    .tab-btn { background: #13151a; border: 1px solid #333; border-bottom: none; color: var(--text-muted); padding: 6px 16px; font-family: inherit; font-size: 13px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+    .tab-btn { background: #13151a; border: 1px solid #333; border-bottom: none; color: var(--text-muted); padding: 5px 14px; font-family: inherit; font-size: 12px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
     .tab-btn:hover { color: #fff; background: #1f2229; }
     .tab-btn.active { background: var(--tab-active); border-color: var(--border-color); color: var(--border-color); border-bottom: 2px solid var(--tab-active); margin-bottom: -2px; }
 
-    .header { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .header-brand { display: flex; align-items: center; gap: 10px; }
-    .header h1 { margin: 0; font-size: 16px; color: var(--border-color); letter-spacing: 2px; transition: color 0.3s; }
+    .header { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .header-brand { display: flex; align-items: center; gap: 8px; }
+    .header h1 { margin: 0; font-size: 15px; color: var(--border-color); letter-spacing: 1.5px; transition: color 0.3s; }
     .sync-tag { font-size: 11px; color: #4ade80; border: 1px solid #4ade80; padding: 2px 5px; white-space: nowrap; cursor: pointer; }
-    .sync-tag:hover { background: rgba(74, 222, 128, 0.1); }
-    .user-tag { font-size: 12px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; text-transform: uppercase;}
+    .user-tag { font-size: 11px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; text-transform: uppercase;}
 
-    select, input, button, textarea { font-family: inherit; font-size: 13px; }
-    textarea { resize: none; overflow: auto; }
+    select, input, button, textarea { font-family: inherit; font-size: 12px; }
+    textarea { resize: none; }
     
     input[type="text"], input[type="number"], input[type="password"], textarea, select { 
       background: var(--input-bg-edit); border: 1px solid #3a3f4b; color: #fff; 
-      padding: 4px; text-align: center; transition: 0.2s; border-radius: 2px;
+      padding: 3px 5px; text-align: center; transition: 0.2s; border-radius: 2px;
     }
     input:focus, textarea:focus, select:focus { border-color: var(--accent); outline: none; background: #2a2e38; }
     
@@ -76,7 +73,7 @@
     }
     input[readonly].accent-bold { color: var(--accent) !important; font-weight: bold; border-color: #4a1111 !important; background: rgba(201,42,42,0.05) !important;}
     
-    button { background: var(--input-bg-edit); border: 1px solid var(--border-color); color: var(--border-color); cursor: pointer; padding: 4px 8px; text-transform: uppercase; transition: 0.15s; border-radius: 2px; }
+    button { background: var(--input-bg-edit); border: 1px solid var(--border-color); color: var(--border-color); cursor: pointer; padding: 3px 6px; text-transform: uppercase; transition: 0.15s; border-radius: 2px; }
     button:hover { background: var(--border-color); color: #000; }
     button:disabled { border-color: #3a3f4b !important; color: #3a3f4b !important; cursor: not-allowed; background: transparent !important; }
     
@@ -93,91 +90,93 @@
       top: 2px; font-size: 9px; color: var(--border-color); font-weight: bold;
     }
 
-    .expandable { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease; opacity: 0; }
-    .expandable.open { max-height: 600px; opacity: 1; margin-top: 6px; transition: max-height 0.5s ease-in-out, opacity 0.4s ease, margin 0.3s ease; }
+    .expandable { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease; opacity: 0; }
+    .expandable.open { max-height: 500px; opacity: 1; margin-top: 4px; }
     
-    .val-interactive { cursor: pointer; transition: background 0.2s, color 0.2s; padding: 6px 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+    .val-interactive { cursor: pointer; transition: background 0.2s; padding: 4px 6px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center; }
     .val-interactive:hover { background: rgba(255, 77, 77, 0.08); }
     .val-interactive:hover .interactive-text { color: var(--accent); }
     .interactive-text { transition: color 0.2s; }
 
-    .roll-btn { cursor: pointer; transition: 0.15s; display:inline-block; font-size:16px; margin-left:6px; opacity:0.7; }
-    .roll-btn:hover { opacity:1; transform: scale(1.2); text-shadow: 0 0 8px var(--accent); }
+    .roll-btn { cursor: pointer; transition: 0.15s; display: inline-block; font-size: 14px; margin-left: 4px; opacity: 0.8; }
+    .roll-btn:hover { opacity: 1; transform: scale(1.2); text-shadow: 0 0 8px var(--accent); }
 
-    .side-panel { position: fixed; right: -350px; top: 0; width: 320px; height: 100%; background: #111215; border-left: 2px solid var(--border-color); z-index: 1000; transition: right 0.3s ease; padding: 15px; box-shadow: -5px 0 15px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; }
+    .side-panel { position: fixed; right: -350px; top: 0; width: 300px; height: 100%; background: #111215; border-left: 2px solid var(--border-color); z-index: 1000; transition: right 0.3s ease; padding: 12px; box-shadow: -5px 0 15px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 8px; }
     .side-panel.open { right: 0; }
-    .side-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a3f4b; padding-bottom: 10px; }
+    .side-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a3f4b; padding-bottom: 8px; }
     .side-panel-header h2 { margin: 0; color: var(--border-color); font-size: 14px; }
     .close-panel-btn { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0; }
-    .close-panel-btn:hover { color: var(--accent); background: transparent;}
-    .char-card { background: var(--panel-bg); border: 1px solid #3a3f4b; padding: 10px; display: flex; flex-direction: column; gap: 8px; border-radius: 4px;}
+    .close-panel-btn:hover { color: var(--accent); }
+    .char-card { background: var(--panel-bg); border: 1px solid #3a3f4b; padding: 8px; display: flex; flex-direction: column; gap: 6px; border-radius: 3px;}
     .char-card.active { border-color: var(--border-color); box-shadow: inset 0 0 10px rgba(201,42,42,0.1); }
-    .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .char-actions { display: flex; gap: 5px; }
+    .char-name { font-weight: bold; color: #fff; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .char-actions { display: flex; gap: 4px; }
 
+    /* Равнозначные 3 колонки с защитой от выпадания */
     .row-3-col { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: start; }
-    .col { display: flex; flex-direction: column; gap: 8px; }
-    .box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
-    .box-title { background: var(--border-color); color: #000; font-weight: bold; text-align: center; padding: 4px; font-size: 13px; letter-spacing: 1px; }
+    .col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 3px; overflow: hidden; min-width: 0; }
+    .box-title { background: var(--border-color); color: #000; font-weight: bold; text-align: center; padding: 3px; font-size: 12px; letter-spacing: 1px; }
     .box-content { padding: 6px; display: flex; flex-direction: column; gap: 6px; }
-    .flex-row { display: flex; justify-content: space-between; align-items: center; gap: 4px;}
+    .flex-row { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
     .accent-bold { color: var(--border-color) !important; font-weight: bold; }
-    .alert-box { color: var(--accent); font-size: 12px; text-align: center; display: none; margin-top: 4px; border: 1px dashed var(--accent); padding: 6px; border-radius: 4px;}
+    .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 2px; border: 1px dashed var(--accent); padding: 4px; border-radius: 3px;}
 
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .stat-container { border: 1px solid #3a3f4b; background: var(--panel-bg); border-radius: 4px; display: flex; flex-direction: column; position: relative; margin: 0; }
-    .stat-mod { position: absolute; top: -8px; right: -8px; background: var(--border-color); color: #000; border-radius: 50%; width: 22px; height: 22px; line-height: 22px; font-size: 11px; text-align: center; font-weight: bold; z-index: 2; pointer-events: none; }
+    /* Плитка характеристик 2х3 */
+    .stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; width: 100%; }
+    .stat-container { border: 1px solid #3a3f4b; background: var(--panel-bg); border-radius: 3px; display: flex; flex-direction: column; position: relative; margin: 0; min-width: 0; }
+    .stat-mod { position: absolute; top: -5px; right: -5px; background: var(--border-color); color: #000; border-radius: 50%; width: 18px; height: 18px; line-height: 18px; font-size: 10px; text-align: center; font-weight: bold; z-index: 2; pointer-events: none; }
 
-    .calc-row { display: flex; align-items: center; gap: 6px; justify-content: center; padding: 6px 0; }
-    .calc-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .calc-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .math-sign { display: flex; align-items: center; justify-content: center; height: 26px; font-size: 18px; color: var(--text-muted); margin-bottom: 14px; font-weight: bold;}
+    .calc-row { display: flex; align-items: center; gap: 4px; justify-content: center; padding: 4px 0; }
+    .calc-col { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .calc-col input { width: 32px; padding: 2px; font-size: 11px; }
+    .calc-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+    .math-sign { display: flex; align-items: center; justify-content: center; height: 20px; font-size: 14px; color: var(--text-muted); margin-bottom: 10px; font-weight: bold;}
 
     .hp-input { color: var(--accent); font-weight: bold; }
-    .wound-track { display: flex; flex-direction: column; gap: 2px; border: 1px solid #3a3f4b; padding: 2px; border-radius: 4px; background: #0b0c0f;}
-    .wound-track div { padding: 4px; font-size: 11px; text-align: center; color: var(--text-muted); }
+    .wound-track { display: flex; flex-direction: column; gap: 2px; border: 1px solid #3a3f4b; padding: 2px; border-radius: 3px; background: #0b0c0f;}
+    .wound-track div { padding: 3px; font-size: 10px; text-align: center; color: var(--text-muted); }
     .wound-active { background: var(--border-color); color: #000 !important; font-weight: bold; }
 
     .panic-box { border-color: var(--accent); }
     .panic-title { background: var(--accent); }
     .stress-input { font-weight: bold; color: var(--accent); }
-    .panic-btn { border-color: var(--accent); color: var(--accent); font-size: 14px; padding: 6px; width: 100%;}
-    .panic-log { font-size: 11px; min-height: 24px; border: 1px dashed #404652; padding: 4px; margin-top: 4px; color: #aaa; border-radius: 4px; background: #0b0c0f;}
-    .sub-label { font-size: 11px; color: var(--border-color); text-transform: uppercase; }
+    .panic-btn { border-color: var(--accent); color: var(--accent); font-size: 13px; padding: 5px; width: 100%;}
+    .panic-log { font-size: 11px; min-height: 22px; border: 1px dashed #404652; padding: 4px; color: #aaa; border-radius: 3px; background: #0b0c0f;}
+    .sub-label { font-size: 10px; color: var(--border-color); text-transform: uppercase; }
     
-    @keyframes fadeInRow { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-    .inv-item-card { border: 1px solid #3a3f4b; border-radius: 4px; background: #111215; margin-bottom: 4px; animation: fadeInRow 0.2s ease-out forwards; }
+    .inv-item-card { border: 1px solid #3a3f4b; border-radius: 3px; background: #111215; margin-bottom: 4px; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
     
-    .inv-edit-row { display: flex; gap: 6px; align-items: center; padding: 6px; background: #161719; flex-wrap: wrap; }
-    .inv-edit-desc { padding: 0 8px 8px 35px; background: #161719; }
-    .inv-edit-desc textarea { width: 100%; font-size: 11px; height: 40px; }
-    .inv-view-row { display: flex; gap: 6px; align-items: center; padding: 6px; }
-    .inv-view-desc { padding: 4px 8px 8px 30px; font-size: 11px; color: #aaa; }
+    .inv-edit-row { display: flex; gap: 4px; align-items: center; padding: 4px; background: #161719; }
+    .inv-edit-desc { padding: 0 6px 6px 30px; background: #161719; }
+    .inv-edit-desc textarea { width: 100%; font-size: 11px; height: 36px; }
+    .inv-view-row { display: flex; gap: 4px; align-items: center; padding: 5px; }
+    .inv-view-desc { padding: 3px 6px 6px 26px; font-size: 10px; color: #aaa; }
     
-    .drag-area { min-height: 45px; display: flex; flex-direction: column; gap: 4px; }
-    .bag-area { border: 1px dashed transparent; min-height: 100px; padding: 4px; transition: 0.2s; border-radius: 4px;}
+    .drag-area { min-height: 40px; display: flex; flex-direction: column; gap: 4px; }
+    .bag-area { border: 1px dashed transparent; min-height: 80px; padding: 3px; border-radius: 3px;}
     .drag-over { border-color: var(--accent) !important; background: rgba(201,42,42,0.05) !important; }
 
-    .item-name { font-weight: bold; font-size: 14px; text-align: left; }
-    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 6px; font-size: 18px; font-weight: bold;}
-    .item-del:hover { color: #fff; background: transparent; }
-    .settings-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 0 6px; font-size: 16px; }
-    .settings-btn:hover { color: var(--accent); background: transparent; }
+    .item-name { font-weight: bold; font-size: 12px; text-align: left; }
+    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 4px; font-size: 16px; font-weight: bold;}
+    .item-del:hover { color: #fff; }
+    .settings-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 0 4px; font-size: 14px; }
+    .settings-btn:hover { color: var(--accent); }
 
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
 
-    #adminTableContainer { min-height: 50vh; }
-    .admin-account-group { border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 20px; padding: 12px; background: #111215; }
-    .admin-account-group h3 { margin-top: 0; margin-bottom: 12px; color: var(--accent); letter-spacing: 1px; font-size: 15px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;}
+    #adminTableContainer { min-height: 40vh; }
+    .admin-account-group { border: 1px solid var(--border-color); border-radius: 3px; margin-bottom: 15px; padding: 8px; background: #111215; }
+    .admin-account-group h3 { margin: 0 0 8px 0; color: var(--accent); font-size: 13px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;}
     .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 8px; text-align: center; font-size: 13px; }
+    .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 5px; text-align: center; font-size: 11px; }
     .admin-table th { background: #181a1f; color: var(--text-muted); }
     .admin-table tr:hover { background: #1a1c23; }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 999; }
-    .auth-card { background: var(--panel-bg); border: 2px solid var(--border-color); width: 350px; padding: 20px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 0 20px rgba(201,42,42,0.3); border-radius: 4px;}
+    .auth-card { background: var(--panel-bg); border: 2px solid var(--border-color); width: 320px; padding: 16px; display: flex; flex-direction: column; gap: 12px; border-radius: 3px;}
   </style>
 </head>
 <body>
@@ -187,8 +186,8 @@
     <h2>Мои профили</h2>
     <button class="close-panel-btn" onclick="toggleSidePanel()">✕</button>
   </div>
-  <div id="sidePanelList" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1;"></div>
-  <div style="border-top: 1px dashed #3a3f4b; padding-top: 10px; display: flex; flex-direction: column; gap: 6px;">
+  <div id="sidePanelList" style="display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex: 1;"></div>
+  <div style="border-top: 1px dashed #3a3f4b; padding-top: 8px;">
     <button onclick="createNewCharacter()" style="width: 100%;">+ НОВЫЙ БОЕЦ</button>
   </div>
 </div>
@@ -196,33 +195,33 @@
 <div id="authModal" class="modal-overlay" style="display: none;">
   <div class="auth-card">
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
-    <div style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 5px;">Вход в терминал боевого звена</div>
+    <div style="font-size: 11px; color: var(--text-muted); text-align: center;">Вход в терминал боевого звена</div>
     
     <div class="input-float">
       <input type="text" id="loginUser" placeholder=" " autocomplete="off" spellcheck="false">
       <label for="loginUser">Позывной / Никнейм</label>
     </div>
     <div class="input-float">
-      <input type="password" id="loginPass" placeholder=" " autocomplete="off" style="padding-right: 36px;" spellcheck="false">
+      <input type="password" id="loginPass" placeholder=" " autocomplete="off" style="padding-right: 32px;" spellcheck="false">
       <label for="loginPass">Пароль доступа</label>
-      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:16px; cursor:pointer;">👁</button>
+      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:14px; cursor:pointer;">👁</button>
     </div>
     
-    <div style="display: flex; gap: 8px; margin-top: 5px;">
+    <div style="display: flex; gap: 6px;">
       <button type="button" onclick="handleLogin()" style="flex:1;">ВОЙТИ</button>
       <button type="button" onclick="handleRegister()" style="flex:1;">РЕГИСТРАЦИЯ</button>
     </div>
-    <div id="authError" style="color: var(--accent); font-size: 12px; text-align: center; min-height: 14px; word-wrap: break-word;"></div>
+    <div id="authError" style="color: var(--accent); font-size: 11px; text-align: center; min-height: 14px;"></div>
   </div>
 </div>
 
 <div id="deleteModal" class="modal-overlay" style="display: none;">
   <div class="auth-card" style="border-color: var(--accent);">
     <div class="box-title" style="background: var(--accent); color: #fff;">ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ</div>
-    <div style="font-size: 13px; text-align: center; color: #fff; margin-bottom: 5px;" id="deleteModalText">Вы точно хотите удалить персонажа?</div>
-    <div style="font-size: 11px; color: var(--text-muted); text-align: center;">Для подтверждения введите имя: <br><strong id="deleteModalTargetName" style="color:var(--accent); font-size:14px; letter-spacing: 1px;"></strong></div>
+    <div style="font-size: 12px; text-align: center; color: #fff;" id="deleteModalText">Удалить персонажа?</div>
+    <div style="font-size: 11px; color: var(--text-muted); text-align: center;">Для подтверждения введите имя: <br><strong id="deleteModalTargetName" style="color:var(--accent); font-size:13px;"></strong></div>
     <input type="text" id="deleteConfirmInput" placeholder="Ввод..." autocomplete="off" oninput="checkDeleteMatch()" spellcheck="false">
-    <div style="display: flex; gap: 8px; margin-top: 10px;">
+    <div style="display: flex; gap: 6px;">
       <button type="button" onclick="closeDeleteModal()" style="flex:1; border-color:#3a3f4b; color:#fff;">ОТМЕНА</button>
       <button type="button" id="deleteConfirmBtn" onclick="executeDelete()" class="btn-danger" style="flex:1;" disabled>УДАЛИТЬ</button>
     </div>
@@ -244,18 +243,18 @@
     <div style="display: flex; gap: 6px; align-items: center;">
       <button onclick="toggleSidePanel()">[ ПРОФИЛИ ]</button>
     </div>
-    <div style="display: flex; gap: 10px; align-items: center;">
+    <div style="display: flex; gap: 8px; align-items: center;">
       <span id="userBadge" class="user-tag">НЕ АВТОРИЗОВАН</span>
-      <button onclick="logout()" style="font-size: 12px;">ВЫХОД</button>
+      <button onclick="logout()" style="font-size: 11px;">ВЫХОД</button>
     </div>
   </header>
 
   <!-- ВКЛАДКА 1: ЛИСТ ПЕРСОНАЖА -->
   <div id="viewSheet">
-    <div class="header" style="margin-bottom: 12px; border-top: none;">
+    <div class="header" style="margin-bottom: 8px; border-top: none;">
       <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" style="flex: 2;" onchange="onNameChange()" autocomplete="off" spellcheck="false">
       <input type="text" id="charModel" placeholder="МОДЕЛЬ (STCR, STAR...)" style="flex: 1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-      <input type="text" id="sheetOwner" placeholder="Владелец (ник/почта)" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off" spellcheck="false">
+      <input type="text" id="sheetOwner" placeholder="Владелец" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off" spellcheck="false">
       <button onclick="saveData(true)">[ СОХРАНИТЬ В БД ]</button>
     </div>
 
@@ -263,13 +262,13 @@
       <section class="col">
         <div class="box">
           <div class="box-title">Атрибуты</div>
-          <div class="box-content stats-grid" style="padding-top: 8px;">
+          <div class="box-content stats-grid" style="padding: 6px;">
             
-            <div class="stat-container inv-item-card" style="margin:0; border:1px solid #20232a;">
+            <div class="stat-container">
               <div class="stat-mod" id="str_m">+0</div>
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('str_details')">
+              <div class="val-interactive" onclick="toggleExpand('str_details')">
                 <span class="item-name interactive-text" style="flex:1;">СИЛ</span>
-                <span id="str_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
+                <span id="str_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('str', 'str_display', event)">🎲</span>
               </div>
               <div id="str_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
@@ -281,11 +280,11 @@
               </div>
             </div>
 
-            <div class="stat-container inv-item-card" style="margin:0; border:1px solid #20232a;">
+            <div class="stat-container">
               <div class="stat-mod" id="dex_m">+0</div>
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('dex_details')">
+              <div class="val-interactive" onclick="toggleExpand('dex_details')">
                 <span class="item-name interactive-text" style="flex:1;">ЛОВ</span>
-                <span id="dex_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
+                <span id="dex_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('dex', 'dex_display', event)">🎲</span>
               </div>
               <div id="dex_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
@@ -297,11 +296,11 @@
               </div>
             </div>
 
-            <div class="stat-container inv-item-card" style="margin:0; border:1px solid #20232a;">
+            <div class="stat-container">
               <div class="stat-mod" id="con_m">+0</div>
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('con_details')">
+              <div class="val-interactive" onclick="toggleExpand('con_details')">
                 <span class="item-name interactive-text" style="flex:1;">ТЕЛ</span>
-                <span id="con_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
+                <span id="con_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('con', 'con_display', event)">🎲</span>
               </div>
               <div id="con_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
@@ -313,11 +312,11 @@
               </div>
             </div>
 
-            <div class="stat-container inv-item-card" style="margin:0; border:1px solid #20232a;">
+            <div class="stat-container">
               <div class="stat-mod" id="int_m">+0</div>
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('int_details')">
+              <div class="val-interactive" onclick="toggleExpand('int_details')">
                 <span class="item-name interactive-text" style="flex:1;">ИНТ</span>
-                <span id="int_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
+                <span id="int_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('int', 'int_display', event)">🎲</span>
               </div>
               <div id="int_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
@@ -329,11 +328,11 @@
               </div>
             </div>
 
-            <div class="stat-container inv-item-card" style="margin:0; border:1px solid #20232a;">
+            <div class="stat-container">
               <div class="stat-mod" id="wis_m">+0</div>
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('wis_details')">
+              <div class="val-interactive" onclick="toggleExpand('wis_details')">
                 <span class="item-name interactive-text" style="flex:1;">МУД</span>
-                <span id="wis_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
+                <span id="wis_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('wis', 'wis_display', event)">🎲</span>
               </div>
               <div id="wis_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
@@ -345,11 +344,11 @@
               </div>
             </div>
 
-            <div class="stat-container inv-item-card" style="margin:0; border:1px solid #20232a;">
+            <div class="stat-container">
               <div class="stat-mod" id="cha_m">+0</div>
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('cha_details')">
+              <div class="val-interactive" onclick="toggleExpand('cha_details')">
                 <span class="item-name interactive-text" style="flex:1;">ХАР</span>
-                <span id="cha_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:10px;">10</span>
+                <span id="cha_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('cha', 'cha_display', event)">🎲</span>
               </div>
               <div id="cha_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
@@ -360,17 +359,18 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
         <div class="box">
           <div class="box-title">Спасброски</div>
-          <div class="box-content" style="padding-top: 4px; gap: 0;">
+          <div class="box-content" style="padding: 4px; gap: 0;">
             
             <div class="inv-item-card" style="border:none; border-bottom:1px solid #20232a; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_phys_details')">
-                <span class="item-name interactive-text" style="flex:1;">Стойкость <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(STR/CON)</span></span>
-                <span id="sv_phys_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
+                <span class="item-name interactive-text" style="flex:1;">Стойкость <span style="font-size:9px; color:var(--text-muted);">(STR/CON)</span></span>
+                <span id="sv_phys_display" style="font-size:15px; font-weight:bold; color:#fff;">15</span>
                 <span class="roll-btn" onclick="rollUniversal('sv_phys', 'sv_phys', event)">🎲</span>
               </div>
               <div id="sv_phys_details" class="expandable" style="background:#0e0f12;">
@@ -388,8 +388,8 @@
 
             <div class="inv-item-card" style="border:none; border-bottom:1px solid #20232a; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_eva_details')">
-                <span class="item-name interactive-text" style="flex:1;">Рефлексы <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(DEX/INT)</span></span>
-                <span id="sv_eva_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
+                <span class="item-name interactive-text" style="flex:1;">Рефлексы <span style="font-size:9px; color:var(--text-muted);">(DEX/INT)</span></span>
+                <span id="sv_eva_display" style="font-size:15px; font-weight:bold; color:#fff;">15</span>
                 <span class="roll-btn" onclick="rollUniversal('sv_eva', 'sv_eva', event)">🎲</span>
               </div>
               <div id="sv_eva_details" class="expandable" style="background:#0e0f12;">
@@ -407,8 +407,8 @@
 
             <div class="inv-item-card" style="margin-bottom:0; border:none; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_men_details')">
-                <span class="item-name interactive-text" style="flex:1;">Воля <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(WIS/CHA)</span></span>
-                <span id="sv_men_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
+                <span class="item-name interactive-text" style="flex:1;">Воля <span style="font-size:9px; color:var(--text-muted);">(WIS/CHA)</span></span>
+                <span id="sv_men_display" style="font-size:15px; font-weight:bold; color:#fff;">15</span>
                 <span class="roll-btn" onclick="rollUniversal('sv_men', 'sv_men', event)">🎲</span>
               </div>
               <div id="sv_men_details" class="expandable" style="background:#0e0f12;">
@@ -434,8 +434,8 @@
           <div class="box-title">Целостность Каркаса</div>
           <div class="box-content">
             <div class="flex-row">
-              <span>MAX HP: <input type="number" id="hp_max" value="20" onchange="fastCalc(); autoSave();"></span>
-              <span>CUR HP: <input type="number" id="hp_cur" value="20" class="hp-input" onchange="fastCalc(); autoSave();"></span>
+              <span>MAX HP: <input type="number" id="hp_max" value="20" style="width:45px;" onchange="fastCalc(); autoSave();"></span>
+              <span>CUR HP: <input type="number" id="hp_cur" value="20" style="width:45px;" class="hp-input" onchange="fastCalc(); autoSave();"></span>
             </div>
             <div class="wound-track">
               <div id="w_light">[100-76%] Легкие: Норма</div>
@@ -450,9 +450,9 @@
         <div class="box">
           <div class="box-title">Системное напряжение</div>
           <div class="box-content">
-            <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold" style="font-size:16px;">10</span></div>
-            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" onchange="fastCalc(); autoSave();"></div>
-            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" onchange="fastCalc(); autoSave();"></div>
+            <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold" style="font-size:15px;">10</span></div>
+            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" style="width:45px;" onchange="fastCalc(); autoSave();"></div>
+            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" style="width:45px;" onchange="fastCalc(); autoSave();"></div>
             <div id="strain_alert" class="alert-box" style="border:none;">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
           </div>
         </div>
@@ -460,18 +460,18 @@
         <div class="box">
           <div class="box-title">Скорость Перемещения</div>
           <div class="box-content" style="padding-top: 4px; gap: 0;">
-            <div id="overencumber_alert" class="alert-box" style="display:none; font-weight:bold; width:100%; margin-bottom:5px;">[!] ПЕРЕГРУЗ (СКОРОСТЬ 2М)</div>
+            <div id="overencumber_alert" class="alert-box" style="display:none; font-weight:bold; width:100%; margin-bottom:4px;">[!] ПЕРЕГРУЗ (СКОРОСТЬ 2М)</div>
             
             <div class="inv-item-card" style="border:none; margin-bottom:0;">
-              <div class="val-interactive" onclick="toggleExpand('speed_details')" style="justify-content:center; padding:10px 0;">
-                <span class="interactive-text" style="font-size:15px; font-weight:bold; text-transform:uppercase; margin-right:15px;">Скорость</span>
-                <span id="spd_main_display" style="font-size:24px; font-weight:bold; color:var(--accent);">10 м</span>
+              <div class="val-interactive" onclick="toggleExpand('speed_details')" style="justify-content:center; padding:8px 0;">
+                <span class="interactive-text" style="font-size:14px; font-weight:bold; text-transform:uppercase; margin-right:10px;">Скорость</span>
+                <span id="spd_main_display" style="font-size:20px; font-weight:bold; color:var(--accent);">10 м</span>
               </div>
-              <div id="speed_details" class="expandable" style="background:#0e0f12; border-radius:4px;">
+              <div id="speed_details" class="expandable" style="background:#0e0f12; border-radius:3px;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" id="spd_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">-</span></div>
-                  <div class="calc-col"><input type="number" id="spd_gear" value="0" readonly title="Снаряжение"><span class="calc-label">Снаряж</span></div>
+                  <div class="calc-col"><input type="number" id="spd_gear" value="0" readonly title="Снаряжение"><span class="calc-label">Штраф</span></div>
                   <div class="calc-col"><span class="math-sign">-</span></div>
                   <div class="calc-col"><input type="number" id="spd_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
                   <div class="calc-col"><span class="math-sign">=</span></div>
@@ -489,16 +489,16 @@
           <div class="box-title">Базовые Навыки</div>
           <div class="box-content">
             <div class="flex-row">
-              <span>Стрельба (Shoot) <span class="roll-btn" onclick="rollUniversal('sk_shoot', 'sk_shoot', event)">🎲</span></span>
-              <input type="number" id="sk_shoot" value="0" onchange="autoSave()">
+              <span>Стрельба (Shoot) <span class="roll-btn" onclick="rollSkill('sk_shoot', 'dex', event)">🎲</span></span>
+              <input type="number" id="sk_shoot" value="0" style="width:40px;" onchange="autoSave()">
             </div>
             <div class="flex-row">
-              <span>Взлом (Program) <span class="roll-btn" onclick="rollUniversal('sk_prog', 'sk_prog', event)">🎲</span></span>
-              <input type="number" id="sk_prog" value="0" onchange="autoSave()">
+              <span>Взлом (Program) <span class="roll-btn" onclick="rollSkill('sk_prog', 'int', event)">🎲</span></span>
+              <input type="number" id="sk_prog" value="0" style="width:40px;" onchange="autoSave()">
             </div>
             <div class="flex-row">
-              <span>Ремонт (Fix) <span class="roll-btn" onclick="rollUniversal('sk_fix', 'sk_fix', event)">🎲</span></span>
-              <input type="number" id="sk_fix" value="0" onchange="autoSave()">
+              <span>Ремонт (Fix) <span class="roll-btn" onclick="rollSkill('sk_fix', 'int', event)">🎲</span></span>
+              <input type="number" id="sk_fix" value="0" style="width:40px;" onchange="autoSave()">
             </div>
           </div>
         </div>
@@ -506,8 +506,8 @@
         <div class="box panic-box">
           <div class="box-title panic-title">Психометрия (Alien RPG)</div>
           <div class="box-content">
-            <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" class="stress-input" onchange="autoSave()"></div>
-            <button class="panic-btn" onclick="rollUniversal('panic', null, event)">БРОСОК ПАНИКИ 🎲</button>
+            <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" style="width:40px;" class="stress-input" onchange="autoSave()"></div>
+            <button class="panic-btn" onclick="rollPanic(event)">БРОСОК ПАНИКИ 🎲</button>
             <div id="panic_log" class="panic-log"></div>
           </div>
         </div>
@@ -517,7 +517,7 @@
           <div class="box-content" style="gap: 4px;">
             <div class="flex-row">
               <input type="text" id="counter_name" placeholder="Название (напр. Удача)" style="flex: 1; font-weight:bold; text-align:left; border:none; border-bottom:1px solid #333;" onchange="autoSave()" spellcheck="false" autocomplete="off">
-              <input type="number" id="counter_val" placeholder="0" style="width: 50px; font-weight:bold; color:var(--accent);" onchange="autoSave()" autocomplete="off">
+              <input type="number" id="counter_val" placeholder="0" style="width: 45px; font-weight:bold; color:var(--accent);" onchange="autoSave()" autocomplete="off">
             </div>
             <textarea id="counter_desc" placeholder="Описание или условия..." rows="2" onchange="autoSave()" spellcheck="false"></textarea>
           </div>
@@ -528,16 +528,14 @@
 
   <!-- ВКЛАДКА 2: СНАРЯЖЕНИЕ -->
   <div id="viewInv" style="display: none;">
-    
-    <!-- ОБЩАЯ СВОДКА СНАРЯЖЕНИЯ НАВЕРХУ -->
-    <div class="box" style="margin-bottom: 15px;">
+    <div class="box" style="margin-bottom: 8px;">
       <div class="box-title">Сводка Снаряжения</div>
-      <div class="box-content" style="padding-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div class="box-content" style="padding: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
         
         <div class="inv-item-card" style="border:none; margin:0;">
           <div class="val-interactive" onclick="toggleExpand('weight_total_details')" style="justify-content:center;">
-            <span class="interactive-text" style="font-size:15px; font-weight:bold; margin-right:10px;">ОБЩИЙ ВЕС</span>
-            <span id="top_weight_display" style="font-size:20px; font-weight:bold; color:#fff;">0 / 20 кг</span>
+            <span class="interactive-text" style="font-size:13px; font-weight:bold; margin-right:8px;">ОБЩИЙ ВЕС</span>
+            <span id="top_weight_display" style="font-size:16px; font-weight:bold; color:#fff;">0 / 20 кг</span>
           </div>
           <div id="weight_total_details" class="expandable" style="background:#0e0f12; border-top:1px dashed #20232a;">
             <div class="calc-row">
@@ -545,15 +543,15 @@
               <div class="calc-col"><span class="math-sign">+</span></div>
               <div class="calc-col"><input type="number" id="carry_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
               <div class="calc-col"><span class="math-sign">=</span></div>
-              <div class="calc-col"><input type="number" id="carry_total" readonly class="accent-bold"><span class="calc-label">Лимит (кг)</span></div>
+              <div class="calc-col"><input type="number" id="carry_total" readonly class="accent-bold"><span class="calc-label">Лимит</span></div>
             </div>
           </div>
         </div>
 
         <div class="inv-item-card" style="border:none; margin:0;">
           <div class="val-interactive" onclick="toggleExpand('gear_penalty_details')" style="justify-content:center;">
-            <span class="interactive-text" style="font-size:15px; font-weight:bold; margin-right:10px;">ШТРАФ СКОРОСТИ</span>
-            <span id="top_speed_display" style="font-size:20px; font-weight:bold; color:var(--accent);">0 м</span>
+            <span class="interactive-text" style="font-size:13px; font-weight:bold; margin-right:8px;">ШТРАФ СКОРОСТИ</span>
+            <span id="top_speed_display" style="font-size:16px; font-weight:bold; color:var(--accent);">0 м</span>
           </div>
           <div id="gear_penalty_details" class="expandable" style="background:#0e0f12; border-top:1px dashed #20232a;">
             <div class="calc-row">
@@ -576,9 +574,9 @@
         <div class="box">
           <div class="box-title">Броня (Stopping Power)</div>
           <div class="box-content">
-            <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_head" value="10" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
-            <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_torso" value="15" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
-            <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:4px;"><input type="number" id="sp_limb" value="12" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
+            <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_head" value="10" style="width:40px;" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
+            <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_torso" value="15" style="width:40px;" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
+            <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_limb" value="12" style="width:40px;" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
           </div>
         </div>
 
@@ -588,15 +586,15 @@
             <span class="sub-label">КРУПНЫЕ ПРЕДМЕТЫ:</span>
             <div class="flex-row">
               <input type="text" id="mag_1" placeholder="Оружие 1" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_1_wt" placeholder="кг" onchange="fastCalc(); autoSave();">
+              <input type="number" id="mag_1_wt" placeholder="кг" style="width:45px;" onchange="fastCalc(); autoSave();">
             </div>
             <div class="flex-row">
               <input type="text" id="mag_2" placeholder="Оружие 2" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_2_wt" placeholder="кг" onchange="fastCalc(); autoSave();">
+              <input type="number" id="mag_2_wt" placeholder="кг" style="width:45px;" onchange="fastCalc(); autoSave();">
             </div>
             <div class="flex-row">
               <input type="text" id="mag_3" placeholder="Спецсредство" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_3_wt" placeholder="кг" onchange="fastCalc(); autoSave();">
+              <input type="number" id="mag_3_wt" placeholder="кг" style="width:45px;" onchange="fastCalc(); autoSave();">
             </div>
           </div>
         </div>
@@ -606,24 +604,22 @@
         <div class="box">
           <div class="box-title">Разгрузочная система (РПС)</div>
           <div class="box-content">
-            <div class="flex-row" style="margin-bottom: 5px; flex-wrap: wrap;">
-              <div id="vest_config_view" style="flex:1; font-size:12px; color:var(--text-muted);">
-                <span id="vest_name_display" style="color:#fff; font-weight:bold; font-size:14px; margin-right:10px; text-transform:uppercase;">СТАНДАРТНАЯ РПС</span><br>
+            <div class="flex-row" style="margin-bottom: 4px;">
+              <div id="vest_config_view" style="flex:1; font-size:11px; color:var(--text-muted); overflow:hidden;">
+                <span id="vest_name_display" style="color:#fff; font-weight:bold; font-size:12px; text-transform:uppercase;">СТАНДАРТНАЯ РПС</span><br>
                 Слоты: <span id="vest_slots_display" style="color:#fff;">4</span> | Штраф: <span id="vest_penalty_display" style="color:var(--accent);">0</span>
               </div>
-              <div id="vest_config_edit" style="flex:1; display:none; gap:4px; align-items:center; flex-wrap: wrap;">
-                <input type="text" id="vest_name" value="Стандартная РПС" placeholder="Название..." style="flex:1; padding:2px; min-width: 100px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
-                <span style="font-size:10px; color:var(--text-muted);">СЛОТЫ:</span> 
-                <input type="number" id="vest_slots" value="4" style="padding:2px; width:40px;" onchange="updateVestLimit(); fastCalc(); autoSave();">
-                <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span> 
-                <input type="number" id="vest_penalty" value="0" style="padding:2px; width:40px;" onchange="fastCalc(); autoSave();">
+              <div id="vest_config_edit" style="flex:1; display:none; gap:3px; align-items:center;">
+                <input type="text" id="vest_name" value="Стандартная РПС" placeholder="Имя..." style="flex:1; padding:2px; min-width:60px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
+                <input type="number" id="vest_slots" value="4" style="width:32px; padding:2px;" title="Слоты" onchange="updateVestLimit(); fastCalc(); autoSave();">
+                <input type="number" id="vest_penalty" value="0" style="width:32px; padding:2px;" title="Штраф" onchange="fastCalc(); autoSave();">
               </div>
-              <button id="vest_toggle_btn" onclick="toggleVestLock()" style="padding: 2px 6px; font-size: 16px; margin-left: 4px; flex-shrink: 0;" title="Разблокировать редактирование">🔒</button>
+              <button id="vest_toggle_btn" onclick="toggleVestLock()" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;" title="Редактировать">🔒</button>
             </div>
             
-            <div class="flex-row" style="font-size:11px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; margin-top: 6px;">
+            <div class="flex-row" style="font-size:10px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
               <span style="flex:1; letter-spacing:1px;">ПОДСУМКИ (МАКС 1КГ)</span>
-              <span>ВЕС: <span id="vest_status" class="accent-bold" style="font-size:14px; margin-left:4px;">0</span> кг</span>
+              <span>ВЕС: <span id="vest_status" class="accent-bold" style="font-size:12px;">0</span> кг</span>
             </div>
             
             <div class="drag-area" id="vest_grid" ondrop="dropToVest(event)" ondragover="allowDrop(event)"></div>
@@ -635,27 +631,25 @@
         <div class="box">
           <div class="box-title">Инвентарь / Рюкзак</div>
           <div class="box-content">
-            <div class="flex-row" style="margin-bottom: 4px; flex-wrap: wrap;">
-              <div id="bag_config_view" style="flex:1; font-size:12px; color:var(--text-muted);">
-                <span id="bag_name_display" style="color:#fff; font-weight:bold; font-size:14px; margin-right:10px; text-transform:uppercase;">РЮКЗАК ОДНОЛЯМКА</span><br>
+            <div class="flex-row" style="margin-bottom: 4px;">
+              <div id="bag_config_view" style="flex:1; font-size:11px; color:var(--text-muted); overflow:hidden;">
+                <span id="bag_name_display" style="color:#fff; font-weight:bold; font-size:12px; text-transform:uppercase;">РЮКЗАК ОДНОЛЯМКА</span><br>
                 Лимит: <span id="bag_limit_display" style="color:#fff;">5</span> кг | Штраф: <span id="bag_penalty_display" style="color:var(--accent);">0</span>
               </div>
-              <div id="bag_config_edit" style="flex:1; display:none; gap:4px; align-items:center; flex-wrap: wrap;">
-                <input type="text" id="bag_name" value="Рюкзак однолямка" placeholder="Название..." style="flex:1; padding:2px; min-width: 100px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
-                <span style="font-size:10px; color:var(--text-muted);">ЛИМИТ(КГ):</span> 
-                <input type="number" id="bag_limit" value="5" style="padding:2px; width:40px;" onchange="fastCalc(); autoSave();">
-                <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span> 
-                <input type="number" id="bag_penalty" value="0" style="padding:2px; width:40px;" onchange="fastCalc(); autoSave();">
+              <div id="bag_config_edit" style="flex:1; display:none; gap:3px; align-items:center;">
+                <input type="text" id="bag_name" value="Рюкзак однолямка" placeholder="Имя..." style="flex:1; padding:2px; min-width:60px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
+                <input type="number" id="bag_limit" value="5" style="width:32px; padding:2px;" title="Лимит (кг)" onchange="fastCalc(); autoSave();">
+                <input type="number" id="bag_penalty" value="0" style="width:32px; padding:2px;" title="Штраф" onchange="fastCalc(); autoSave();">
               </div>
-              <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size: 16px; margin-left: 4px; flex-shrink: 0;" title="Разблокировать редактирование">🔒</button>
+              <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;" title="Редактировать">🔒</button>
             </div>
             
-            <div class="flex-row" style="font-size:11px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; margin-top: 6px;">
-              <span style="flex:1; letter-spacing:1px; margin-left:25px;">ПРЕДМЕТЫ</span>
-              <span style="width: 40px; text-align:center;">КОЛ</span>
-              <span style="width: 40px; text-align:center;">ВЕС</span>
-              <span style="width: 45px; text-align:center;">ИТОГ</span>
-              <span style="width: 20px;"></span>
+            <div class="flex-row" style="font-size:10px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
+              <span style="flex:1; letter-spacing:1px; margin-left:22px;">ПРЕДМЕТЫ</span>
+              <span style="width: 35px; text-align:center;">КОЛ</span>
+              <span style="width: 35px; text-align:center;">ВЕС</span>
+              <span style="width: 40px; text-align:center;">ИТОГ</span>
+              <span style="width: 16px;"></span>
             </div>
 
             <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
@@ -665,15 +659,15 @@
     </main>
   </div>
 
+  <!-- ВКЛАДКА 3: ШТАБ -->
   <div id="viewAdmin" style="display: none;">
     <div class="box">
       <div class="box-title">МОНИТОРИНГ ЗВЕНА // БАЗА ДАННЫХ</div>
       <div class="box-content">
-        <div class="flex-row" style="margin-bottom: 10px;">
+        <div class="flex-row" style="margin-bottom: 8px;">
           <span>СВОДКА СОСТОЯНИЯ ВСЕХ УЧЕТНЫХ ЗАПИСЕЙ</span>
           <button onclick="loadAdminRoster()">[ ОБНОВИТЬ СПИСОК ]</button>
         </div>
-        
         <div id="adminTableContainer">
             <div style="text-align:center; padding: 20px; color: var(--text-muted);">Загрузка данных штаба...</div>
         </div>
@@ -706,14 +700,11 @@
   let vestItemsArray = [null, null, null, null, null, null, null, null]; 
   let invLocked = true;
   let vestLocked = true;
-  let isPolling = false;
 
-  const DOM = {};
-  function initDOM() {
-    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'vest_name', 'vest_name_display', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'bag_name', 'bag_name_display', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle', 'armor_penalty', 'sk_shoot', 'sk_prog', 'sk_fix', 'stress'];
-    ids.forEach(id => { DOM[id] = document.getElementById(id); });
-  }
-  document.addEventListener("DOMContentLoaded", initDOM);
+  // Безопасные функции работы с DOM
+  const getVal = (id, def = 0) => { const el = document.getElementById(id); return el ? (parseFloat(el.value) || def) : def; };
+  const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+  const setText = (id, txt) => { const el = document.getElementById(id); if (el) el.innerText = txt; };
 
   function toggleExpand(id) {
     const el = document.getElementById(id);
@@ -731,21 +722,70 @@
     document.getElementById('sidePanel').classList.toggle('open');
   }
 
-  let delType = '', delId = '', delName = '';
+  // --- СИСТЕМА БРОСКОВ d20 ---
+  function getMod(val) {
+    if (val <= 3) return -2;
+    if (val <= 7) return -1;
+    if (val <= 13) return 0;
+    if (val <= 17) return 1;
+    return 2;
+  }
 
+  function rollD20() {
+    return Math.floor(Math.random() * 20) + 1;
+  }
+
+  function rollUniversal(statCode, elementId, event) {
+    if (event) event.stopPropagation();
+    const d20 = rollD20();
+    
+    if (statCode.startsWith('sv_')) {
+      const target = parseInt(document.getElementById(statCode)?.value) || 15;
+      const isSuccess = (d20 === 20 || (d20 !== 1 && d20 >= target)) ? 1 : 0;
+      window.location.hash = `#roll?type=save&code=${statCode}&d20=${d20}&tgt=${target}&res=${isSuccess}&t=${Date.now()}`;
+    } else {
+      const statVal = parseInt(document.getElementById(statCode + '_display')?.innerText) || 10;
+      const mod = getMod(statVal);
+      const tot = d20 + mod;
+      window.location.hash = `#roll?type=stat&code=${statCode}&d20=${d20}&mod=${mod}&tot=${tot}&t=${Date.now()}`;
+    }
+    setTimeout(() => { window.location.hash = ""; }, 250);
+  }
+
+  function rollSkill(skillCode, associatedStat, event) {
+    if (event) event.stopPropagation();
+    const d20 = rollD20();
+    const skillVal = parseInt(document.getElementById(skillCode)?.value) || 0;
+    const statVal = parseInt(document.getElementById(associatedStat + '_display')?.innerText) || 10;
+    const mod = getMod(statVal);
+    const tot = d20 + skillVal + mod;
+    window.location.hash = `#roll?type=skill&code=${skillCode}&d20=${d20}&sk=${skillVal}&mod=${mod}&tot=${tot}&t=${Date.now()}`;
+    setTimeout(() => { window.location.hash = ""; }, 250);
+  }
+
+  function rollPanic(event) {
+    if (event) event.stopPropagation();
+    const d20 = rollD20();
+    const stress = parseInt(document.getElementById('stress')?.value) || 0;
+    const tot = d20 + stress;
+    const isPanic = (tot >= 15) ? 1 : 0;
+    const log = document.getElementById('panic_log');
+    if (log) log.innerText = `d20 (${d20}) + Стресс (${stress}) = ${tot} -> ${isPanic ? 'ПАНИКА!' : 'СПОКОЕН'}`;
+    window.location.hash = `#roll?type=panic&d20=${d20}&str=${stress}&tot=${tot}&pan=${isPanic}&t=${Date.now()}`;
+    setTimeout(() => { window.location.hash = ""; }, 250);
+  }
+
+  // --- МОДАЛКА УДАЛЕНИЯ ---
+  let delType = '', delId = '', delName = '';
   function openDeleteModal(type, id, name) {
     delType = type; delId = id; delName = name;
-    document.getElementById('deleteModalText').innerText = type === 'user' ? `Вы точно хотите удалить учетную запись и все её листы?` : `Вы точно хотите удалить персонажа?`;
+    document.getElementById('deleteModalText').innerText = type === 'user' ? `Удалить учетку и всех её бойцов?` : `Удалить бойца?`;
     document.getElementById('deleteModalTargetName').innerText = name;
     document.getElementById('deleteConfirmInput').value = '';
     document.getElementById('deleteConfirmBtn').disabled = true;
     document.getElementById('deleteModal').style.display = 'flex';
   }
-
-  function closeDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'none';
-  }
-
+  function closeDeleteModal() { document.getElementById('deleteModal').style.display = 'none'; }
   function checkDeleteMatch() {
     const input = document.getElementById('deleteConfirmInput').value.trim();
     document.getElementById('deleteConfirmBtn').disabled = (input !== delName);
@@ -753,52 +793,26 @@
 
   async function executeDelete() {
     try {
-      if(delType === 'sheet') {
+      if (delType === 'sheet') {
         await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${delId}`, { method: 'DELETE', headers: HEADERS });
         if (currentSheetId === delId) currentSheetId = null;
         closeDeleteModal();
         await refreshCharacterList();
-        if(document.getElementById('viewAdmin').style.display === 'block') loadAdminRoster();
+        if (document.getElementById('viewAdmin').style.display === 'block') loadAdminRoster();
         else await loadData();
       } else if (delType === 'user') {
         await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?owner=eq.${encodeURIComponent(delName)}`, { method: 'DELETE', headers: HEADERS });
         await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(delName)}`, { method: 'DELETE', headers: HEADERS });
         closeDeleteModal();
-        if(currentUser.username === delName) logout();
+        if (currentUser.username === delName) logout();
         else loadAdminRoster();
       }
     } catch(e) {
-      console.error("Ошибка удаления:", e);
-      alert("Ошибка удаления. Проверьте сеть.");
+      alert("Ошибка сети при удалении.");
     }
   }
 
-  const statNamesDict = {
-    'str': 'СИЛА', 'dex': 'ЛОВКОСТЬ', 'con': 'ТЕЛО', 'int': 'ИНТЕЛЛЕКТ', 'wis': 'МУДРОСТЬ', 'cha': 'ХАРИЗМА',
-    'sv_phys': 'СПАС: СТОЙКОСТЬ', 'sv_eva': 'СПАС: РЕФЛЕКСЫ', 'sv_men': 'СПАС: ВОЛЯ',
-    'sk_shoot': 'НАВЫК: СТРЕЛЬБА', 'sk_prog': 'НАВЫК: ВЗЛОМ', 'sk_fix': 'НАВЫК: РЕМОНТ', 'panic': 'БРОСОК ПАНИКИ'
-  };
-
-  function rollUniversal(statCode, elementId, event) {
-    if (event) event.stopPropagation();
-    let val = 0;
-    if (elementId) {
-        const el = document.getElementById(elementId);
-        if (el) {
-            val = parseInt(el.value) || parseInt(el.innerText) || 0;
-        }
-    } else {
-        val = parseInt(document.getElementById('stress').value) || 0;
-    }
-    
-    window.location.hash = `#roll?stat=${statCode}&val=${val}&t=${Date.now()}`;
-    
-    const log = document.getElementById('panic_log');
-    if(log) log.innerText = `Бросок: ${statNamesDict[statCode] || statCode} [Значение: ${val}]`;
-    
-    setTimeout(() => { window.location.hash = ""; }, 250);
-  }
-
+  // --- АВТОРИЗАЦИЯ ---
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
@@ -808,13 +822,11 @@
 
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=ilike.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`, { headers: HEADERS });
-      if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.length === 0) { errEl.innerText = 'Неверный позывной или пароль'; return; }
       setSessionUser(data[0]);
-    } catch(e) {
-      errEl.innerText = 'Сбой сети (CORS/TTS). Проверьте интернет.';
-    }
+    } catch(e) { errEl.innerText = 'Сбой сети (CORS/TTS).'; }
   }
 
   async function handleRegister() {
@@ -831,12 +843,9 @@
         headers: HEADERS,
         body: JSON.stringify({ username: u, password: p, role: assignedRole })
       });
-      
-      if (!res.ok) { errEl.innerText = 'Позывной уже занят или ошибка БД.'; return; }
-      setSessionUser({ username: u, role: assignedRole });
-    } catch(e) {
-      errEl.innerText = 'Сбой сети (CORS/TTS). Проверьте интернет.';
-    }
+      if (!res.ok) { errEl.innerText = 'Позывной уже занят.'; return; }
+      setSessionUser({ username: u, password: p, role: assignedRole });
+    } catch(e) { errEl.innerText = 'Сбой сети.'; }
   }
 
   function setSessionUser(user) {
@@ -845,13 +854,8 @@
     safeSetItem('vineta_user', JSON.stringify(user));
     document.getElementById('authModal').style.display = 'none';
     
-    const badge = document.getElementById('userBadge');
-    badge.innerText = `${user.username}`;
-
+    setText('userBadge', user.username);
     if (user.role === 'admin') {
-      badge.style.borderColor = 'var(--border-color)';
-      badge.style.color = 'var(--border-color)';
-      badge.style.background = '#2a0000';
       document.getElementById('tabAdminBtn').style.display = 'block';
       document.getElementById('sheetOwner').style.display = 'block';
     } else {
@@ -874,16 +878,11 @@
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(user.username)}&password=eq.${encodeURIComponent(user.password)}&select=*`, { headers: HEADERS });
         if (res.ok) {
-            const data = await res.json();
-            if (data.length > 0) {
-                setSessionUser(data[0]);
-                return;
-            }
+          const data = await res.json();
+          if (data.length > 0) { setSessionUser(data[0]); return; }
         }
         logout();
-      } catch (e) {
-        setSessionUser(user);
-      }
+      } catch (e) { setSessionUser(user); }
     } else {
       document.getElementById('authModal').style.display = 'flex';
     }
@@ -930,8 +929,8 @@
         const defaultId = Date.now().toString(36);
         list.push({ id: defaultId, name: 'Новый Боец', owner: currentUser.username });
         if (!currentSheetId && !isInspectingForeign) { 
-            currentSheetId = defaultId; 
-            currentSheetOwner = currentUser.username; 
+          currentSheetId = defaultId; 
+          currentSheetOwner = currentUser.username; 
         }
       } else if (!currentSheetId || (!list.some(x => x.id === currentSheetId) && !isInspectingForeign)) {
         currentSheetId = list[0].id; 
@@ -942,14 +941,14 @@
       let gridHTML = '';
 
       if (isInspectingForeign) {
-          const safeOwner = currentSheetOwner.replace(/'/g, "\\'");
-          const inspectedName = document.getElementById('charName').value || 'Чужой профиль';
-          gridHTML += `
-            <div class="char-card active" style="border-color:#38bdf8; box-shadow: inset 0 0 10px rgba(56,189,248,0.1);">
-              <div style="font-size:10px; color:#38bdf8; margin-bottom:2px; font-weight:bold;">ИНСПЕКТИРОВАНИЕ: ${safeOwner}</div>
-              <div class="char-name" title="${inspectedName}">${inspectedName}</div>
-            </div>
-          `;
+        const safeOwner = currentSheetOwner.replace(/'/g, "\\'");
+        const inspectedName = document.getElementById('charName').value || 'Чужой профиль';
+        gridHTML += `
+          <div class="char-card active" style="border-color:#38bdf8; box-shadow: inset 0 0 10px rgba(56,189,248,0.1);">
+            <div style="font-size:10px; color:#38bdf8; font-weight:bold;">ИНСПЕКТИРОВАНИЕ: ${safeOwner}</div>
+            <div class="char-name" title="${inspectedName}">${inspectedName}</div>
+          </div>
+        `;
       }
 
       list.forEach(c => {
@@ -966,36 +965,26 @@
         `;
       });
       panelList.innerHTML = gridHTML;
-
       safeSetItem('vineta_active_id', currentSheetId);
-      if (currentUser.role === 'admin') {
-        const ownerInput = document.getElementById('sheetOwner');
-        if (ownerInput) ownerInput.value = currentSheetOwner || '';
-      }
-    } catch(e) { console.warn("Сбой сайдбара", e); }
+      if (currentUser.role === 'admin') setVal('sheetOwner', currentSheetOwner || '');
+    } catch(e) {}
   }
 
   async function switchCharacter(id) {
-    try {
-        currentSheetId = id;
-        currentSheetOwner = currentUser.username;
-        safeSetItem('vineta_active_id', currentSheetId);
-        toggleSidePanel();
-        await loadData(true);
-        refreshCharacterList(); 
-        switchTab('sheet');
-        
-        if(DOM.mainHeaderTitle) {
-          const originalColor = DOM.mainHeaderTitle.style.color;
-          DOM.mainHeaderTitle.innerText = 'ПРОФИЛЬ УСПЕШНО ЗАГРУЖЕН';
-          DOM.mainHeaderTitle.style.color = '#4ade80';
-          setSyncStatus('УСПЕШНО', '#4ade80');
-          setTimeout(() => {
-            DOM.mainHeaderTitle.innerText = 'AEON // ТЕРМИНАЛ';
-            DOM.mainHeaderTitle.style.color = originalColor;
-          }, 2000);
-        }
-    } catch(e) { alert('Ошибка при смене профиля: ' + e.message); }
+    currentSheetId = id;
+    currentSheetOwner = currentUser.username;
+    safeSetItem('vineta_active_id', currentSheetId);
+    toggleSidePanel();
+    await loadData(true);
+    refreshCharacterList(); 
+    switchTab('sheet');
+    
+    setText('mainHeaderTitle', 'ПРОФИЛЬ УСПЕШНО ЗАГРУЖЕН');
+    document.getElementById('mainHeaderTitle').style.color = '#4ade80';
+    setTimeout(() => {
+      setText('mainHeaderTitle', 'AEON // ТЕРМИНАЛ');
+      document.getElementById('mainHeaderTitle').style.color = 'var(--border-color)';
+    }, 1800);
   }
 
   async function createNewCharacter() {
@@ -1004,18 +993,15 @@
     currentSheetId = Date.now().toString(36);
     currentSheetOwner = currentUser.username;
     safeSetItem('vineta_active_id', currentSheetId);
-    
     resetForm();
-    document.getElementById('charName').value = name;
-    if (currentUser.role === 'admin') document.getElementById('sheetOwner').value = currentSheetOwner;
-    
+    setVal('charName', name);
     await saveData(false);
     await refreshCharacterList();
   }
 
   function onNameChange() {
     autoSave();
-    setTimeout(refreshCharacterList, 1500); 
+    setTimeout(refreshCharacterList, 1200); 
   }
 
   function changeOwner() {
@@ -1033,13 +1019,12 @@
       if (inp.id === 'sheetOwner' || inp.id.startsWith('login') || inp.id === 'deleteConfirmInput') return; 
       if (inp.type === 'number') {
         if (inp.id.includes('hp')) inp.value = 20;
-        else if (inp.id.includes('sp_') || inp.id === 'spd_base' || inp.id === 'spd_base_top') inp.value = 10;
-        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc') || inp.id.includes('_wt') || inp.id.includes('penalty')) inp.value = 0;
-        else if (inp.id.includes('_base')) inp.value = 10;
-        else if (inp.id.includes('_bonus')) inp.value = 0;
+        else if (inp.id.includes('sp_') || inp.id === 'spd_base') inp.value = 10;
         else if (inp.id === 'vest_slots') inp.value = 4;
         else if (inp.id === 'bag_limit') inp.value = 5;
-        else inp.value = 10;
+        else if (inp.id.includes('penalty') || inp.id.includes('misc') || inp.id.includes('_wt')) inp.value = 0;
+        else if (inp.id.includes('_base')) inp.value = 10;
+        else inp.value = 0;
       } else {
         if (inp.id === 'vest_name') inp.value = 'Стандартная РПС';
         else if (inp.id === 'bag_name') inp.value = 'Рюкзак однолямка';
@@ -1053,231 +1038,175 @@
 
   async function loadAdminRoster() {
     const container = document.getElementById('adminTableContainer');
-    
-    if (!container.innerHTML.includes('admin-account-group')) {
-        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос базы данных (REST API)...</div>';
-    }
-    
     try {
-        const uRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?select=username`, { headers: HEADERS });
-        const sRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?select=*&order=owner.asc`, { headers: HEADERS });
+      const uRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?select=username`, { headers: HEADERS });
+      const sRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?select=*&order=owner.asc`, { headers: HEADERS });
+      const usersData = await uRes.json();
+      const sheetsData = await sRes.json();
 
-        if (!uRes.ok || !sRes.ok) throw new Error("Сетевая ошибка REST API");
+      const grouped = {};
+      if (usersData) usersData.forEach(u => { grouped[u.username] = []; });
+      if (sheetsData) {
+        sheetsData.forEach(row => {
+          const owner = (row.owner && row.owner.trim() !== '') ? row.owner : 'Неизвестно';
+          let foundKey = Object.keys(grouped).find(k => k.toLowerCase() === owner.toLowerCase());
+          if (!foundKey) { foundKey = owner; grouped[foundKey] = []; }
+          grouped[foundKey].push(row);
+        });
+      }
 
-        const usersData = await uRes.json();
-        const sheetsData = await sRes.json();
-
-        const grouped = {};
-        if (usersData) { usersData.forEach(u => { grouped[u.username] = []; }); }
-        
-        if (sheetsData) {
-            sheetsData.forEach(row => {
-                const owner = (row.owner && row.owner.trim() !== '') ? row.owner : 'Неизвестно';
-                let foundKey = Object.keys(grouped).find(k => k.toLowerCase() === owner.toLowerCase());
-                if (!foundKey) { foundKey = owner; grouped[foundKey] = []; }
-                grouped[foundKey].push(row);
-            });
-        }
-
-        let html = '';
-        for (const [owner, rows] of Object.entries(grouped)) {
-            const safeOwner = owner.replace(/'/g, "\\'");
+      let html = '';
+      for (const [owner, rows] of Object.entries(grouped)) {
+        const safeOwner = owner.replace(/'/g, "\\'");
+        html += `
+          <div class="admin-account-group">
+            <h3>УЧЕТНАЯ ЗАПИСЬ: ${owner} <button class="btn-danger" style="font-size:9px;" onclick="openDeleteModal('user', '${safeOwner}', '${safeOwner}')">УДАЛИТЬ УЧЕТКУ</button></h3>
+            <table class="admin-table">
+              <thead><tr><th>ПОЗЫВНОЙ</th><th>МОДЕЛЬ</th><th>HP</th><th>СТРЕСС</th><th>SP (Г/Т/К)</th><th>ДЕЙСТВИЯ</th></tr></thead>
+              <tbody>`;
+        if (rows.length === 0) {
+          html += `<tr><td colspan="6" style="color:var(--text-muted);">Нет листов</td></tr>`;
+        } else {
+          rows.forEach(r => {
+            const d = r.data || {};
+            const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
+            const safeName = cName.replace(/'/g, "\\'");
             html += `
-            <div class="admin-account-group">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px; margin-bottom: 12px;">
-                  <h3 style="margin:0; border:none; padding:0; text-transform:none;">УЧЕТНАЯ ЗАПИСЬ: ${owner}</h3>
-                  <button class="btn-danger" style="font-size:10px; padding: 2px 6px;" onclick="openDeleteModal('user', '${safeOwner}', '${safeOwner}')">УДАЛИТЬ УЧЕТКУ</button>
-                </div>
-                <table class="admin-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 25%;">ПОЗЫВНОЙ</th>
-                      <th style="width: 15%;">МОДЕЛЬ</th>
-                      <th style="width: 15%;">HP</th>
-                      <th style="width: 15%;">СТРЕСС</th>
-                      <th style="width: 15%;">SP (Г/Т/К)</th>
-                      <th style="width: 15%;">ДЕЙСТВИЯ</th>
-                    </tr>
-                  </thead>
-                  <tbody>`;
-            
-            if (rows.length === 0) {
-                html += `<tr><td colspan="6" style="color:var(--text-muted);">Нет зарегистрированных листов</td></tr>`;
-            } else {
-                rows.forEach(r => {
-                    const d = r.data || {};
-                    const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
-                    const safeName = cName.replace(/'/g, "\\'");
-                    const safeOwnerRow = (r.owner || '').replace(/'/g, "\\'");
-                    
-                    html += `
-                        <tr>
-                            <td style="font-weight:bold; color:#fff;">${cName}</td>
-                            <td>${d.charModel || '—'}</td>
-                            <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
-                            <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
-                            <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
-                            <td>
-                              <div style="display:flex; gap:4px; justify-content:center;">
-                                <button onclick="inspectCharacter('${r.id}', '${safeOwnerRow}')">ОТКРЫТЬ</button>
-                                <button class="btn-danger" onclick="openDeleteModal('sheet', '${r.id}', '${safeName}')">✕</button>
-                              </div>
-                            </td>
-                        </tr>`;
-                });
-            }
-            html += `</tbody></table></div>`;
+              <tr>
+                <td style="font-weight:bold; color:#fff;">${cName}</td>
+                <td>${d.charModel || '—'}</td>
+                <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
+                <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
+                <td>${d.sp_head || 0}/${d.sp_torso || 0}/${d.sp_limb || 0}</td>
+                <td>
+                  <button onclick="inspectCharacter('${r.id}', '${safeOwner}')">ОТКРЫТЬ</button>
+                  <button class="btn-danger" onclick="openDeleteModal('sheet', '${r.id}', '${safeName}')">✕</button>
+                </td>
+              </tr>`;
+          });
         }
-        
-        if (html === '') html = '<div style="text-align:center; color: var(--text-muted);">База данных пуста.</div>';
-        container.innerHTML = html;
+        html += `</tbody></table></div>`;
+      }
+      container.innerHTML = html || '<div style="text-align:center; color:var(--text-muted);">База пуста.</div>';
     } catch(e) {
-        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба: ${e.message}</div>`;
+      container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба.</div>`;
     }
   }
 
   async function inspectCharacter(id, owner) {
-    try {
-        currentSheetId = id;
-        currentSheetOwner = owner;
-        safeSetItem('vineta_active_id', id);
-        await loadData(true);
-        switchTab('sheet');
-        refreshCharacterList(); 
-        
-        if(DOM.mainHeaderTitle) {
-          const originalColor = DOM.mainHeaderTitle.style.color;
-          DOM.mainHeaderTitle.innerText = 'ПРОФИЛЬ УСПЕШНО ЗАГРУЖЕН';
-          DOM.mainHeaderTitle.style.color = '#4ade80';
-          setSyncStatus('УСПЕШНО', '#4ade80');
-          setTimeout(() => {
-            DOM.mainHeaderTitle.innerText = 'AEON // ТЕРМИНАЛ';
-            DOM.mainHeaderTitle.style.color = originalColor;
-          }, 2000);
-        }
-    } catch(e) { alert('Ошибка при открытии профиля: ' + e.message); }
+    currentSheetId = id;
+    currentSheetOwner = owner;
+    safeSetItem('vineta_active_id', id);
+    await loadData(true);
+    switchTab('sheet');
+    refreshCharacterList(); 
+    
+    setText('mainHeaderTitle', 'ПРОФИЛЬ УСПЕШНО ЗАГРУЖЕН');
+    document.getElementById('mainHeaderTitle').style.color = '#4ade80';
+    setTimeout(() => {
+      setText('mainHeaderTitle', 'AEON // ТЕРМИНАЛ');
+      document.getElementById('mainHeaderTitle').style.color = 'var(--border-color)';
+    }, 1800);
   }
 
-  function getMod(val) {
-    if (val <= 3) return -2; if (val <= 7) return -1; if (val <= 13) return 0; if (val <= 17) return 1; return 2;
-  }
-
+  // --- ПЕРЕРАСЧЕТЫ (100% БЕЗОПАСНЫЙ) ---
   function fastCalc() {
-    if (!DOM.str_base) initDOM();
-
-    const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    const stats = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
-    statIds.forEach(id => {
-      const base = parseInt(DOM[id + '_base'].value) || 0;
-      const bonus = parseInt(DOM[id + '_bonus'].value) || 0;
-      const total = base + bonus;
-      
-      if(DOM[id + '_display']) DOM[id + '_display'].innerText = total;
-      
-      vals[id] = total;
-      const mod = getMod(total);
-      if(DOM[id + '_m']) DOM[id + '_m'].innerText = (mod >= 0 ? '+' : '') + mod;
+    
+    stats.forEach(s => {
+      const base = getVal(s + '_base', 10);
+      const bonus = getVal(s + '_bonus', 0);
+      const tot = base + bonus;
+      vals[s] = tot;
+      setText(s + '_display', tot);
+      const m = getMod(tot);
+      setText(s + '_m', (m >= 0 ? '+' : '') + m);
     });
 
     const physMod = Math.max(getMod(vals.str), getMod(vals.con));
     const evaMod  = Math.max(getMod(vals.dex), getMod(vals.int));
     const menMod  = Math.max(getMod(vals.wis), getMod(vals.cha));
 
-    DOM.sv_phys_mod.value = physMod;
-    DOM.sv_eva_mod.value = evaMod;
-    DOM.sv_men_mod.value = menMod;
+    setVal('sv_phys_mod', physMod);
+    setVal('sv_eva_mod', evaMod);
+    setVal('sv_men_mod', menMod);
 
-    const physMisc = parseInt(DOM.sv_phys_misc.value) || 0;
-    const evaMisc  = parseInt(DOM.sv_eva_misc.value) || 0;
-    const menMisc  = parseInt(DOM.sv_men_misc.value) || 0;
+    const svPhys = 15 - physMod + getVal('sv_phys_misc', 0);
+    const svEva  = 15 - evaMod + getVal('sv_eva_misc', 0);
+    const svMen  = 15 - menMod + getVal('sv_men_misc', 0);
 
-    DOM.sv_phys.value = 15 - physMod + physMisc;
-    DOM.sv_eva.value  = 15 - evaMod + evaMisc;
-    DOM.sv_men.value  = 15 - menMod + menMisc;
+    setVal('sv_phys', svPhys); setText('sv_phys_display', svPhys);
+    setVal('sv_eva', svEva); setText('sv_eva_display', svEva);
+    setVal('sv_men', svMen); setText('sv_men_display', svMen);
 
-    DOM.sv_phys_display.innerText = DOM.sv_phys.value;
-    DOM.sv_eva_display.innerText = DOM.sv_eva.value;
-    DOM.sv_men_display.innerText = DOM.sv_men.value;
+    setText('strain_limit', vals.con);
+    const perm = getVal('st_perm', 0);
+    const temp = getVal('st_temp', 0);
+    const strAlert = document.getElementById('strain_alert');
+    if (strAlert) strAlert.style.display = (perm + temp >= vals.con) ? 'block' : 'none';
 
-    DOM.strain_limit.innerText = vals.con;
-    const perm = parseInt(DOM.st_perm.value) || 0;
-    const temp = parseInt(DOM.st_temp.value) || 0;
-    DOM.strain_alert.style.display = (perm + temp >= vals.con) ? 'block' : 'none';
-
-    const maxHp = parseInt(DOM.hp_max.value) || 20;
-    const curHp = parseInt(DOM.hp_cur.value) || 0;
+    const maxHp = getVal('hp_max', 20);
+    const curHp = getVal('hp_cur', 20);
     const ratio = curHp / maxHp;
 
     document.querySelectorAll('.wound-track div').forEach(el => el.classList.remove('wound-active'));
-    if (curHp <= 0) document.getElementById('w_dead').classList.add('wound-active');
-    else if (ratio <= 0.25) document.getElementById('w_mortal').classList.add('wound-active');
-    else if (ratio <= 0.50) document.getElementById('w_critical').classList.add('wound-active');
-    else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
-    else document.getElementById('w_light').classList.add('wound-active');
+    if (curHp <= 0) document.getElementById('w_dead')?.classList.add('wound-active');
+    else if (ratio <= 0.25) document.getElementById('w_mortal')?.classList.add('wound-active');
+    else if (ratio <= 0.50) document.getElementById('w_critical')?.classList.add('wound-active');
+    else if (ratio <= 0.75) document.getElementById('w_serious')?.classList.add('wound-active');
+    else document.getElementById('w_light')?.classList.add('wound-active');
 
     const carryBase = vals.str + vals.con;
-    const carryMisc = parseInt(DOM.carry_misc.value) || 0;
-    const carryTotal = carryBase + carryMisc;
-    DOM.carry_base.value = carryBase;
-    DOM.carry_total.value = carryTotal;
+    const carryTotal = carryBase + getVal('carry_misc', 0);
+    setVal('carry_base', carryBase);
+    setVal('carry_total', carryTotal);
 
-    const spdBase = parseInt(DOM.spd_base.value) || 10;
-    DOM.spd_base_top.value = spdBase;
-    const spdMisc = Math.abs(parseInt(DOM.spd_misc.value) || 0); 
-    
-    const vestPenalty = Math.abs(parseInt(DOM.vest_penalty.value) || 0);
-    const bagPenalty = Math.abs(parseInt(DOM.bag_penalty.value) || 0);
-    const armorPenalty = Math.abs(parseInt(DOM.armor_penalty.value) || 0);
-
-    if (DOM.vest_name_display) DOM.vest_name_display.innerText = DOM.vest_name.value || 'РПС';
-    if (DOM.bag_name_display) DOM.bag_name_display.innerText = DOM.bag_name.value || 'РЮКЗАК';
-    if (DOM.vest_slots_display) DOM.vest_slots_display.innerText = DOM.vest_slots.value;
-    if (DOM.vest_penalty_display) DOM.vest_penalty_display.innerText = vestPenalty;
-    if (DOM.bag_limit_display) DOM.bag_limit_display.innerText = DOM.bag_limit.value;
-    if (DOM.bag_penalty_display) DOM.bag_penalty_display.innerText = bagPenalty;
-
+    // Штрафы скорости
+    const vestPenalty = Math.abs(getVal('vest_penalty', 0));
+    const bagPenalty = Math.abs(getVal('bag_penalty', 0));
+    const armorPenalty = Math.abs(getVal('armor_penalty', 0));
     const totalGearPenalty = vestPenalty + bagPenalty + armorPenalty;
-    DOM.spd_gear.value = totalGearPenalty;
-    DOM.penalty_vest.value = vestPenalty;
-    DOM.penalty_bag.value = bagPenalty;
-    DOM.penalty_total.value = totalGearPenalty; 
+
+    setVal('penalty_vest', vestPenalty);
+    setVal('penalty_bag', bagPenalty);
+    setVal('penalty_total', totalGearPenalty);
+    setVal('spd_gear', totalGearPenalty);
+    
+    setText('top_speed_display', totalGearPenalty + ' м');
+    setText('vest_slots_display', getVal('vest_slots', 4));
+    setText('vest_penalty_display', vestPenalty);
+    setText('bag_limit_display', getVal('bag_limit', 5));
+    setText('bag_penalty_display', bagPenalty);
 
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
-    const mag1Wt = parseFloat(DOM.mag_1_wt.value) || 0;
-    const mag2Wt = parseFloat(DOM.mag_2_wt.value) || 0;
-    const mag3Wt = parseFloat(DOM.mag_3_wt.value) || 0;
-    
-    let totalWeight = bagWeight + vestWeight + mag1Wt + mag2Wt + mag3Wt;
+    const magWt = getVal('mag_1_wt', 0) + getVal('mag_2_wt', 0) + getVal('mag_3_wt', 0);
+    const totalWeight = bagWeight + vestWeight + magWt;
+
+    const spdBase = getVal('spd_base', 10);
+    const spdMisc = Math.abs(getVal('spd_misc', 0));
     let finalSpeed = spdBase - totalGearPenalty - spdMisc;
-    
+
+    const overAlert = document.getElementById('overencumber_alert');
     if (totalWeight > carryTotal) {
-      finalSpeed = 2; 
-      if(DOM.overencumber_alert) DOM.overencumber_alert.style.display = 'block';
+      finalSpeed = 2;
+      if (overAlert) overAlert.style.display = 'block';
     } else {
-      if(DOM.overencumber_alert) DOM.overencumber_alert.style.display = 'none';
+      if (overAlert) overAlert.style.display = 'none';
     }
 
-    DOM.spd_total.value = finalSpeed;
-    DOM.spd_main_display.innerText = finalSpeed + ' м';
-    
-    if(DOM.top_speed_display) {
-        DOM.top_speed_display.innerText = totalGearPenalty + ' м';
-        DOM.top_speed_display.style.color = (totalGearPenalty > 0) ? 'var(--accent)' : '#fff';
-    }
+    setVal('spd_total', finalSpeed);
+    setText('spd_main_display', finalSpeed + ' м');
     
     const displayWt = Math.round(totalWeight * 10) / 10;
-    if(DOM.top_weight_display) {
-        DOM.top_weight_display.innerText = `${displayWt} / ${carryTotal} кг`;
-        DOM.top_weight_display.style.color = (totalWeight > carryTotal) ? 'var(--accent)' : '#fff';
-    }
+    setText('top_weight_display', `${displayWt} / ${carryTotal} кг`);
   }
-
-  function calc() { fastCalc(); }
 
   function ablate(id) {
     const el = document.getElementById(id);
+    if (!el) return;
     const val = parseInt(el.value) || 0;
     if (val > 0) el.value = val - 1;
     fastCalc();
@@ -1286,35 +1215,17 @@
 
   function toggleInvLock() {
     invLocked = !invLocked;
-    const btn = document.getElementById('inv_toggle_btn');
-    if (invLocked) {
-      btn.innerHTML = '🔒';
-      btn.title = 'Разблокировать редактирование';
-      if(DOM.bag_config_view) DOM.bag_config_view.style.display = 'block';
-      if(DOM.bag_config_edit) DOM.bag_config_edit.style.display = 'none';
-    } else {
-      btn.innerHTML = '🔓';
-      btn.title = 'Заблокировать меню';
-      if(DOM.bag_config_view) DOM.bag_config_view.style.display = 'none';
-      if(DOM.bag_config_edit) DOM.bag_config_edit.style.display = 'flex';
-    }
+    setText('inv_toggle_btn', invLocked ? '🔒' : '🔓');
+    document.getElementById('bag_config_view').style.display = invLocked ? 'block' : 'none';
+    document.getElementById('bag_config_edit').style.display = invLocked ? 'none' : 'flex';
     renderInventory();
   }
 
   function toggleVestLock() {
     vestLocked = !vestLocked;
-    const btn = document.getElementById('vest_toggle_btn');
-    if (vestLocked) {
-      btn.innerHTML = '🔒';
-      btn.title = 'Разблокировать редактирование';
-      if(DOM.vest_config_view) DOM.vest_config_view.style.display = 'block';
-      if(DOM.vest_config_edit) DOM.vest_config_edit.style.display = 'none';
-    } else {
-      btn.innerHTML = '🔓';
-      btn.title = 'Заблокировать меню';
-      if(DOM.vest_config_view) DOM.vest_config_view.style.display = 'none';
-      if(DOM.vest_config_edit) DOM.vest_config_edit.style.display = 'flex';
-    }
+    setText('vest_toggle_btn', vestLocked ? '🔒' : '🔓');
+    document.getElementById('vest_config_view').style.display = vestLocked ? 'block' : 'none';
+    document.getElementById('vest_config_edit').style.display = vestLocked ? 'none' : 'flex';
     renderVest();
   }
 
@@ -1328,11 +1239,6 @@
     const item = bagItemsArray.find(i => i.id === id);
     if (item) {
       item[field] = (field === 'unitWeight' || field === 'qty') ? (parseFloat(value) || 0) : value;
-      if (field === 'unitWeight' || field === 'qty') {
-        const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
-        const totalEl = document.getElementById('bag_total_' + id);
-        if (totalEl) totalEl.innerText = totalWt;
-      }
       fastCalc();
     }
   }
@@ -1342,9 +1248,9 @@
     if (item) {
       item[field] = (field === 'unitWeight') ? (parseFloat(value) || 0) : value;
       if (field === 'unitWeight' && item.unitWeight > 1) {
-        alert('Подсумок вмещает максимум 1 кг!');
+        alert('Подсумок вмещает макс. 1 кг!');
         item.unitWeight = 1;
-        document.getElementById('vest_wt_' + index).value = 1;
+        setVal('vest_wt_' + index, 1);
       }
       fastCalc();
     }
@@ -1366,8 +1272,8 @@
 
   function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
   document.addEventListener('dragleave', function(ev) {
-    if(ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area'))) {
-        ev.target.classList.remove('drag-over');
+    if (ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area'))) {
+      ev.target.classList.remove('drag-over');
     }
   });
 
@@ -1391,8 +1297,8 @@
       const itemIndex = bagItemsArray.findIndex(i => i.id === sourceId);
       if (itemIndex > -1) {
         const item = bagItemsArray[itemIndex];
-        if (item.unitWeight > 1) { alert('Слишком большой предмет! МАКС 1 КГ.'); return; }
-        if (vestItemsArray[targetIndex] !== null) { alert('Этот подсумок уже занят!'); return; }
+        if (item.unitWeight > 1) { alert('Предмет тяжелее 1 кг не лезет в подсумок!'); return; }
+        if (vestItemsArray[targetIndex] !== null) { alert('Подсумок уже занят!'); return; }
         
         vestItemsArray[targetIndex] = { id: Date.now(), name: item.name, unitWeight: item.unitWeight, desc: item.desc };
         item.qty -= 1;
@@ -1415,15 +1321,15 @@
 
   function dropToBag(ev) {
     ev.preventDefault();
-    document.getElementById('dynamic_pack_grid').classList.remove('drag-over');
+    document.getElementById('dynamic_pack_grid')?.classList.remove('drag-over');
     const source = ev.dataTransfer.getData("source");
     
     if (source === 'vest') {
       const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
       const item = vestItemsArray[sourceIndex];
       if (item) {
-        const existingIndex = bagItemsArray.findIndex(i => i.name === item.name && i.unitWeight === item.unitWeight && i.desc === item.desc);
-        if (existingIndex > -1) { bagItemsArray[existingIndex].qty += 1; } 
+        const existing = bagItemsArray.find(i => i.name === item.name && i.unitWeight === item.unitWeight && i.desc === item.desc);
+        if (existing) { existing.qty += 1; } 
         else { bagItemsArray.push({ id: Date.now(), name: item.name, unitWeight: item.unitWeight, qty: 1, desc: item.desc }); }
         vestItemsArray[sourceIndex] = null;
         renderVest();
@@ -1441,41 +1347,41 @@
   }
 
   function renderVest() {
-    const limit = parseInt(document.getElementById('vest_slots').value) || 4;
+    const limit = parseInt(getVal('vest_slots', 4)) || 4;
     const grid = document.getElementById('vest_grid');
+    if (!grid) return;
     let gridHTML = '';
 
     while (vestItemsArray.length < limit) vestItemsArray.push(null);
     if (vestItemsArray.length > limit) vestItemsArray.length = limit;
 
     let totalVestWt = 0;
-
     for (let i = 0; i < limit; i++) {
       const item = vestItemsArray[i];
       if (!item) {
         if (vestLocked) {
-          gridHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)"><div style="text-align:center; color:#3a3f4b; font-size:12px;">[ Пустой слот ]</div></div>`;
+          gridHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)"><div style="text-align:center; color:#3a3f4b; font-size:11px; padding:6px;">[ Пустой слот ]</div></div>`;
         } else {
-          gridHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="border: 1px dashed #3a3f4b;"><button onclick="addVestItemDirectly(${i})" style="width:100%; background:transparent; border:none; color:var(--text-muted); font-size:12px; padding:8px; cursor:pointer;">⊕ ДОБАВИТЬ В СЛОТ</button></div>`;
+          gridHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="border: 1px dashed #3a3f4b;"><button onclick="addVestItemDirectly(${i})" style="width:100%; background:transparent; border:none; color:var(--text-muted); font-size:11px; padding:6px; cursor:pointer;">⊕ ДОБАВИТЬ В СЛОТ</button></div>`;
         }
       } else {
         totalVestWt += item.unitWeight;
         if (vestLocked) {
           gridHTML += `
-            <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding:0;">
+            <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
               <div class="inv-view-row val-interactive" onclick="toggleExpand('desc_vest_${item.id}')">
-                <span style="color:var(--text-muted); font-size:14px;">👁</span>
+                <span style="color:var(--text-muted); font-size:12px;">👁</span>
                 <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный'}</span>
-                <span style="font-size:12px; color:var(--text-muted); font-weight:bold;">${item.unitWeight} кг</span>
+                <span style="font-size:11px; color:var(--text-muted); font-weight:bold;">${item.unitWeight} кг</span>
               </div>
               <div id="desc_vest_${item.id}" class="expandable inv-view-desc">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
             </div>`;
         } else {
           gridHTML += `
             <div class="inv-item-card vest-slot inv-edit-row" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
-              <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')" title="Описание">⚙️</button>
-              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; padding:2px;" onchange="handleVestItemInput(${i}, 'name', this.value); autoSave();">
-              <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:40px; padding:2px;" onchange="handleVestItemInput(${i}, 'unitWeight', this.value); autoSave();">
+              <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')">⚙️</button>
+              <input type="text" value="${item.name}" placeholder="Имя..." style="flex:1; padding:2px;" onchange="handleVestItemInput(${i}, 'name', this.value); autoSave();">
+              <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:36px; padding:2px;" onchange="handleVestItemInput(${i}, 'unitWeight', this.value); autoSave();">
               <button class="item-del" onclick="removeVestItem(${i})">✕</button>
               <div id="desc_vest_edit_${item.id}" class="expandable inv-edit-desc" style="width:100%;">
                  <textarea placeholder="Описание..." onchange="handleVestItemInput(${i}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
@@ -1485,59 +1391,47 @@
       }
     }
     grid.innerHTML = gridHTML;
-    
-    const vestStatus = document.getElementById('vest_status');
-    if (vestStatus) vestStatus.innerText = Math.round(totalVestWt * 10) / 10;
+    setText('vest_status', Math.round(totalVestWt * 10) / 10);
   }
 
   function renderInventory() {
     const grid = document.getElementById('dynamic_pack_grid');
+    if (!grid) return;
     let gridHTML = '';
 
     bagItemsArray.forEach(item => {
       const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
-      
       if (invLocked) {
         gridHTML += `
-          <div class="inv-item-card" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)" style="margin-bottom:4px; padding:0;">
+          <div class="inv-item-card" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
             <div class="inv-view-row val-interactive" onclick="toggleExpand('desc_view_${item.id}')">
-              <span style="color:var(--text-muted); font-size:14px;">👁</span>
+              <span style="color:var(--text-muted); font-size:12px;">👁</span>
               <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный предмет'}</span>
-              <span style="width: 40px; text-align:center; font-weight:bold; font-size:14px;">${item.qty}</span>
-              <span style="font-size:12px; color:var(--text-muted); width: 40px; text-align:center;">${item.unitWeight}</span>
-              <span style="font-size:14px; font-weight:bold; color:var(--text-muted); width: 45px; text-align:right;">${totalWt}</span>
-              <span style="width: 10px;"></span>
+              <span style="width: 35px; text-align:center; font-weight:bold;">${item.qty}</span>
+              <span style="font-size:11px; color:var(--text-muted); width: 35px; text-align:center;">${item.unitWeight}</span>
+              <span style="font-size:12px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${totalWt}</span>
+              <span style="width: 8px;"></span>
             </div>
-            <div id="desc_view_${item.id}" class="expandable inv-view-desc">
-              ${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}
-            </div>
-          </div>
-        `;
+            <div id="desc_view_${item.id}" class="expandable inv-view-desc">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
+          </div>`;
       } else {
         gridHTML += `
           <div class="inv-item-card inv-edit-row" id="bag_row_${item.id}" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
-            <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')" title="Настройки">⚙️</button>
-            <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; text-align:left; padding:2px;" onchange="handleBagItemInput(${item.id}, 'name', this.value); autoSave();">
-            <div style="width:40px;"><input type="number" value="${item.qty}" min="1" title="Количество" style="width:100%; padding:2px;" onchange="handleBagItemInput(${item.id}, 'qty', this.value); autoSave();"></div>
-            <div style="width:40px;"><input type="number" value="${item.unitWeight}" step="0.5" title="Вес 1 шт." style="width:100%; padding:2px;" onchange="handleBagItemInput(${item.id}, 'unitWeight', this.value); autoSave();"></div>
-            <div style="width:45px; text-align:center; padding-top:4px;">
-              <span id="bag_total_${item.id}" style="color:var(--text-muted); font-size:14px; font-weight:bold;">${totalWt}</span>
-            </div>
-            <button class="item-del" onclick="removeBagItem(${item.id})" title="Удалить">✕</button>
+            <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')">⚙️</button>
+            <input type="text" value="${item.name}" placeholder="Имя..." style="flex:1; text-align:left; padding:2px;" onchange="handleBagItemInput(${item.id}, 'name', this.value); autoSave();">
+            <input type="number" value="${item.qty}" min="1" style="width:32px; padding:2px;" onchange="handleBagItemInput(${item.id}, 'qty', this.value); autoSave();">
+            <input type="number" value="${item.unitWeight}" step="0.5" style="width:36px; padding:2px;" onchange="handleBagItemInput(${item.id}, 'unitWeight', this.value); autoSave();">
+            <span style="width:35px; text-align:center; font-weight:bold; color:var(--text-muted); font-size:11px;">${totalWt}</span>
+            <button class="item-del" onclick="removeBagItem(${item.id})">✕</button>
             <div id="desc_edit_${item.id}" class="expandable inv-edit-desc" style="width:100%;">
-              <textarea placeholder="Описание или свойства предмета..." onchange="handleBagItemInput(${item.id}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
+              <textarea placeholder="Описание..." onchange="handleBagItemInput(${item.id}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
             </div>
-          </div>
-        `;
+          </div>`;
       }
     });
 
     if (!invLocked) {
-      gridHTML += `
-        <button onclick="addBagItem()" style="margin-top: 8px; width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 10px; font-size:14px; cursor:pointer;">
-          ⊕ ДОБАВИТЬ ПРЕДМЕТ
-        </button>
-      `;
+      gridHTML += `<button onclick="addBagItem()" style="margin-top: 6px; width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 8px; font-size:12px; cursor:pointer;">⊕ ДОБАВИТЬ ПРЕДМЕТ</button>`;
     }
     grid.innerHTML = gridHTML;
   }
@@ -1545,7 +1439,7 @@
   function getFormData() {
     const data = {};
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
-      if (inp.id === 'sheetOwner' || inp.id.startsWith('bag_total_') || inp.id.startsWith('login') || inp.id.startsWith('delete')) return; 
+      if (inp.id === 'sheetOwner' || inp.id.startsWith('login') || inp.id === 'deleteConfirmInput') return; 
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
     return data;
@@ -1555,14 +1449,10 @@
   let saveTimeout = null;
   function autoSave() {
     if (isRemoteUpdating) return;
-    setSyncStatus('СОХРАНЕНИЕ...', '#f59e0b');
+    setText('sync_status', '[ СОХРАНЕНИЕ... ]');
+    document.getElementById('sync_status').style.color = '#f59e0b';
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(() => { saveData(false); }, 1200);
-  }
-
-  function setSyncStatus(text, color) {
-    const tag = document.getElementById('sync_status');
-    if (tag) { tag.innerText = `[ ${text} ]`; tag.style.color = color; tag.style.borderColor = color; }
   }
 
   async function saveData(manual = false) {
@@ -1583,45 +1473,50 @@
         })
       });
 
-      if (!res.ok) throw new Error(await res.text());
-      setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
-      if (manual) alert('Данные сохранены в базе.');
+      if (!res.ok) throw new Error();
+      setText('sync_status', '[ СИНХРОНИЗИРОВАНО ]');
+      document.getElementById('sync_status').style.color = '#4ade80';
+      if (manual) alert('Данные сохранены в облаке.');
     } catch (err) {
-      setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
+      setText('sync_status', '[ ОШИБКА СЕТИ ]');
+      document.getElementById('sync_status').style.color = '#ff4d4d';
     }
   }
 
   async function loadData(manual = false) {
     if (!currentSheetId) return;
-    if (manual) setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
+    if (manual) {
+      setText('sync_status', '[ ЗАГРУЗКА... ]');
+      document.getElementById('sync_status').style.color = '#f59e0b';
+    }
 
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${currentSheetId}&select=data,owner`, { headers: HEADERS });
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      if (!res.ok) throw new Error();
       const rows = await res.json();
       
       if (rows && rows.length > 0) {
         const data = rows[0];
         currentSheetOwner = data.owner;
-        if (currentUser.role === 'admin') document.getElementById('sheetOwner').value = currentSheetOwner || '';
+        if (currentUser.role === 'admin') setVal('sheetOwner', currentSheetOwner || '');
 
         if (data.data) {
           isRemoteUpdating = true;
           applyData(data.data);
           isRemoteUpdating = false;
-          setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
+          setText('sync_status', '[ СИНХРОНИЗИРОВАНО ]');
+          document.getElementById('sync_status').style.color = '#4ade80';
         }
       } else {
         isRemoteUpdating = true; 
         resetForm(); 
-        if (document.getElementById('charName').value.trim() === '') {
-            document.getElementById('charName').value = 'Новый Боец';
-        }
+        if (document.getElementById('charName').value.trim() === '') setVal('charName', 'Новый Боец');
         isRemoteUpdating = false;
-        setSyncStatus('НОВЫЙ ЛИСТ', '#7b8390');
+        setText('sync_status', '[ НОВЫЙ ЛИСТ ]');
       }
     } catch (err) {
-      setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
+      setText('sync_status', '[ ОШИБКА СЕТИ ]');
+      document.getElementById('sync_status').style.color = '#ff4d4d';
     }
     updateVestLimit();
     fastCalc();
@@ -1629,39 +1524,27 @@
 
   function applyData(data) {
     const activeEl = document.activeElement;
-    
     for (let key in data) {
       const el = document.getElementById(key);
-      if (el && key !== 'sheetOwner' && !key.startsWith('bag_total_')) {
-        if (el !== activeEl) {
-            el.value = data[key];
-        }
+      if (el && key !== 'sheetOwner' && el !== activeEl) {
+        el.value = data[key];
       }
     }
     
     const isInvFocused = activeEl && (activeEl.closest('#dynamic_pack_grid') || activeEl.closest('#vest_grid'));
-    
     if (!isInvFocused) {
-        if (data.bag_items_json) { try { bagItemsArray = JSON.parse(data.bag_items_json); } catch(e) { bagItemsArray = []; } } 
-        else { bagItemsArray = []; }
-        
-        if (data.vest_items_json) { try { vestItemsArray = JSON.parse(data.vest_items_json); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; } } 
-        else { vestItemsArray = [null,null,null,null,null,null,null,null]; }
-        
-        if(DOM.vest_config_view) DOM.vest_config_view.style.display = vestLocked ? 'block' : 'none';
-        if(DOM.vest_config_edit) DOM.vest_config_edit.style.display = vestLocked ? 'none' : 'flex';
-        if(DOM.bag_config_view) DOM.bag_config_view.style.display = invLocked ? 'block' : 'none';
-        if(DOM.bag_config_edit) DOM.bag_config_edit.style.display = invLocked ? 'none' : 'flex';
-
-        renderInventory();
-        renderVest();
+      try { bagItemsArray = JSON.parse(data.bag_items_json || '[]'); } catch(e) { bagItemsArray = []; }
+      try { vestItemsArray = JSON.parse(data.vest_items_json || '[]'); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; }
+      renderInventory();
+      renderVest();
     }
   }
 
   let fetchInProgress = false;
   function startPolling() {
     setTimeout(async () => {
-      if (currentSheetId && !fetchInProgress && document.getElementById('viewSheet').style.display !== 'none') {
+      const vs = document.getElementById('viewSheet');
+      if (currentSheetId && !fetchInProgress && vs && vs.style.display !== 'none') {
         fetchInProgress = true;
         await loadData(false);
         fetchInProgress = false;
