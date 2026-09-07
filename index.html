@@ -8,11 +8,12 @@
   <link rel="icon" type="image/jpeg" href="logo1.jpg?v=2">
   <link rel="shortcut icon" type="image/jpeg" href="logo1.jpg?v=2">
   
-  <!-- Подключаем атмосферный шрифт -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   
+  <!-- Полифилл для старого браузера Tabletop Simulator -->
+  <script>if (typeof globalThis === 'undefined') { window.globalThis = window; }</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -58,7 +59,6 @@
     .sync-tag { font-size: 11px; color: #4ade80; border: 1px solid #4ade80; padding: 2px 5px; white-space: nowrap; }
     .user-tag { font-size: 12px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; text-transform: uppercase;}
 
-    /* Поля ввода (Редактируемые vs Заблокированные) */
     select, input, button, textarea { font-family: inherit; font-size: 14px; }
     input[type="text"], input[type="number"], input[type="password"], textarea, select { 
       background: var(--input-bg-edit); 
@@ -84,7 +84,6 @@
     .btn-danger { border-color: var(--accent); color: var(--accent); }
     .btn-danger:hover { background: var(--accent); color: #fff; }
 
-    /* Плавные анимации выкатывания */
     .expandable { 
       max-height: 0; 
       overflow: hidden; 
@@ -113,7 +112,6 @@
     .roll-btn { cursor: pointer; transition: 0.15s; display:inline-block; font-size:16px; margin-left:6px; opacity:0.7; }
     .roll-btn:hover { opacity:1; transform: scale(1.15); text-shadow: 0 0 8px var(--accent); }
 
-    /* Боковая панель профилей */
     .side-panel {
       position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
       background: #111215; border-left: 2px solid var(--border-color);
@@ -130,7 +128,6 @@
     .char-name { font-weight: bold; color: #fff; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .char-actions { display: flex; gap: 5px; }
 
-    /* Сетка и блоки */
     .row-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: start; }
     .col { display: flex; flex-direction: column; gap: 15px; }
     .box { background: var(--panel-bg); border: 1px solid var(--border-color); }
@@ -140,12 +137,10 @@
     .accent-bold { color: var(--border-color) !important; font-weight: bold; }
     .alert-box { color: var(--accent); font-size: 12px; text-align: center; display: none; margin-top: 4px; border: 1px dashed var(--accent); padding: 6px; }
 
-    /* Статы */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .stat-container { border: 1px solid #3a3f4b; background: var(--input-bg-read); border-radius: 4px; display: flex; flex-direction: column; }
     .stat-mod { position: absolute; top: -8px; right: -8px; background: var(--border-color); color: #000; border-radius: 50%; width: 22px; height: 22px; line-height: 22px; font-size: 12px; text-align: center; font-weight: bold; z-index: 2; }
 
-    /* Математические Калькуляторы */
     .calc-row { display: flex; align-items: center; gap: 6px; justify-content: center; padding: 8px 0; }
     .calc-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .calc-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -164,20 +159,8 @@
 
     .sub-label { font-size: 11px; color: var(--border-color); text-transform: uppercase; }
     
-    /* Инвентарь и РПС с анимацией */
-    @keyframes fadeInRow {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .inv-item-card {
-      border: 1px solid #3a3f4b;
-      border-radius: 4px;
-      background: #111215;
-      margin-bottom: 6px;
-      animation: fadeInRow 0.3s ease-out forwards;
-      overflow: hidden;
-    }
+    @keyframes fadeInRow { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .inv-item-card { border: 1px solid #3a3f4b; border-radius: 4px; background: #111215; margin-bottom: 6px; animation: fadeInRow 0.3s ease-out forwards; overflow: hidden; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
     
     .drag-area { min-height: 45px; display: flex; flex-direction: column; gap: 4px; }
@@ -193,7 +176,6 @@
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
 
-    /* Таблица Админа */
     .admin-account-group { border: 2px solid var(--border-color); margin-bottom: 15px; padding: 10px; background: #161719; }
     .admin-account-group h3 { margin-top: 0; color: var(--accent); letter-spacing: 1px; font-size: 16px; }
     .admin-table { width: 100%; border-collapse: collapse; }
@@ -201,7 +183,6 @@
     .admin-table th { background: #1d2127; color: var(--text-muted); }
     .admin-table tr:hover { background: #20232a; }
 
-    /* Окно Авторизации */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 999; }
     .auth-card { background: var(--panel-bg); border: 2px solid var(--border-color); width: 350px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 0 20px rgba(201,42,42,0.3); }
     .password-wrap { position: relative; display: flex; align-items: center; width: 100%; }
@@ -212,7 +193,6 @@
 </head>
 <body>
 
-<!-- БОКОВАЯ ПАНЕЛЬ -->
 <div id="sidePanel" class="side-panel">
   <div class="side-panel-header">
     <h2>Мои профили</h2>
@@ -224,7 +204,6 @@
   </div>
 </div>
 
-<!-- ОКНО АВТОРИЗАЦИИ -->
 <div id="authModal" class="modal-overlay" style="display: none;">
   <div class="auth-card">
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
@@ -274,11 +253,9 @@
 
     <main class="row-3-col">
       <section class="col">
-        <!-- АТРИБУТЫ С ВЫКАТЫВАНИЕМ -->
         <div class="box">
           <div class="box-title">Атрибуты</div>
           <div class="box-content stats-grid" style="padding-top: 8px;">
-            
             <div class="stat-container">
               <div class="val-interactive" style="position:relative;" onclick="toggleExpand('str_details')">
                 <span class="item-name interactive-text" style="flex:1;">СИЛ</span>
@@ -380,19 +357,17 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
         <div class="box">
           <div class="box-title">Спасброски</div>
           <div class="box-content" style="padding-top: 4px; gap: 0;">
-            
             <div class="inv-item-card" style="margin-bottom:4px; border:none; border-bottom:1px solid #20232a; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_phys_details')">
                 <span class="item-name interactive-text" style="flex:1;">Стойкость <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(STR/CON)</span></span>
                 <span id="sv_phys_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
-                <span class="roll-btn" onclick="rollUniversal('Спас: Стойкость', 'sv_phys', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('Спасбросок: Стойкость', 'sv_phys', event)">🎲</span>
               </div>
               <div id="sv_phys_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
@@ -411,7 +386,7 @@
               <div class="val-interactive" onclick="toggleExpand('sv_eva_details')">
                 <span class="item-name interactive-text" style="flex:1;">Рефлексы <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(DEX/INT)</span></span>
                 <span id="sv_eva_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
-                <span class="roll-btn" onclick="rollUniversal('Спас: Рефлексы', 'sv_eva', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('Спасбросок: Рефлексы', 'sv_eva', event)">🎲</span>
               </div>
               <div id="sv_eva_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
@@ -430,7 +405,7 @@
               <div class="val-interactive" onclick="toggleExpand('sv_men_details')">
                 <span class="item-name interactive-text" style="flex:1;">Воля <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(WIS/CHA)</span></span>
                 <span id="sv_men_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
-                <span class="roll-btn" onclick="rollUniversal('Спас: Воля', 'sv_men', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('Спасбросок: Воля', 'sv_men', event)">🎲</span>
               </div>
               <div id="sv_men_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
@@ -444,7 +419,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -510,15 +484,15 @@
           <div class="box-title">Базовые Навыки</div>
           <div class="box-content">
             <div class="flex-row">
-              <span>Стрельба (Shoot) <span class="roll-btn" onclick="rollUniversal('Стрельба', 'sk_shoot', event)">🎲</span></span>
+              <span>Стрельба (Shoot) <span class="roll-btn" onclick="rollUniversal('Навык: Стрельба', 'sk_shoot', event)">🎲</span></span>
               <input type="number" id="sk_shoot" value="0" onchange="autoSave()">
             </div>
             <div class="flex-row">
-              <span>Взлом (Program) <span class="roll-btn" onclick="rollUniversal('Взлом', 'sk_prog', event)">🎲</span></span>
+              <span>Взлом (Program) <span class="roll-btn" onclick="rollUniversal('Навык: Взлом', 'sk_prog', event)">🎲</span></span>
               <input type="number" id="sk_prog" value="0" onchange="autoSave()">
             </div>
             <div class="flex-row">
-              <span>Ремонт (Fix) <span class="roll-btn" onclick="rollUniversal('Ремонт', 'sk_fix', event)">🎲</span></span>
+              <span>Ремонт (Fix) <span class="roll-btn" onclick="rollUniversal('Навык: Ремонт', 'sk_fix', event)">🎲</span></span>
               <input type="number" id="sk_fix" value="0" onchange="autoSave()">
             </div>
           </div>
@@ -710,6 +684,7 @@
   
   let supabaseClient = null;
   if (window.supabase) {
+    // Отключаем persistSession, чтобы старый браузер TTS не блокировался
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
     });
@@ -748,7 +723,6 @@
     if (inputId) {
         val = document.getElementById(inputId).value || 0;
     } else {
-        // Для паники
         val = document.getElementById('stress').value || 0;
     }
     
@@ -769,13 +743,19 @@
     const errEl = document.getElementById('authError');
     errEl.innerText = '';
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
+    if (!supabaseClient) { errEl.innerText = 'БД не загружена (проверьте интернет)'; return; }
 
     try {
       const { data, error } = await supabaseClient.from('vineta_users').select('*').ilike('username', u).eq('password', p).single();
-      if (error || !data) { errEl.innerText = 'Неверный позывной или пароль'; return; }
+      if (error) { 
+         if (error.code === 'PGRST116') errEl.innerText = 'Неверный позывной или пароль'; 
+         else errEl.innerText = 'Ошибка БД: ' + error.message;
+         return; 
+      }
+      if (!data) { errEl.innerText = 'Неверный позывной или пароль'; return; }
       setSessionUser(data);
     } catch(e) {
-      errEl.innerText = 'Сбой сети: ' + e.message;
+      errEl.innerText = 'Сбой сети TTS: ' + e.message;
     }
   }
 
@@ -785,6 +765,7 @@
     const errEl = document.getElementById('authError');
     errEl.innerText = '';
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
+    if (!supabaseClient) { errEl.innerText = 'БД не загружена (проверьте интернет)'; return; }
 
     try {
       const assignedRole = (u.toLowerCase() === 'lemming') ? 'admin' : 'player';
@@ -792,7 +773,7 @@
       if (error) { errEl.innerText = 'Позывной уже занят'; return; }
       setSessionUser({ username: u, role: assignedRole });
     } catch(e) {
-      errEl.innerText = 'Сбой сети: ' + e.message;
+      errEl.innerText = 'Сбой сети TTS: ' + e.message;
     }
   }
 
@@ -956,6 +937,10 @@
     if (newOwner) { currentSheetOwner = newOwner; autoSave(); }
   }
 
+  function updateVestLimit() {
+    renderVest();
+  }
+
   function resetForm() {
     bagItemsArray = [];
     vestItemsArray = [null, null, null, null, null, null, null, null];
@@ -987,54 +972,70 @@
     const container = document.getElementById('adminTableContainer');
     container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос терминалов...</div>';
     
-    const { data, error } = await supabaseClient.from('vineta_sheets').select('*').order('owner', { ascending: true });
+    try {
+        const { data: usersData, error: uErr } = await supabaseClient.from('vineta_users').select('username');
+        const { data: sheetsData, error: sErr } = await supabaseClient.from('vineta_sheets').select('*').order('owner', { ascending: true });
 
-    if (error || !data) { container.innerHTML = '<div style="color:var(--accent); text-align:center;">Ошибка опроса базы.</div>'; return; }
+        if (sErr || uErr) throw new Error("Ошибка чтения БД");
 
-    const grouped = {};
-    data.forEach(row => {
-        const owner = (row.owner && row.owner.trim() !== '') ? row.owner.toUpperCase() : 'НЕИЗВЕСТНО';
-        if (!grouped[owner]) grouped[owner] = [];
-        grouped[owner].push(row);
-    });
-
-    let html = '';
-    for (const [owner, rows] of Object.entries(grouped)) {
-        html += `
-        <div class="admin-account-group">
-            <h3>УЧЕТНАЯ ЗАПИСЬ: ${owner}</h3>
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th style="width: 25%;">ПОЗЫВНОЙ</th>
-                  <th style="width: 15%;">МОДЕЛЬ</th>
-                  <th style="width: 15%;">HP</th>
-                  <th style="width: 15%;">СТРЕСС</th>
-                  <th style="width: 15%;">SP (Г/Т/К)</th>
-                  <th style="width: 15%;">ДЕЙСТВИЯ</th>
-                </tr>
-              </thead>
-              <tbody>`;
+        const grouped = {};
+        // Добавляем всех юзеров изначально
+        if (usersData) {
+            usersData.forEach(u => { grouped[u.username.toUpperCase()] = []; });
+        }
         
-        rows.forEach(r => {
-            const d = r.data || {};
-            const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
+        // Добавляем листы в нужные группы
+        if (sheetsData) {
+            sheetsData.forEach(row => {
+                const owner = (row.owner && row.owner.trim() !== '') ? row.owner.toUpperCase() : 'НЕИЗВЕСТНО';
+                if (!grouped[owner]) grouped[owner] = [];
+                grouped[owner].push(row);
+            });
+        }
+
+        let html = '';
+        for (const [owner, rows] of Object.entries(grouped)) {
             html += `
-                <tr>
-                    <td style="font-weight:bold; color:#fff;">${cName}</td>
-                    <td>${d.charModel || '—'}</td>
-                    <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
-                    <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
-                    <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
-                    <td><button onclick="inspectCharacter('${r.id}', '${r.owner}')">ОТКРЫТЬ</button></td>
-                </tr>`;
-        });
+            <div class="admin-account-group">
+                <h3>УЧЕТНАЯ ЗАПИСЬ: ${owner}</h3>
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 25%;">ПОЗЫВНОЙ</th>
+                      <th style="width: 15%;">МОДЕЛЬ</th>
+                      <th style="width: 15%;">HP</th>
+                      <th style="width: 15%;">СТРЕСС</th>
+                      <th style="width: 15%;">SP (Г/Т/К)</th>
+                      <th style="width: 15%;">ДЕЙСТВИЯ</th>
+                    </tr>
+                  </thead>
+                  <tbody>`;
+            
+            if (rows.length === 0) {
+                html += `<tr><td colspan="6" style="color:var(--text-muted);">Нет зарегистрированных листов</td></tr>`;
+            } else {
+                rows.forEach(r => {
+                    const d = r.data || {};
+                    const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
+                    html += `
+                        <tr>
+                            <td style="font-weight:bold; color:#fff;">${cName}</td>
+                            <td>${d.charModel || '—'}</td>
+                            <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
+                            <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
+                            <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
+                            <td><button onclick="inspectCharacter('${r.id}', '${r.owner}')">ОТКРЫТЬ</button></td>
+                        </tr>`;
+                });
+            }
+            html += `</tbody></table></div>`;
+        }
         
-        html += `</tbody></table></div>`;
+        if (html === '') html = '<div style="text-align:center; color: var(--text-muted);">База данных пуста.</div>';
+        container.innerHTML = html;
+    } catch(e) {
+        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка: ${e.message}</div>`;
     }
-    
-    if (html === '') html = '<div style="text-align:center; color: var(--text-muted);">База данных пуста.</div>';
-    container.innerHTML = html;
   }
 
   async function inspectCharacter(id, owner) {
@@ -1051,7 +1052,6 @@
     if (val <= 3) return -2; if (val <= 7) return -1; if (val <= 13) return 0; if (val <= 17) return 1; return 2;
   }
 
-  // Мгновенный перерасчет
   function fastCalc() {
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
@@ -1113,7 +1113,7 @@
     else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
     else document.getElementById('w_light').classList.add('wound-active');
 
-    // Скорость и Вес
+    // Скорость и Вес (Сила + Тело)
     const carryBase = vals.str + vals.con;
     const carryMisc = parseInt(document.getElementById('carry_misc').value) || 0;
     const carryTotal = carryBase + carryMisc;
@@ -1171,6 +1171,12 @@
     const displayWt = Math.round(totalWeight * 10) / 10;
     document.getElementById('top_weight_display').innerText = `${displayWt} / ${carryTotal} кг`;
 
+    if (document.getElementById('pack_status')) {
+        document.getElementById('pack_status').innerText = `${Math.round(bagWeight * 10) / 10}`;
+    }
+    const vestStatus = document.getElementById('vest_status');
+    if (vestStatus) vestStatus.innerText = Math.round(vestWeight * 10) / 10;
+
     autoSave();
   }
 
@@ -1183,7 +1189,17 @@
     fastCalc();
   }
 
-  // --- ИНВЕНТАРЬ ---
+  function rollPanic() {
+    const st = parseInt(document.getElementById('stress').value) || 0;
+    const d6 = Math.floor(Math.random() * 6) + 1;
+    const total = d6 + st;
+    window.location.hash = "#roll_Паника_" + total;
+    document.getElementById('panic_log').innerText = `Запрос отправлен... [Стресс: ${st}]`;
+    setTimeout(() => { window.location.hash = ""; }, 150);
+    autoSave();
+  }
+
+  // --- ИНВЕНТАРЬ И РПС ---
   function toggleInvLock() {
     invLocked = !invLocked;
     const btn = document.getElementById('inv_toggle_btn');
@@ -1317,11 +1333,6 @@
     }
   }
 
-  // --- РПС ---
-  function updateVestLimit() {
-    renderVest();
-  }
-
   function addVestItemDirectly(index) {
     vestItemsArray[index] = { id: Date.now(), name: '', unitWeight: 1, desc: '' };
     renderVest();
@@ -1368,7 +1379,7 @@
         } else {
           html = `
             <div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="border-style:dashed;">
-              <button onclick="addVestItemDirectly(${i})" style="width:100%; background:transparent; border:none; color:var(--text-muted); font-size:12px; padding:8px;">
+              <button onclick="addVestItemDirectly(${i})" style="width:100%; background:transparent; border:none; color:var(--text-muted); font-size:12px; padding:8px; cursor:pointer;">
                 ⊕ ДОБАВИТЬ
               </button>
             </div>`;
@@ -1390,7 +1401,7 @@
         } else {
           html = `
             <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding: 6px; background:#161719;">
-              <div style="display:flex; gap:4px; align-items:center;">
+              <div style="display:flex; gap:4px; align-items:center; margin-bottom:4px;">
                 <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')" title="Описание">⚙️</button>
                 <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; padding:4px;" oninput="handleVestItemInput(${i}, 'name', this.value)">
                 <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:50px; padding:4px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
@@ -1461,7 +1472,7 @@
 
     if (!invLocked) {
       grid.innerHTML += `
-        <button onclick="addBagItem()" style="margin-top: 8px; width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 10px; font-size:14px;">
+        <button onclick="addBagItem()" style="margin-top: 8px; width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 10px; font-size:14px; cursor:pointer;">
           ⊕ ДОБАВИТЬ ПРЕДМЕТ
         </button>
       `;
