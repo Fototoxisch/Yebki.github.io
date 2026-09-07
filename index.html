@@ -658,7 +658,7 @@
               </div>
             </div>
             
-            <div id="bag_overload_alert" class="alert-box" style="display:none; font-weight:bold; width:100%; margin-bottom:4px;">[!] ПЕРЕГРУЗ РЮКЗАКА</div>
+            <div id="bag_overload_alert" class="alert-box" style="display:none;">[!] ПЕРЕГРУЗ РЮКЗАКА</div>
             
             <div class="flex-row" style="font-size:10px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
               <span style="flex:1; letter-spacing:1px; margin-left:22px;">ПРЕДМЕТЫ</span>
@@ -713,11 +713,10 @@
   let currentSheetOwner = null; 
   
   let bagItemsArray = []; 
-  let vestItemsArray = [null, null, null, null, null, null, null, null]; 
+  let vestItemsArray = []; 
   let invLocked = true;
   let vestLocked = true;
 
-  // Абсолютно безопасный доступ к полям DOM (с учетом корректной обработки "0" и пустых строк)
   function getVal(id, def = 0) {
     const el = document.getElementById(id);
     if (!el || el.value === '') return def;
@@ -727,9 +726,7 @@
   function setVal(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
   function setText(id, txt) { const el = document.getElementById(id); if (el) el.innerText = txt; }
 
-  function initDOM() {
-    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'vest_name', 'vest_name_display', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'bag_name', 'bag_name_display', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle', 'armor_penalty', 'sk_shoot', 'sk_prog', 'sk_fix', 'stress'];
-  }
+  function initDOM() {}
 
   function toggleExpand(id) {
     const el = document.getElementById(id);
@@ -747,7 +744,6 @@
     document.getElementById('sidePanel').classList.toggle('open');
   }
 
-  // --- СИСТЕМА БРОСКОВ d20 (Stars Without Number) ---
   function getMod(val) {
     if (val <= 3) return -2;
     if (val <= 7) return -1;
@@ -800,7 +796,6 @@
     setTimeout(() => { window.location.hash = ""; }, 250);
   }
 
-  // --- МОДАЛКА УДАЛЕНИЯ ---
   let delType = '', delId = '', delName = '';
   function openDeleteModal(type, id, name) {
     delType = type; delId = id; delName = name;
@@ -832,12 +827,9 @@
         if (currentUser.username === delName) logout();
         else loadAdminRoster();
       }
-    } catch(e) {
-      alert("Ошибка сети при удалении.");
-    }
+    } catch(e) { alert("Ошибка сети при удалении."); }
   }
 
-  // --- АВТОРИЗАЦИЯ И СЕССИИ ---
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
@@ -912,14 +904,12 @@
           }
           throw new Error("User not found");
         }
-        // Если ошибка именно сети (ошибка HTTP, но не 404), падаем в catch
         throw new Error("Network");
       } catch (e) {
         if(e.message === "User not found" || e.message === "Bad cache") {
           logout();
           return;
         }
-        // Если ошибка сетевая (TTS не выпустил запрос) - верим кэшу и пускаем
         const user = JSON.parse(saved);
         setSessionUser(user);
       }
@@ -1066,7 +1056,7 @@
 
   function resetForm() {
     bagItemsArray = [];
-    vestItemsArray = [null, null, null, null, null, null, null, null];
+    vestItemsArray = [];
     
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
       if (inp.id === 'sheetOwner' || inp.id.startsWith('login') || inp.id === 'deleteConfirmInput') return; 
@@ -1213,14 +1203,13 @@
     
     setText('top_speed_display', totalGearPenalty + ' м');
     
-    // БЕЗОПАСНАЯ ПРОВЕРКА ДЛЯ 0 СЛОТОВ
     const vestSlotsStr = document.getElementById('vest_slots')?.value;
-    const vestSlots = vestSlotsStr === '' ? 4 : Math.max(0, parseInt(vestSlotsStr) || 0);
+    const vestSlots = vestSlotsStr === '' ? 0 : Math.max(0, parseInt(vestSlotsStr) || 0);
     setText('vest_slots_display', vestSlots);
     setText('vest_penalty_display', vestPenalty);
 
     const bagLimitStr = document.getElementById('bag_limit')?.value;
-    const bagLimit = bagLimitStr === '' ? 5 : Math.max(0, parseInt(bagLimitStr) || 0);
+    const bagLimit = bagLimitStr === '' ? 0 : Math.max(0, parseInt(bagLimitStr) || 0);
     setText('bag_limit_display', bagLimit);
     setText('bag_penalty_display', bagPenalty);
 
@@ -1385,7 +1374,7 @@
 
   function renderVest() {
     const vestSlotsStr = document.getElementById('vest_slots')?.value;
-    const slots = vestSlotsStr === '' ? 4 : Math.max(0, parseInt(vestSlotsStr) || 0);
+    const slots = vestSlotsStr === '' ? 0 : Math.max(0, parseInt(vestSlotsStr) || 0);
     
     const grid = document.getElementById('vest_grid');
     if (!grid) return;
@@ -1576,7 +1565,7 @@
     const isInvFocused = activeEl && (activeEl.closest('#dynamic_pack_grid') || activeEl.closest('#vest_grid'));
     if (!isInvFocused) {
       try { bagItemsArray = JSON.parse(data.bag_items_json || '[]'); } catch(e) { bagItemsArray = []; }
-      try { vestItemsArray = JSON.parse(data.vest_items_json || '[]'); } catch(e) { vestItemsArray = [null,null,null,null]; }
+      try { vestItemsArray = JSON.parse(data.vest_items_json || '[]'); } catch(e) { vestItemsArray = []; }
       renderInventory();
       renderVest();
     }
@@ -1595,13 +1584,18 @@
         fetchInProgress = false;
       }
       startPolling(); 
-    }, 10000);
+    }, 5000); // Сокращено до 5 секунд
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-      initDOM();
-      checkSession();
-  });
+  async function initApp() {
+    const savedId = safeGetItem('vineta_active_id');
+    if (savedId) currentSheetId = savedId;
+    await refreshCharacterList();
+    await loadData(true);
+    startPolling();
+  }
+
+  window.onload = checkSession;
 </script>
 </body>
 </html>
