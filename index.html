@@ -119,7 +119,7 @@
     .box-content { padding: 6px; display: flex; flex-direction: column; gap: 6px; }
     .flex-row { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
     .accent-bold { color: var(--border-color) !important; font-weight: bold; }
-    .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 2px; border: 1px dashed var(--accent); padding: 4px; border-radius: 3px;}
+    .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 2px; border: 1px dashed var(--accent); padding: 4px; border-radius: 3px; font-weight: bold;}
 
     .stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; width: 100%; }
     .stat-container { border: 1px solid #3a3f4b; background: var(--panel-bg); border-radius: 3px; display: flex; flex-direction: column; position: relative; margin: 0; min-width: 0; }
@@ -658,6 +658,8 @@
               </div>
             </div>
             
+            <div id="bag_overload_alert" class="alert-box" style="display:none; font-weight:bold; width:100%; margin-bottom:4px;">[!] ПЕРЕГРУЗ РЮКЗАКА</div>
+            
             <div class="flex-row" style="font-size:10px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
               <span style="flex:1; letter-spacing:1px; margin-left:22px;">ПРЕДМЕТЫ</span>
               <span style="width: 35px; text-align:center;">КОЛ</span>
@@ -715,15 +717,19 @@
   let invLocked = true;
   let vestLocked = true;
 
-  // Абсолютно безопасный доступ к полям DOM
+  // Абсолютно безопасный доступ к полям DOM (с учетом корректной обработки "0" и пустых строк)
   function getVal(id, def = 0) {
     const el = document.getElementById(id);
-    if (!el) return def;
+    if (!el || el.value === '') return def;
     const v = parseFloat(el.value);
     return isNaN(v) ? def : v;
   }
   function setVal(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
   function setText(id, txt) { const el = document.getElementById(id); if (el) el.innerText = txt; }
+
+  function initDOM() {
+    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'vest_name', 'vest_name_display', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'bag_name', 'bag_name_display', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle', 'armor_penalty', 'sk_shoot', 'sk_prog', 'sk_fix', 'stress'];
+  }
 
   function toggleExpand(id) {
     const el = document.getElementById(id);
@@ -831,7 +837,7 @@
     }
   }
 
-  // --- АВТОРИЗАЦИЯ ---
+  // --- АВТОРИЗАЦИЯ И СЕССИИ ---
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
@@ -863,7 +869,6 @@
         body: JSON.stringify({ username: u, password: p, role: assignedRole })
       });
       if (!res.ok) { errEl.innerText = 'Позывной уже занят.'; return; }
-      // Обязательно сохраняем пароль в кэше
       setSessionUser({ username: u, password: p, role: assignedRole });
     } catch(e) { errEl.innerText = 'Сбой сети.'; }
   }
@@ -894,17 +899,29 @@
   async function checkSession() {
     const saved = safeGetItem('vineta_user');
     if (saved) {
-      const user = JSON.parse(saved);
-      if(!user.password) { logout(); return; } // Если пароль потерян
       try {
+        const user = JSON.parse(saved);
+        if(!user.password || !user.username) throw new Error("Bad cache");
+        
         const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(user.username)}&password=eq.${encodeURIComponent(user.password)}&select=*`, { headers: HEADERS });
         if (res.ok) {
           const data = await res.json();
-          if (data.length > 0) { setSessionUser(data[0]); return; }
+          if (data.length > 0) { 
+            setSessionUser(data[0]); 
+            return; 
+          }
+          throw new Error("User not found");
         }
-        logout(); // Если БД ответила 200, но юзер не найден
-      } catch (e) { 
-        setSessionUser(user); // При реальной ошибке интернета пропускаем по кэшу
+        // Если ошибка именно сети (ошибка HTTP, но не 404), падаем в catch
+        throw new Error("Network");
+      } catch (e) {
+        if(e.message === "User not found" || e.message === "Bad cache") {
+          logout();
+          return;
+        }
+        // Если ошибка сетевая (TTS не выпустил запрос) - верим кэшу и пускаем
+        const user = JSON.parse(saved);
+        setSessionUser(user);
       }
     } else {
       document.getElementById('authModal').style.display = 'flex';
@@ -941,7 +958,7 @@
             headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
             body: JSON.stringify({ id: id, owner: owner, data: payload, updated_at: new Date().toISOString() })
         });
-    } catch(e) { console.error("Force create fail", e); }
+    } catch(e) {}
   }
 
   async function refreshCharacterList() {
@@ -966,7 +983,6 @@
         if (!currentSheetId && !isInspectingForeign) { 
           currentSheetId = defaultId; 
           currentSheetOwner = currentUser.username; 
-          // Принудительно закрепляем первый лист в БД (Анти-призрак)
           await forceCreateEmptySheet(currentSheetId, currentSheetOwner);
         }
       } else if (!currentSheetId || (!list.some(x => x.id === currentSheetId) && !isInspectingForeign)) {
@@ -1131,12 +1147,11 @@
     }
   }
 
-  // --- МАТЕМАТИКА (БЕЗОПАСНАЯ) ---
+  // --- МАТЕМАТИКА ---
   function fastCalc() {
     const stats = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
     
-    // 1. Атрибуты
     stats.forEach(s => {
       const base = getVal(s + '_base', 10);
       const bonus = getVal(s + '_bonus', 0);
@@ -1147,7 +1162,6 @@
       setText(s + '_m', (m >= 0 ? '+' : '') + m);
     });
 
-    // 2. Спасброски
     const physMod = Math.max(getMod(vals.str), getMod(vals.con));
     const evaMod  = Math.max(getMod(vals.dex), getMod(vals.int));
     const menMod  = Math.max(getMod(vals.wis), getMod(vals.cha));
@@ -1164,14 +1178,12 @@
     setVal('sv_eva', svEva); setText('sv_eva_display', svEva);
     setVal('sv_men', svMen); setText('sv_men_display', svMen);
 
-    // 3. Напряжение
     setText('strain_limit', vals.con);
     const perm = getVal('st_perm', 0);
     const temp = getVal('st_temp', 0);
     const strAlert = document.getElementById('strain_alert');
     if (strAlert) strAlert.style.display = (perm + temp >= vals.con) ? 'block' : 'none';
 
-    // 4. Каркас HP
     const maxHp = getVal('hp_max', 20);
     const curHp = getVal('hp_cur', 20);
     const ratio = curHp / maxHp;
@@ -1183,13 +1195,11 @@
     else if (ratio <= 0.75) document.getElementById('w_serious')?.classList.add('wound-active');
     else document.getElementById('w_light')?.classList.add('wound-active');
 
-    // 5. Лимит веса
     const carryBase = vals.str + vals.con;
     const carryTotal = carryBase + getVal('carry_misc', 0);
     setVal('carry_base', carryBase);
     setVal('carry_total', carryTotal);
 
-    // 6. Штрафы скорости
     const vestPenalty = Math.abs(getVal('vest_penalty', 0));
     const bagPenalty = Math.abs(getVal('bag_penalty', 0));
     const armorPenalty = Math.abs(getVal('armor_penalty', 0));
@@ -1202,19 +1212,27 @@
     setVal('spd_gear', totalGearPenalty);
     
     setText('top_speed_display', totalGearPenalty + ' м');
-    setText('vest_slots_display', Math.max(0, parseInt(getVal('vest_slots', 4))));
+    
+    // БЕЗОПАСНАЯ ПРОВЕРКА ДЛЯ 0 СЛОТОВ
+    const vestSlotsStr = document.getElementById('vest_slots')?.value;
+    const vestSlots = vestSlotsStr === '' ? 4 : Math.max(0, parseInt(vestSlotsStr) || 0);
+    setText('vest_slots_display', vestSlots);
     setText('vest_penalty_display', vestPenalty);
-    setText('bag_limit_display', getVal('bag_limit', 5));
+
+    const bagLimitStr = document.getElementById('bag_limit')?.value;
+    const bagLimit = bagLimitStr === '' ? 5 : Math.max(0, parseInt(bagLimitStr) || 0);
+    setText('bag_limit_display', bagLimit);
     setText('bag_penalty_display', bagPenalty);
 
-    // 7. Итоговый вес
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
     const magWt = getVal('mag_1_wt', 0) + getVal('mag_2_wt', 0) + getVal('mag_3_wt', 0);
     const totalWeight = bagWeight + vestWeight + magWt;
 
-    // 8. Скорость с вычетом штрафа
+    const bagAlert = document.getElementById('bag_overload_alert');
+    if (bagAlert) bagAlert.style.display = (bagWeight > bagLimit) ? 'block' : 'none';
+
     const spdBase = getVal('spd_base', 10);
     const spdMisc = Math.abs(getVal('spd_misc', 0));
     let finalSpeed = spdBase - totalGearPenalty - spdMisc;
@@ -1232,17 +1250,6 @@
     
     const displayWt = Math.round(totalWeight * 10) / 10;
     setText('top_weight_display', `${displayWt} / ${carryTotal} кг`);
-  }
-
-  function calc() { fastCalc(); }
-
-  function ablate(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const val = parseInt(el.value) || 0;
-    if (val > 0) el.value = val - 1;
-    fastCalc();
-    autoSave();
   }
 
   function toggleInvLock() {
@@ -1377,7 +1384,9 @@
   }
 
   function renderVest() {
-    const slots = Math.max(0, parseInt(getVal('vest_slots', 4)));
+    const vestSlotsStr = document.getElementById('vest_slots')?.value;
+    const slots = vestSlotsStr === '' ? 4 : Math.max(0, parseInt(vestSlotsStr) || 0);
+    
     const grid = document.getElementById('vest_grid');
     if (!grid) return;
     let gridHTML = '';
@@ -1482,7 +1491,7 @@
     setText('sync_status', '[ СОХРАНЕНИЕ... ]');
     document.getElementById('sync_status').style.color = '#f59e0b';
     clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => { saveData(false); }, 1200);
+    saveTimeout = setTimeout(() => { saveData(false); }, 1000);
   }
 
   async function loadData(manual = false) {
@@ -1521,13 +1530,10 @@
       document.getElementById('sync_status').style.color = '#ff4d4d';
     }
     
-    // Блок расчетов отделен от сетевых ошибок
     try {
       updateVestLimit();
       fastCalc();
-    } catch(calcErr) {
-      console.error(calcErr);
-    }
+    } catch(calcErr) { console.error(calcErr); }
   }
 
   async function saveData(manual = false) {
@@ -1577,27 +1583,25 @@
   }
 
   let fetchInProgress = false;
+  let pollTimer = null;
+  
   function startPolling() {
-    setTimeout(async () => {
+    clearTimeout(pollTimer);
+    pollTimer = setTimeout(async () => {
       const vs = document.getElementById('viewSheet');
       if (currentSheetId && !fetchInProgress && vs && vs.style.display !== 'none') {
         fetchInProgress = true;
-        await loadData(false);
+        try { await loadData(false); } catch(e) {}
         fetchInProgress = false;
       }
       startPolling(); 
     }, 10000);
   }
 
-  async function initApp() {
-    const savedId = safeGetItem('vineta_active_id');
-    if (savedId) currentSheetId = savedId;
-    await refreshCharacterList();
-    await loadData(true);
-    startPolling();
-  }
-
-  window.onload = checkSession;
+  document.addEventListener("DOMContentLoaded", () => {
+      initDOM();
+      checkSession();
+  });
 </script>
 </body>
 </html>
