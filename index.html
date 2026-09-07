@@ -11,6 +11,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Заглушка для TTS -->
+  <script>if (typeof globalThis === 'undefined') { window.globalThis = window; }</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>if (!window.supabase) { document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>'); }</script>
 
   <style>
     :root {
@@ -59,30 +64,24 @@
     select, input, button, textarea { font-family: inherit; font-size: 14px; }
     
     input[type="text"], input[type="number"], input[type="password"], textarea, select { 
-      background: var(--input-bg-edit); 
-      border: 1px solid #3a3f4b; 
-      color: #fff; 
-      padding: 4px; 
-      text-align: center; 
-      transition: 0.2s;
-      border-radius: 2px;
+      background: var(--input-bg-edit); border: 1px solid #3a3f4b; color: #fff; 
+      padding: 4px; text-align: center; transition: 0.2s; border-radius: 2px;
     }
     input:focus, textarea:focus, select:focus { border-color: var(--accent); outline: none; background: #2a2e38; }
     
     input[readonly], textarea[readonly] { 
-      background: var(--input-bg-read) !important; 
-      border-color: transparent !important; 
-      color: var(--text-muted) !important; 
-      cursor: default;
+      background: var(--input-bg-read) !important; border-color: transparent !important; 
+      color: var(--text-muted) !important; cursor: default;
     }
     input[readonly].accent-bold { color: var(--accent) !important; font-weight: bold; border-color: #4a1111 !important; background: rgba(201,42,42,0.05) !important;}
     
     button { background: var(--input-bg-edit); border: 1px solid var(--border-color); color: var(--border-color); cursor: pointer; padding: 4px 8px; text-transform: uppercase; transition: 0.15s; border-radius: 2px; }
     button:hover { background: var(--border-color); color: #000; }
+    button:disabled { border-color: #3a3f4b !important; color: #3a3f4b !important; cursor: not-allowed; background: transparent !important; }
+    
     .btn-danger { border-color: var(--accent); color: var(--accent); }
-    .btn-danger:hover { background: var(--accent); color: #fff; }
+    .btn-danger:hover:not(:disabled) { background: var(--accent); color: #fff; }
 
-    /* Плавающие подсказки для авторизации */
     .input-float { position: relative; width: 100%; display: flex; align-items: center; }
     .input-float input { width: 100%; padding: 14px 8px 4px 8px; font-size: 14px; text-align: left; }
     .input-float label { 
@@ -104,12 +103,7 @@
     .roll-btn { cursor: pointer; transition: 0.15s; display:inline-block; font-size:16px; margin-left:6px; opacity:0.7; }
     .roll-btn:hover { opacity:1; transform: scale(1.2); text-shadow: 0 0 8px var(--accent); }
 
-    .side-panel {
-      position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
-      background: #111215; border-left: 2px solid var(--border-color);
-      z-index: 1000; transition: right 0.3s ease; padding: 15px;
-      box-shadow: -5px 0 15px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px;
-    }
+    .side-panel { position: fixed; right: -350px; top: 0; width: 320px; height: 100%; background: #111215; border-left: 2px solid var(--border-color); z-index: 1000; transition: right 0.3s ease; padding: 15px; box-shadow: -5px 0 15px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; }
     .side-panel.open { right: 0; }
     .side-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a3f4b; padding-bottom: 10px; }
     .side-panel-header h2 { margin: 0; color: var(--border-color); font-size: 15px; }
@@ -146,19 +140,23 @@
     .panic-box { border-color: var(--accent); }
     .panic-title { background: var(--accent); }
     .stress-input { font-weight: bold; color: var(--accent); }
-    .panic-btn { border-color: var(--accent); color: var(--accent); font-size: 14px; padding: 6px; }
+    .panic-btn { border-color: var(--accent); color: var(--accent); font-size: 14px; padding: 6px; width: 100%;}
     .panic-log { font-size: 12px; min-height: 24px; border: 1px dashed #404652; padding: 6px; margin-top: 4px; color: #aaa; border-radius: 4px; background: #0b0c0f;}
-
     .sub-label { font-size: 11px; color: var(--border-color); text-transform: uppercase; }
     
     @keyframes fadeInRow { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-    
     .inv-item-card { border: 1px solid #3a3f4b; border-radius: 4px; background: #111215; margin-bottom: 6px; animation: fadeInRow 0.2s ease-out forwards; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
     
+    .inv-edit-row { display: flex; gap: 6px; align-items: center; padding: 8px; background: #161719; }
+    .inv-edit-desc { padding: 0 8px 8px 35px; background: #161719; }
+    .inv-edit-desc textarea { width: 100%; resize: vertical; font-size: 11px; height: 40px; }
+    .inv-view-row { display: flex; gap: 6px; align-items: center; padding: 8px; }
+    .inv-view-desc { padding: 4px 8px 8px 30px; font-size: 11px; color: #aaa; }
+    
     .drag-area { min-height: 45px; display: flex; flex-direction: column; gap: 4px; }
     .bag-area { border: 1px dashed transparent; min-height: 100px; padding: 4px; transition: 0.2s; border-radius: 4px;}
-    .bag-area.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.05); }
+    .drag-over { border-color: var(--accent) !important; background: rgba(201,42,42,0.1) !important; }
 
     .item-name { font-weight: bold; font-size: 14px; text-align: left; }
     .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 6px; font-size: 18px; font-weight: bold;}
@@ -170,7 +168,7 @@
     .status-crit { color: var(--accent); font-weight: bold; }
 
     .admin-account-group { border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 20px; padding: 12px; background: #111215; }
-    .admin-account-group h3 { margin-top: 0; margin-bottom: 12px; color: var(--accent); letter-spacing: 1px; font-size: 16px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px;}
+    .admin-account-group h3 { margin-top: 0; margin-bottom: 12px; color: var(--accent); letter-spacing: 1px; font-size: 16px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;}
     .admin-table { width: 100%; border-collapse: collapse; }
     .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 8px; text-align: center; font-size: 13px; }
     .admin-table th { background: #181a1f; color: var(--text-muted); }
@@ -193,6 +191,7 @@
   </div>
 </div>
 
+<!-- ОКНО АВТОРИЗАЦИИ -->
 <div id="authModal" class="modal-overlay" style="display: none;">
   <div class="auth-card">
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
@@ -202,11 +201,10 @@
       <input type="text" id="loginUser" placeholder=" " autocomplete="off">
       <label for="loginUser">Позывной / Никнейм</label>
     </div>
-    
     <div class="input-float">
       <input type="password" id="loginPass" placeholder=" " autocomplete="off" style="padding-right: 36px;">
       <label for="loginPass">Пароль доступа</label>
-      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:16px;">👁</button>
+      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:16px; cursor:pointer;">👁</button>
     </div>
     
     <div style="display: flex; gap: 8px; margin-top: 5px;">
@@ -214,6 +212,20 @@
       <button type="button" onclick="handleRegister()" style="flex:1;">РЕГИСТРАЦИЯ</button>
     </div>
     <div id="authError" style="color: var(--accent); font-size: 12px; text-align: center; min-height: 14px; word-wrap: break-word;"></div>
+  </div>
+</div>
+
+<!-- ОКНО УДАЛЕНИЯ -->
+<div id="deleteModal" class="modal-overlay" style="display: none;">
+  <div class="auth-card" style="border-color: var(--accent);">
+    <div class="box-title" style="background: var(--accent); color: #fff;">ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ</div>
+    <div style="font-size: 13px; text-align: center; color: #fff; margin-bottom: 5px;" id="deleteModalText">Вы точно хотите удалить ...?</div>
+    <div style="font-size: 11px; color: var(--text-muted); text-align: center;">Для подтверждения введите имя: <br><strong id="deleteModalTargetName" style="color:var(--accent); font-size:14px; letter-spacing: 1px;"></strong></div>
+    <input type="text" id="deleteConfirmInput" placeholder="Имя для подтверждения" autocomplete="off" oninput="checkDeleteMatch()">
+    <div style="display: flex; gap: 8px; margin-top: 10px;">
+      <button type="button" onclick="closeDeleteModal()" style="flex:1; border-color:#3a3f4b; color:#fff;">ОТМЕНА</button>
+      <button type="button" id="deleteConfirmBtn" onclick="executeDelete()" class="btn-danger" style="flex:1;" disabled>УДАЛИТЬ</button>
+    </div>
   </div>
 </div>
 
@@ -227,7 +239,7 @@
   <header class="header">
     <div class="header-brand">
       <h1>AEON // ТЕРМИНАЛ</h1>
-      <span id="sync_status" class="sync-tag" onclick="loadData(true)" title="Нажмите для принудительного обновления">[ ОЖИДАНИЕ ]</span>
+      <span id="sync_status" class="sync-tag" onclick="loadData(true)" title="Принудительное обновление">[ ОЖИДАНИЕ ]</span>
     </div>
     <div style="display: flex; gap: 6px; align-items: center;">
       <button onclick="toggleSidePanel()">[ ПРОФИЛИ ]</button>
@@ -249,7 +261,6 @@
 
     <main class="row-3-col">
       <section class="col">
-        <!-- АТРИБУТЫ С ВЫКАТЫВАНИЕМ (Формат плиток 2х3) -->
         <div class="box">
           <div class="box-title">Атрибуты</div>
           <div class="box-content stats-grid" style="padding-top: 8px;">
@@ -355,7 +366,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -419,12 +429,11 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      <!-- КОЛОНКА 2: ЗДОРОВЬЕ, НАПРЯЖЕНИЕ, СКОРОСТЬ -->
+      <!-- КОЛОНКА 2: ЗДОРОВЬЕ, НАПРЯЖЕНИЕ -->
       <section class="col">
         <div class="box">
           <div class="box-title">Целостность Каркаса</div>
@@ -553,6 +562,8 @@
           </div>
           <div id="gear_penalty_details" class="expandable" style="background:#0e0f12; border-top:1px dashed #20232a;">
             <div class="calc-row">
+              <div class="calc-col"><input type="number" id="spd_base_top" readonly><span class="calc-label">База</span></div>
+              <div class="calc-col"><span class="math-sign">+</span></div>
               <div class="calc-col"><input type="number" id="penalty_vest" readonly><span class="calc-label">РПС</span></div>
               <div class="calc-col"><span class="math-sign">+</span></div>
               <div class="calc-col"><input type="number" id="penalty_bag" readonly><span class="calc-label">Рюкзак</span></div>
@@ -565,8 +576,7 @@
       </div>
     </div>
 
-    <!-- ВАЖНО: Добавлен тег main -->
-    <main class="row-3-col">
+    <div class="row-3-col">
       <section class="col">
         <div class="box">
           <div class="box-title">Броня (Stopping Power)</div>
@@ -615,7 +625,6 @@
             </div>
             
             <div class="drag-area" id="vest_grid" ondrop="dropToVest(event)" ondragover="allowDrop(event)"></div>
-            <input type="hidden" id="vest_items_json" value="[]">
           </div>
         </div>
       </section>
@@ -641,16 +650,14 @@
               <span style="width: 20px;"></span>
             </div>
 
-            <!-- Список вещей (Drag Target) -->
+            <!-- Список вещей -->
             <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
-            <input type="hidden" id="bag_items_json" value="[]">
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- ВКЛАДКА 3: АДМИН-ПАНЕЛЬ ШТАБА -->
   <div id="viewAdmin" style="display: none;">
     <div class="box">
       <div class="box-title">МОНИТОРИНГ ЗВЕНА // БАЗА ДАННЫХ</div>
@@ -660,15 +667,12 @@
           <button onclick="loadAdminRoster()">[ ОБНОВИТЬ СПИСОК ]</button>
         </div>
         
-        <!-- Контейнер для сгруппированных таблиц -->
         <div id="adminTableContainer">
             <div style="text-align:center; padding: 20px; color: var(--text-muted);">Загрузка данных штаба...</div>
         </div>
-        
       </div>
     </div>
   </div>
-
 </div>
 
 <script>
@@ -681,7 +685,6 @@
   const SUPABASE_URL = 'https://gpblfglgvxlfqhoavzlr.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_LDTJVEcaBH1m4a47pOTJZQ_qy3fk76C';
   
-  // НАСТРОЙКИ ДЛЯ ПРЯМОГО FETCH (БЕЗ БИБЛИОТЕКИ SUPABASE, ЧТОБЫ РАБОТАЛО В TTS)
   const HEADERS = {
     'apikey': SUPABASE_ANON_KEY,
     'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -697,6 +700,15 @@
   let vestItemsArray = [null, null, null, null, null, null, null, null]; 
   let invLocked = true;
   let vestLocked = true;
+  let isPolling = false;
+
+  // Простой кэш DOM
+  const DOM = {};
+  function initDOM() {
+    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_type', 'bag_type', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert'];
+    ids.forEach(id => { DOM[id] = document.getElementById(id); });
+  }
+  document.addEventListener("DOMContentLoaded", initDOM);
 
   function toggleExpand(id) {
     const el = document.getElementById(id);
@@ -714,28 +726,64 @@
     document.getElementById('sidePanel').classList.toggle('open');
   }
 
-  // --- БРОСКИ ДЛЯ TTS ---
+  // --- МОДАЛКА УДАЛЕНИЯ ---
+  let delType = '', delId = '', delName = '';
+
+  function openDeleteModal(type, id, name) {
+    delType = type; delId = id; delName = name;
+    document.getElementById('deleteModalText').innerText = type === 'user' ? `Вы точно хотите удалить учетную запись и все её листы?` : `Вы точно хотите удалить этот профиль?`;
+    document.getElementById('deleteModalTargetName').innerText = name;
+    document.getElementById('deleteConfirmInput').value = '';
+    document.getElementById('deleteConfirmBtn').disabled = true;
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  function checkDeleteMatch() {
+    const input = document.getElementById('deleteConfirmInput').value.trim();
+    document.getElementById('deleteConfirmBtn').disabled = (input !== delName);
+  }
+
+  async function executeDelete() {
+    try {
+      if(delType === 'sheet') {
+        await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${delId}`, { method: 'DELETE', headers: HEADERS });
+        if (currentSheetId === delId) currentSheetId = null;
+        closeDeleteModal();
+        await refreshCharacterList();
+        if(document.getElementById('viewAdmin').style.display === 'block') loadAdminRoster();
+        else await loadData();
+      } else if (delType === 'user') {
+        await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?owner=eq.${encodeURIComponent(delName)}`, { method: 'DELETE', headers: HEADERS });
+        await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(delName)}`, { method: 'DELETE', headers: HEADERS });
+        closeDeleteModal();
+        if(currentUser.username === delName) logout();
+        else loadAdminRoster();
+      }
+    } catch(e) {
+      console.error("Ошибка удаления:", e);
+      alert("Ошибка удаления. Проверьте сеть.");
+    }
+  }
+
   function rollUniversal(statName, inputId, event) {
     if (event) event.stopPropagation();
     let val = 0;
-    if (inputId) {
-        val = document.getElementById(inputId).value || 0;
-    } else {
-        val = document.getElementById('stress').value || 0;
-    }
+    if (inputId) { val = document.getElementById(inputId).value || 0; } 
+    else { val = document.getElementById('stress').value || 0; }
     
-    // Формируем якорь для TTS
     const encName = encodeURIComponent(statName);
     window.location.hash = `#roll_${encName}_${val}`;
     
     const log = document.getElementById('panic_log');
     if(log) log.innerText = `Бросок: ${statName} [Значение: ${val}]`;
     
-    // Сбрасываем якорь
     setTimeout(() => { window.location.hash = ""; }, 150);
   }
 
-  // --- НАПИСАНО НА FETCH ДЛЯ TTS ---
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
@@ -745,14 +793,14 @@
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=ilike.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`, { headers: HEADERS });
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`, { headers: HEADERS });
       if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
       const data = await res.json();
       
       if (data.length === 0) { errEl.innerText = 'Неверный позывной или пароль'; return; }
       setSessionUser(data[0]);
     } catch(e) {
-      errEl.innerText = 'Сбой сети (CORS/TTS): ' + e.message;
+      errEl.innerText = 'Сбой сети (CORS/TTS). Попробуйте внешний браузер.';
     }
   }
 
@@ -775,7 +823,7 @@
       if (!res.ok) { errEl.innerText = 'Позывной уже занят или ошибка БД.'; return; }
       setSessionUser({ username: u, role: assignedRole });
     } catch(e) {
-      errEl.innerText = 'Сбой сети (CORS/TTS): ' + e.message;
+      errEl.innerText = 'Сбой сети (CORS/TTS). Попробуйте внешний браузер.';
     }
   }
 
@@ -837,9 +885,7 @@
     }
   }
 
-  function formatIDToName(id) {
-    return id.replace(/^unit_|^char_/, 'ID: ');
-  }
+  function formatIDToName(id) { return id.replace(/^unit_|^char_/, 'ID: '); }
 
   async function refreshCharacterList() {
     try {
@@ -858,40 +904,36 @@
       if (list.length === 0) {
         const defaultId = Date.now().toString(36);
         list.push({ id: defaultId, name: 'Новый Боец', owner: currentUser.username });
-        if (!currentSheetId) {
-          currentSheetId = defaultId;
-          currentSheetOwner = currentUser.username;
-        }
+        if (!currentSheetId) { currentSheetId = defaultId; currentSheetOwner = currentUser.username; }
       } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
-        currentSheetId = list[0].id;
-        currentSheetOwner = list[0].owner;
+        currentSheetId = list[0].id; currentSheetOwner = list[0].owner;
       } else {
         const activeObj = list.find(x => x.id === currentSheetId);
         if (activeObj) currentSheetOwner = activeObj.owner;
       }
 
       const panelList = document.getElementById('sidePanelList');
-      panelList.innerHTML = '';
+      let gridHTML = '';
       list.forEach(c => {
         const isActive = c.id === currentSheetId ? 'active' : '';
-        panelList.innerHTML += `
+        const safeName = c.name.replace(/'/g, "\\'");
+        gridHTML += `
           <div class="char-card ${isActive}">
             <div class="char-name" title="${c.name}">${c.name}</div>
             <div class="char-actions">
               <button style="flex:1;" onclick="switchCharacter('${c.id}')">${isActive ? 'ВЫБРАН' : 'ВЫБРАТЬ'}</button>
-              <button class="btn-danger" title="Удалить" onclick="deleteCharacterById('${c.id}', '${c.name.replace(/'/g, "\\'")}')">✕</button>
+              <button class="btn-danger" title="Удалить" onclick="openDeleteModal('sheet', '${c.id}', '${safeName}')">✕</button>
             </div>
           </div>
         `;
       });
+      panelList.innerHTML = gridHTML;
 
       safeSetItem('vineta_active_id', currentSheetId);
       if (currentUser.role === 'admin' && currentSheetOwner) {
         document.getElementById('sheetOwner').value = currentSheetOwner || '';
       }
-    } catch(e) {
-      console.warn("Сбой загрузки сайдбара", e);
-    }
+    } catch(e) { console.warn("Сбой сайдбара", e); }
   }
 
   async function switchCharacter(id) {
@@ -917,19 +959,6 @@
     await refreshCharacterList();
   }
 
-  async function deleteCharacterById(id, name) {
-    if (!confirm(`Точно удалить профиль [ ${name} ]? Это действие необратимо.`)) return;
-    const verify = prompt(`Защита от случайного удаления.\nВведите ваш никнейм (${currentUser.username}), чтобы подтвердить:`);
-    if (verify !== currentUser.username) { alert('Удаление отменено: никнейм введен неверно.'); return; }
-
-    await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
-    
-    if (currentSheetId === id) currentSheetId = null;
-    
-    await refreshCharacterList();
-    await loadData();
-  }
-
   function onNameChange() {
     autoSave();
     setTimeout(refreshCharacterList, 1500); 
@@ -940,18 +969,14 @@
     if (newOwner) { currentSheetOwner = newOwner; autoSave(); }
   }
 
-  function updateVestLimit() {
-    renderVest();
-  }
+  function updateVestLimit() { renderVest(); }
 
   function resetForm() {
     bagItemsArray = [];
     vestItemsArray = [null, null, null, null, null, null, null, null];
-    document.getElementById('bag_items_json').value = '[]';
-    document.getElementById('vest_items_json').value = '[]';
     
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
-      if (inp.id === 'sheetOwner') return; 
+      if (inp.id === 'sheetOwner' || inp.id.startsWith('login') || inp.id === 'deleteConfirmInput') return; 
       if (inp.tagName.toLowerCase() === 'select') {
         if (inp.id === 'bag_type') inp.value = 'sling';
         if (inp.id === 'vest_type') inp.value = 'basic';
@@ -1002,7 +1027,10 @@
         for (const [owner, rows] of Object.entries(grouped)) {
             html += `
             <div class="admin-account-group">
-                <h3>УЧЕТНАЯ ЗАПИСЬ: ${owner}</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px; margin-bottom: 12px;">
+                  <h3 style="margin:0; border:none; padding:0;">УЧЕТНАЯ ЗАПИСЬ: ${owner}</h3>
+                  <button class="btn-danger" style="font-size:10px; padding: 2px 6px;" onclick="openDeleteModal('user', '${owner}', '${owner}')">УДАЛИТЬ УЧЕТКУ</button>
+                </div>
                 <table class="admin-table">
                   <thead>
                     <tr>
@@ -1022,6 +1050,7 @@
                 rows.forEach(r => {
                     const d = r.data || {};
                     const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
+                    const safeName = cName.replace(/'/g, "\\'");
                     html += `
                         <tr>
                             <td style="font-weight:bold; color:#fff;">${cName}</td>
@@ -1029,7 +1058,12 @@
                             <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
                             <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
                             <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
-                            <td><button onclick="inspectCharacter('${r.id}', '${r.owner}')">ОТКРЫТЬ</button></td>
+                            <td>
+                              <div style="display:flex; gap:4px; justify-content:center;">
+                                <button onclick="inspectCharacter('${r.id}', '${r.owner}')">ОТКРЫТЬ</button>
+                                <button class="btn-danger" onclick="openDeleteModal('sheet', '${r.id}', '${safeName}')">✕</button>
+                              </div>
+                            </td>
                         </tr>`;
                 });
             }
@@ -1039,7 +1073,7 @@
         if (html === '') html = '<div style="text-align:center; color: var(--text-muted);">База данных пуста.</div>';
         container.innerHTML = html;
     } catch(e) {
-        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба (TTS): ${e.message}</div>`;
+        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба: ${e.message}</div>`;
     }
   }
 
@@ -1057,57 +1091,54 @@
   }
 
   function fastCalc() {
+    if (!DOM.str_base) initDOM();
+
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
     statIds.forEach(id => {
-      const base = parseInt(document.getElementById(id + '_base').value) || 0;
-      const bonus = parseInt(document.getElementById(id + '_bonus').value) || 0;
+      const base = parseInt(DOM[id + '_base'].value) || 0;
+      const bonus = parseInt(DOM[id + '_bonus'].value) || 0;
       const total = base + bonus;
       
-      const tEl = document.getElementById(id + '_total');
-      if(tEl) tEl.value = total;
-      
-      const dEl = document.getElementById(id + '_display');
-      if(dEl) dEl.innerText = total;
+      if(DOM[id + '_total']) DOM[id + '_total'].value = total;
+      if(DOM[id + '_display']) DOM[id + '_display'].innerText = total;
       
       vals[id] = total;
       const mod = getMod(total);
-      
-      const mEl = document.getElementById(id + '_m');
-      if(mEl) mEl.innerText = (mod >= 0 ? '+' : '') + mod;
+      if(DOM[id + '_m']) DOM[id + '_m'].innerText = (mod >= 0 ? '+' : '') + mod;
     });
 
     const physMod = Math.max(getMod(vals.str), getMod(vals.con));
     const evaMod  = Math.max(getMod(vals.dex), getMod(vals.int));
     const menMod  = Math.max(getMod(vals.wis), getMod(vals.cha));
 
-    document.getElementById('sv_phys_mod').value = physMod;
-    document.getElementById('sv_eva_mod').value = evaMod;
-    document.getElementById('sv_men_mod').value = menMod;
+    DOM.sv_phys_mod.value = physMod;
+    DOM.sv_eva_mod.value = evaMod;
+    DOM.sv_men_mod.value = menMod;
 
-    const physMisc = parseInt(document.getElementById('sv_phys_misc').value) || 0;
-    const evaMisc  = parseInt(document.getElementById('sv_eva_misc').value) || 0;
-    const menMisc  = parseInt(document.getElementById('sv_men_misc').value) || 0;
+    const physMisc = parseInt(DOM.sv_phys_misc.value) || 0;
+    const evaMisc  = parseInt(DOM.sv_eva_misc.value) || 0;
+    const menMisc  = parseInt(DOM.sv_men_misc.value) || 0;
 
     const finalPhys = 15 - physMod + physMisc;
     const finalEva = 15 - evaMod + evaMisc;
     const finalMen = 15 - menMod + menMisc;
 
-    document.getElementById('sv_phys').value = finalPhys;
-    document.getElementById('sv_eva').value  = finalEva;
-    document.getElementById('sv_men').value  = finalMen;
+    DOM.sv_phys.value = finalPhys;
+    DOM.sv_eva.value  = finalEva;
+    DOM.sv_men.value  = finalMen;
 
-    document.getElementById('sv_phys_display').innerText = finalPhys;
-    document.getElementById('sv_eva_display').innerText = finalEva;
-    document.getElementById('sv_men_display').innerText = finalMen;
+    DOM.sv_phys_display.innerText = finalPhys;
+    DOM.sv_eva_display.innerText = finalEva;
+    DOM.sv_men_display.innerText = finalMen;
 
-    document.getElementById('strain_limit').innerText = vals.con;
-    const perm = parseInt(document.getElementById('st_perm').value) || 0;
-    const temp = parseInt(document.getElementById('st_temp').value) || 0;
-    document.getElementById('strain_alert').style.display = (perm + temp >= vals.con) ? 'block' : 'none';
+    DOM.strain_limit.innerText = vals.con;
+    const perm = parseInt(DOM.st_perm.value) || 0;
+    const temp = parseInt(DOM.st_temp.value) || 0;
+    DOM.strain_alert.style.display = (perm + temp >= vals.con) ? 'block' : 'none';
 
-    const maxHp = parseInt(document.getElementById('hp_max').value) || 20;
-    const curHp = parseInt(document.getElementById('hp_cur').value) || 0;
+    const maxHp = parseInt(DOM.hp_max.value) || 20;
+    const curHp = parseInt(DOM.hp_cur.value) || 0;
     const ratio = curHp / maxHp;
 
     document.querySelectorAll('.wound-track div').forEach(el => el.classList.remove('wound-active'));
@@ -1117,64 +1148,61 @@
     else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
     else document.getElementById('w_light').classList.add('wound-active');
 
-    // Скорость и Вес
     const carryBase = vals.str + vals.con;
-    const carryMisc = parseInt(document.getElementById('carry_misc').value) || 0;
+    const carryMisc = parseInt(DOM.carry_misc.value) || 0;
     const carryTotal = carryBase + carryMisc;
     
-    document.getElementById('carry_base').value = carryBase;
-    document.getElementById('carry_total').value = carryTotal;
+    DOM.carry_base.value = carryBase;
+    DOM.carry_total.value = carryTotal;
 
-    const spdBase = parseInt(document.getElementById('spd_base').value) || 10;
-    document.getElementById('spd_base_top').value = spdBase;
-    const spdMisc = parseInt(document.getElementById('spd_misc').value) || 0;
-    document.getElementById('penalty_misc').value = spdMisc;
+    const spdBase = parseInt(DOM.spd_base.value) || 10;
+    DOM.spd_base_top.value = spdBase;
+    const spdMisc = parseInt(DOM.spd_misc.value) || 0;
     
-    const vestType = document.getElementById('vest_type').value;
+    const vestType = DOM.vest_type.value;
     const vestPenalty = (vestType === 'heavy') ? -1 : 0;
 
-    const bagType = document.getElementById('bag_type').value;
+    const bagType = DOM.bag_type.value;
     let bagPenalty = 0;
     if (bagType === 'bag') { bagPenalty = -1; }
     else if (bagType === 'assault') { bagPenalty = -2; }
 
     const totalGearPenalty = vestPenalty + bagPenalty;
-    document.getElementById('spd_gear').value = totalGearPenalty;
-    document.getElementById('penalty_vest').value = vestPenalty;
-    document.getElementById('penalty_bag').value = bagPenalty;
-    document.getElementById('penalty_total').value = totalGearPenalty; // Показываем чистый штраф снаряжения
+    DOM.spd_gear.value = totalGearPenalty;
+    DOM.penalty_vest.value = vestPenalty;
+    DOM.penalty_bag.value = bagPenalty;
+    DOM.penalty_total.value = totalGearPenalty; 
 
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
-    const mag1Wt = parseFloat(document.getElementById('mag_1_wt').value) || 0;
-    const mag2Wt = parseFloat(document.getElementById('mag_2_wt').value) || 0;
-    const mag3Wt = parseFloat(document.getElementById('mag_3_wt').value) || 0;
+    const mag1Wt = parseFloat(DOM.mag_1_wt.value) || 0;
+    const mag2Wt = parseFloat(DOM.mag_2_wt.value) || 0;
+    const mag3Wt = parseFloat(DOM.mag_3_wt.value) || 0;
     
     let totalWeight = bagWeight + vestWeight + mag1Wt + mag2Wt + mag3Wt;
     let finalSpeed = spdBase + totalGearPenalty + spdMisc;
     
-    const overAlert = document.getElementById('overencumber_alert');
     if (totalWeight > carryTotal) {
       finalSpeed = 2; 
-      if(overAlert) overAlert.style.display = 'block';
+      if(DOM.overencumber_alert) DOM.overencumber_alert.style.display = 'block';
     } else {
-      if(overAlert) overAlert.style.display = 'none';
+      if(DOM.overencumber_alert) DOM.overencumber_alert.style.display = 'none';
     }
 
-    document.getElementById('spd_total').value = finalSpeed;
-    document.getElementById('spd_main_display').innerText = finalSpeed + ' м';
+    DOM.spd_total.value = finalSpeed;
+    DOM.spd_main_display.innerText = finalSpeed + ' м';
     
-    const penaltyDisplay = document.getElementById('top_penalty_display');
-    if(penaltyDisplay) {
-        penaltyDisplay.innerText = totalGearPenalty + ' м';
-        penaltyDisplay.style.color = (totalGearPenalty < 0) ? 'var(--accent)' : '#fff';
+    if(DOM.top_speed_display) {
+        DOM.top_speed_display.innerText = totalGearPenalty + ' м';
+        DOM.top_speed_display.style.color = (totalGearPenalty < 0) ? 'var(--accent)' : '#fff';
     }
     
     const displayWt = Math.round(totalWeight * 10) / 10;
-    const topWtDisplay = document.getElementById('top_weight_display');
-    topWtDisplay.innerText = `${displayWt} / ${carryTotal} кг`;
-    topWtDisplay.style.color = (totalWeight > carryTotal) ? 'var(--accent)' : '#fff';
+    if(DOM.top_weight_display) {
+        DOM.top_weight_display.innerText = `${displayWt} / ${carryTotal} кг`;
+        DOM.top_weight_display.style.color = (totalWeight > carryTotal) ? 'var(--accent)' : '#fff';
+    }
 
     autoSave();
   }
@@ -1188,7 +1216,7 @@
     fastCalc();
   }
 
-  // --- ИНВЕНТАРЬ ---
+  // --- ИНВЕНТАРЬ И РПС ---
   function toggleInvLock() {
     invLocked = !invLocked;
     const btn = document.getElementById('inv_toggle_btn');
@@ -1260,11 +1288,7 @@
   }
 
   // --- Drag and Drop ---
-  function allowDrop(ev) {
-    ev.preventDefault();
-    ev.currentTarget.classList.add('drag-over');
-  }
-
+  function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
   document.addEventListener('dragleave', function(ev) {
     if(ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area'))) {
         ev.target.classList.remove('drag-over');
@@ -1281,7 +1305,6 @@
     ev.preventDefault();
     const targetSlotElement = ev.target.closest('.vest-slot');
     document.querySelectorAll('.vest-slot').forEach(el => el.classList.remove('drag-over'));
-    
     if (!targetSlotElement) return;
     
     const targetIndex = parseInt(targetSlotElement.getAttribute('data-index'));
@@ -1292,14 +1315,8 @@
       const itemIndex = bagItemsArray.findIndex(i => i.id === sourceId);
       if (itemIndex > -1) {
         const item = bagItemsArray[itemIndex];
-        if (item.unitWeight > 1) {
-          alert('Слишком большой предмет! Подсумок РПС вмещает предметы не более 1 кг.');
-          return;
-        }
-        if (vestItemsArray[targetIndex] !== null) {
-          alert('Этот подсумок уже занят!');
-          return;
-        }
+        if (item.unitWeight > 1) { alert('Слишком большой предмет! МАКС 1 КГ.'); return; }
+        if (vestItemsArray[targetIndex] !== null) { alert('Этот подсумок уже занят!'); return; }
         
         vestItemsArray[targetIndex] = { id: Date.now(), name: item.name, unitWeight: item.unitWeight, desc: item.desc };
         item.qty -= 1;
@@ -1321,18 +1338,15 @@
   function dropToBag(ev) {
     ev.preventDefault();
     document.getElementById('dynamic_pack_grid').classList.remove('drag-over');
-    
     const source = ev.dataTransfer.getData("source");
+    
     if (source === 'vest') {
       const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
       const item = vestItemsArray[sourceIndex];
       if (item) {
         const existingIndex = bagItemsArray.findIndex(i => i.name === item.name && i.unitWeight === item.unitWeight && i.desc === item.desc);
-        if (existingIndex > -1) {
-          bagItemsArray[existingIndex].qty += 1;
-        } else {
-          bagItemsArray.push({ id: Date.now(), name: item.name, unitWeight: item.unitWeight, qty: 1, desc: item.desc });
-        }
+        if (existingIndex > -1) { bagItemsArray[existingIndex].qty += 1; } 
+        else { bagItemsArray.push({ id: Date.now(), name: item.name, unitWeight: item.unitWeight, qty: 1, desc: item.desc }); }
         vestItemsArray[sourceIndex] = null;
         renderVest();
         renderInventory();
@@ -1351,77 +1365,61 @@
     const vestType = document.getElementById('vest_type').value;
     const limit = vestType === 'basic' ? 4 : 8;
     const grid = document.getElementById('vest_grid');
-    grid.innerHTML = '';
+    let gridHTML = '';
 
     let totalVestWt = 0;
 
     for (let i = 0; i < limit; i++) {
       const item = vestItemsArray[i];
-      let html = '';
-      
       if (!item) {
         if (vestLocked) {
-          html = `
-            <div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
-              <div style="text-align:center; color:#3a3f4b; font-size:12px;">[ Пустой слот ]</div>
-            </div>`;
+          gridHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)"><div style="text-align:center; color:#3a3f4b; font-size:12px;">[ Пустой слот ]</div></div>`;
         } else {
-          html = `
-            <div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="border: 1px dashed #3a3f4b;">
-              <button onclick="addVestItemDirectly(${i})" style="width:100%; background:transparent; border:none; color:var(--text-muted); font-size:12px; padding:8px; cursor:pointer;">
-                ⊕ ДОБАВИТЬ В СЛОТ
-              </button>
-            </div>`;
+          gridHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="border: 1px dashed #3a3f4b;"><button onclick="addVestItemDirectly(${i})" style="width:100%; background:transparent; border:none; color:var(--text-muted); font-size:12px; padding:8px; cursor:pointer;">⊕ ДОБАВИТЬ В СЛОТ</button></div>`;
         }
       } else {
         totalVestWt += item.unitWeight;
         if (vestLocked) {
-          html = `
+          gridHTML += `
             <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding:0;">
-              <div class="val-interactive" onclick="toggleExpand('desc_vest_${item.id}')" style="padding:6px 8px;">
-                <span style="color:var(--text-muted); font-size:14px; margin-right:6px;">👁</span>
+              <div class="inv-view-row val-interactive" onclick="toggleExpand('desc_vest_${item.id}')">
+                <span style="color:var(--text-muted); font-size:14px;">👁</span>
                 <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный'}</span>
                 <span style="font-size:12px; color:var(--text-muted); font-weight:bold;">${item.unitWeight} кг</span>
               </div>
-              <div id="desc_vest_${item.id}" class="expandable">
-                <div style="padding:4px 8px 8px 30px; font-size:10px; color:#aaa;">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
-              </div>
+              <div id="desc_vest_${item.id}" class="expandable inv-view-desc">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
             </div>`;
         } else {
-          html = `
-            <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding: 6px; background:#161719;">
-              <div style="display:flex; gap:4px; align-items:center;">
-                <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')" title="Описание">⚙️</button>
-                <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; padding:4px;" oninput="handleVestItemInput(${i}, 'name', this.value)">
-                <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:50px; padding:4px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
-                <button class="item-del" onclick="removeVestItem(${i})">✕</button>
-              </div>
-              <div id="desc_vest_edit_${item.id}" class="expandable" style="width:100%;">
-                 <textarea placeholder="Описание..." rows="2" style="width:100%; font-size:11px; padding:4px; margin-top:4px; resize:vertical;" oninput="handleVestItemInput(${i}, 'desc', this.value)">${item.desc || ''}</textarea>
+          gridHTML += `
+            <div class="inv-item-card vest-slot inv-edit-row" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
+              <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')" title="Описание">⚙️</button>
+              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1;" oninput="handleVestItemInput(${i}, 'name', this.value)">
+              <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:45px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
+              <button class="item-del" onclick="removeVestItem(${i})">✕</button>
+              <div id="desc_vest_edit_${item.id}" class="expandable inv-edit-desc" style="width:100%;">
+                 <textarea placeholder="Описание..." oninput="handleVestItemInput(${i}, 'desc', this.value)">${item.desc || ''}</textarea>
               </div>
             </div>`;
         }
       }
-      grid.innerHTML += html;
     }
+    grid.innerHTML = gridHTML;
     
     const vestStatus = document.getElementById('vest_status');
     if (vestStatus) vestStatus.innerText = Math.round(totalVestWt * 10) / 10;
-    
-    document.getElementById('vest_items_json').value = JSON.stringify(vestItemsArray);
   }
 
   function renderInventory() {
     const grid = document.getElementById('dynamic_pack_grid');
-    grid.innerHTML = '';
+    let gridHTML = '';
 
     bagItemsArray.forEach(item => {
       const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
       
       if (invLocked) {
-        grid.innerHTML += `
+        gridHTML += `
           <div class="inv-item-card" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)" style="margin-bottom:4px; padding:0;">
-            <div class="val-interactive" style="display:flex; gap:6px; align-items:center; padding:8px;" onclick="toggleExpand('desc_view_${item.id}')">
+            <div class="inv-view-row val-interactive" onclick="toggleExpand('desc_view_${item.id}')">
               <span style="color:var(--text-muted); font-size:14px;">👁</span>
               <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный предмет'}</span>
               <span style="width: 45px; text-align:center; font-weight:bold; font-size:14px;">${item.qty}</span>
@@ -1429,30 +1427,24 @@
               <span style="font-size:14px; font-weight:bold; color:var(--text-muted); width: 55px; text-align:right;">${totalWt}</span>
               <span style="width: 10px;"></span>
             </div>
-            <div id="desc_view_${item.id}" class="expandable">
-              <div style="padding:6px 8px 10px 30px; font-size:11px; color:#aaa;">
-                ${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}
-              </div>
+            <div id="desc_view_${item.id}" class="expandable inv-view-desc">
+              ${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}
             </div>
           </div>
         `;
       } else {
-        grid.innerHTML += `
-          <div class="inv-item-card" id="bag_row_${item.id}" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)" style="padding:8px 6px; background:#161719;">
-            <div style="display:flex; gap:6px; align-items:center;">
-              <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')" title="Настройки">⚙️</button>
-              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; text-align:left; padding-left:8px;" oninput="handleBagItemInput(${item.id}, 'name', this.value)">
-              <div style="width:45px;"><input type="number" value="${item.qty}" min="1" title="Количество" style="width:100%;" oninput="handleBagItemInput(${item.id}, 'qty', this.value)"></div>
-              <div style="width:55px;"><input type="number" value="${item.unitWeight}" step="0.5" title="Вес 1 шт." style="width:100%;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)"></div>
-              <div style="width:55px; text-align:center; padding-top:4px;">
-                <span id="bag_total_${item.id}" style="color:var(--text-muted); font-size:14px; font-weight:bold;">${totalWt}</span>
-              </div>
-              <button class="item-del" onclick="removeBagItem(${item.id})" title="Удалить">✕</button>
+        gridHTML += `
+          <div class="inv-item-card inv-edit-row" id="bag_row_${item.id}" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
+            <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')" title="Настройки">⚙️</button>
+            <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; text-align:left;" oninput="handleBagItemInput(${item.id}, 'name', this.value)">
+            <div style="width:45px;"><input type="number" value="${item.qty}" min="1" title="Количество" style="width:100%;" oninput="handleBagItemInput(${item.id}, 'qty', this.value)"></div>
+            <div style="width:55px;"><input type="number" value="${item.unitWeight}" step="0.5" title="Вес 1 шт." style="width:100%;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)"></div>
+            <div style="width:55px; text-align:center; padding-top:4px;">
+              <span id="bag_total_${item.id}" style="color:var(--text-muted); font-size:14px; font-weight:bold;">${totalWt}</span>
             </div>
-            <div id="desc_edit_${item.id}" class="expandable" style="width:100%;">
-              <div style="display:flex; gap:6px; margin-top:6px; padding-left:26px;">
-                <textarea placeholder="Описание или свойства предмета..." rows="2" style="flex:1; resize:vertical; font-size:11px;" oninput="handleBagItemInput(${item.id}, 'desc', this.value)">${item.desc || ''}</textarea>
-              </div>
+            <button class="item-del" onclick="removeBagItem(${item.id})" title="Удалить">✕</button>
+            <div id="desc_edit_${item.id}" class="expandable inv-edit-desc" style="width:100%;">
+              <textarea placeholder="Описание или свойства предмета..." oninput="handleBagItemInput(${item.id}, 'desc', this.value)">${item.desc || ''}</textarea>
             </div>
           </div>
         `;
@@ -1460,21 +1452,23 @@
     });
 
     if (!invLocked) {
-      grid.innerHTML += `
+      gridHTML += `
         <button onclick="addBagItem()" style="margin-top: 8px; width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 10px; font-size:14px; cursor:pointer;">
           ⊕ ДОБАВИТЬ ПРЕДМЕТ
         </button>
       `;
     }
-    document.getElementById('bag_items_json').value = JSON.stringify(bagItemsArray);
+    grid.innerHTML = gridHTML;
   }
 
   function getFormData() {
     const data = {};
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
-      if (inp.id === 'sheetOwner' || inp.id.startsWith('bag_total_') || inp.id.startsWith('login')) return; 
+      if (inp.id === 'sheetOwner' || inp.id.startsWith('bag_total_') || inp.id.startsWith('login') || inp.id.startsWith('delete')) return; 
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
+    data.bag_items_json = JSON.stringify(bagItemsArray);
+    data.vest_items_json = JSON.stringify(vestItemsArray);
     return data;
   }
 
@@ -1494,10 +1488,6 @@
 
   async function saveData(manual = false) {
     if (!currentSheetId || !currentUser || isRemoteUpdating) return;
-    
-    document.getElementById('bag_items_json').value = JSON.stringify(bagItemsArray);
-    document.getElementById('vest_items_json').value = JSON.stringify(vestItemsArray);
-    
     const payload = getFormData();
 
     try {
@@ -1520,9 +1510,9 @@
     }
   }
 
-  async function loadData(force = false) {
+  async function loadData(manual = false) {
     if (!currentSheetId) return;
-    setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
+    if (manual) setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
 
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${currentSheetId}&select=data,owner`, { headers: HEADERS });
@@ -1561,26 +1551,30 @@
         el.value = data[key];
       }
     }
-    if (data.bag_items_json) {
-      try { bagItemsArray = JSON.parse(data.bag_items_json); } catch(e) { bagItemsArray = []; }
-    } else { bagItemsArray = []; }
+    if (data.bag_items_json) { try { bagItemsArray = JSON.parse(data.bag_items_json); } catch(e) { bagItemsArray = []; } } 
+    else { bagItemsArray = []; }
     
-    if (data.vest_items_json) {
-      try { vestItemsArray = JSON.parse(data.vest_items_json); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; }
-    } else { vestItemsArray = [null,null,null,null,null,null,null,null]; }
+    if (data.vest_items_json) { try { vestItemsArray = JSON.parse(data.vest_items_json); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; } } 
+    else { vestItemsArray = [null,null,null,null,null,null,null,null]; }
   }
 
-  // Заглушка вместо вебсокетов (ручное обновление + легкий опрос для TTS)
-  setInterval(() => {
-    if (!invLocked || !vestLocked || isRemoteUpdating || !currentSheetId) return;
-    loadData(false);
-  }, 10000); // Обновление каждые 10 сек, только если инвентарь закрыт для ред.
+  // Рекурсивный поллинг (опрос базы) для замены зависших setInterval
+  function startPolling() {
+    setTimeout(async () => {
+      // Опрашиваем только если юзер не редактирует инвентарь и выбран лист
+      if (invLocked && vestLocked && !isRemoteUpdating && currentSheetId) {
+        await loadData(false);
+      }
+      startPolling(); // Зацикливаем после ответа
+    }, 10000);
+  }
 
   async function initApp() {
     const savedId = safeGetItem('vineta_active_id');
     if (savedId) currentSheetId = savedId;
     await refreshCharacterList();
-    await loadData();
+    await loadData(true);
+    startPolling();
   }
 
   window.onload = checkSession;
