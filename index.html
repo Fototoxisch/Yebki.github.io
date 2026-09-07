@@ -34,49 +34,58 @@
     }
 
     input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none !important;
-      margin: 0 !important;
-      display: none !important;
-    }
-    input[type="number"] {
-      -moz-appearance: textfield !important;
-      appearance: textfield !important;
-    }
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; display: none !important; }
+    input[type="number"] { -moz-appearance: textfield !important; appearance: textfield !important; }
 
     .container { max-width: 1250px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
 
-    /* Табы */
     .tabs-bar { display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); }
     .tab-btn { background: #15171c; border: 1px solid #333; border-bottom: none; color: var(--text-muted); padding: 6px 16px; font-family: inherit; font-size: 12px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
     .tab-btn:hover { color: #fff; background: #20232a; }
     .tab-btn.active { background: var(--tab-active); border-color: var(--border-color); color: var(--border-color); border-bottom: 2px solid var(--tab-active); margin-bottom: -2px; }
 
-    /* Шапка */
     .header { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
     .header-brand { display: flex; align-items: center; gap: 10px; }
     .header h1 { margin: 0; font-size: 15px; color: var(--border-color); letter-spacing: 1.5px; }
     .sync-tag { font-size: 10px; color: #4ade80; border: 1px solid #4ade80; padding: 2px 5px; white-space: nowrap; }
     .user-tag { font-size: 11px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; text-transform: uppercase;}
 
-    /* Элементы управления */
     select, input, button, textarea { font-family: inherit; font-size: 13px; }
     select { background: var(--input-bg); border: 1px solid var(--border-color); color: #fff; padding: 4px; outline: none; cursor: pointer; }
     input[type="text"], input[type="number"], input[type="password"], textarea { background: var(--input-bg); border: 1px solid #3a3f4b; color: var(--text-color); padding: 5px; text-align: center; }
-    input[type="number"] { width: 50px; }
     input:focus, textarea:focus { border-color: var(--border-color); outline: none; }
     button { background: var(--input-bg); border: 1px solid var(--border-color); color: var(--border-color); cursor: pointer; padding: 4px 8px; font-weight: bold; text-transform: uppercase; transition: 0.15s; }
     button:hover { background: var(--border-color); color: #000; }
     .btn-danger { border-color: var(--accent); color: var(--accent); }
     .btn-danger:hover { background: var(--accent); color: #fff; }
 
-    /* Анимации и Интерактивы (Roll20 Style) */
-    .expandable { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, margin 0.3s ease, opacity 0.3s ease; opacity: 0; }
-    .expandable.open { max-height: 400px; opacity: 1; margin-top: 8px; overflow-y: auto; }
-    .val-interactive { cursor: pointer; transition: 0.2s; border: 1px solid transparent; border-radius: 4px; padding: 4px; }
-    .val-interactive:hover { color: var(--accent); border-color: #4a1111; background: rgba(255,77,77,0.05); }
+    /* Плавные анимации выкатывания (Roll20 Style) */
+    .expandable { 
+      max-height: 0; 
+      overflow: hidden; 
+      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; 
+      opacity: 0; 
+    }
+    .expandable.open { 
+      max-height: 400px; 
+      opacity: 1; 
+      transition: max-height 0.4s ease-in-out, opacity 0.4s ease; 
+    }
+    
+    /* Интерактивные строки с наведением */
+    .val-interactive { 
+      cursor: pointer; 
+      transition: background 0.2s, color 0.2s; 
+      padding: 6px 8px; 
+      border-radius: 4px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+    }
+    .val-interactive:hover { background: rgba(255, 77, 77, 0.08); }
+    .val-interactive:hover .interactive-text { color: var(--accent); }
+    .interactive-text { transition: color 0.2s; }
 
-    /* Боковая панель профилей */
     .side-panel {
       position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
       background: #111215; border-left: 2px solid var(--border-color);
@@ -93,7 +102,6 @@
     .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .char-actions { display: flex; gap: 5px; }
 
-    /* Сетка и блоки */
     .row-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: start; }
     .col { display: flex; flex-direction: column; gap: 15px; }
     .box { background: var(--panel-bg); border: 1px solid var(--border-color); }
@@ -103,54 +111,57 @@
     .accent-bold { color: var(--border-color); font-weight: bold; }
     .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 4px; border: 1px dashed var(--accent); padding: 4px; }
 
-    /* Статы */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .stat-item { border: 1px solid #3a3f4b; padding: 6px; text-align: center; position: relative; background: var(--input-bg); }
     .stat-item span { display: block; font-size: 10px; color: var(--border-color); margin-bottom: 4px; }
     .stat-item input { font-size: 16px; font-weight: bold; width: 100%; border: none; border-bottom: 1px solid #333; }
     .stat-mod { position: absolute; top: -7px; right: -7px; background: var(--border-color); color: #000; border-radius: 50%; width: 20px; height: 20px; line-height: 20px; font-size: 11px; font-weight: bold; }
 
-    /* Калькуляторы */
-    .calc-row { display: flex; align-items: center; gap: 4px; font-size: 12px; margin-top: 5px; justify-content: center; }
-    .calc-row input { width: 35px; padding: 2px; font-size: 12px; }
-    .calc-col { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-    .calc-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+    /* Выровненные математические формулы */
+    .calc-row { display: flex; align-items: center; gap: 6px; justify-content: center; padding: 8px 0; }
+    .calc-row input { width: 35px; padding: 4px; font-size: 14px; border-color: #404652; text-align: center; font-weight: bold; }
+    .calc-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .calc-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: normal; }
+    .math-sign { display: flex; align-items: center; justify-content: center; height: 26px; font-size: 16px; font-weight: bold; color: var(--text-muted); }
 
-    /* Броня и Раны */
     .hp-input { color: var(--accent); font-weight: bold; }
     .wound-track { display: flex; flex-direction: column; gap: 2px; border: 1px solid #3a3f4b; padding: 2px; }
     .wound-track div { padding: 4px; font-size: 11px; text-align: center; color: var(--text-muted); }
     .wound-active { background: var(--border-color); color: #000 !important; font-weight: bold; }
 
-    /* Паника */
     .panic-box { border-color: var(--accent); }
     .panic-title { background: var(--accent); }
     .stress-input { font-weight: bold; color: var(--accent); }
     .panic-btn { border-color: var(--accent); color: var(--accent); }
     .panic-log { font-size: 11px; min-height: 24px; border: 1px dashed #404652; padding: 4px; margin-top: 4px; }
 
-    /* Инвентарь */
     .sub-label { font-size: 10px; color: var(--border-color); }
-    .pouch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
     
-    #dynamic_pack_grid { display: flex; flex-direction: column; gap: 0; border-top: 1px dashed #3a3f4b; padding-top: 4px; }
-    .inv-row { border-bottom: 1px solid #20232a; padding: 6px 4px; }
+    /* Инвентарь и РПС (Drag and Drop & Roll20 Style) */
+    .drag-area { min-height: 45px; display: flex; flex-direction: column; gap: 4px; }
+    .inv-row { border-bottom: 1px solid #20232a; position: relative; }
     .inv-row:last-child { border-bottom: none; }
-    .inv-row-header { display: flex; justify-content: space-between; align-items: center; }
-    .item-name { font-weight: bold; font-size: 13px; }
-    .inv-item-edit { display: flex; flex-direction: column; gap: 6px; padding: 6px; background: #161719; border: 1px solid #3a3f4b; margin-bottom: 4px; }
-    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 6px; font-size: 14px; }
+    .item-name { font-weight: bold; font-size: 13px; text-align: left; }
+    
+    .inv-item-edit { display: flex; flex-direction: column; padding: 6px; background: #161719; border: 1px solid #3a3f4b; margin-bottom: 4px; }
+    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 4px; font-size: 14px; }
     .item-del:hover { color: #fff; background: transparent; }
+    .settings-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 0 6px; font-size: 14px; }
+    .settings-btn:hover { color: var(--accent); background: transparent; }
+    
+    .vest-slot { background: #161719; border: 1px dashed #3a3f4b; min-height: 38px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
+    .vest-slot.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
+    .bag-area { border: 1px solid transparent; min-height: 100px; padding: 4px; }
+    .bag-area.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.05); }
+
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
 
-    /* Таблица Админа */
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 8px; text-align: center; font-size: 12px; }
     .admin-table th { background: #1d2127; color: var(--border-color); }
     .admin-table tr:hover { background: #15181e; }
 
-    /* Окно Авторизации */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 999; }
     .auth-card { background: var(--panel-bg); border: 2px solid var(--border-color); width: 350px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 0 20px rgba(201,42,42,0.3); }
     .password-wrap { position: relative; display: flex; align-items: center; width: 100%; }
@@ -161,7 +172,7 @@
 </head>
 <body>
 
-<!-- БОКОВАЯ ПАНЕЛЬ МЕНЕДЖМЕНТА ПРОФИЛЕЙ -->
+<!-- БОКОВАЯ ПАНЕЛЬ -->
 <div id="sidePanel" class="side-panel">
   <div class="side-panel-header">
     <h2>Профили Звена</h2>
@@ -192,11 +203,10 @@
 </div>
 
 <div class="container">
-  
   <nav class="tabs-bar">
     <button class="tab-btn active" id="tabSheetBtn" onclick="switchTab('sheet')">Лист персонажа</button>
     <button class="tab-btn" id="tabInvBtn" onclick="switchTab('inv')">Снаряжение</button>
-    <button class="tab-btn" id="tabAdminBtn" onclick="switchTab('admin')" style="display: none;">Штаб // Обзор звена</button>
+    <button class="tab-btn" id="tabAdminBtn" onclick="switchTab('admin')" style="display: none;">Штаб</button>
   </nav>
 
   <header class="header">
@@ -218,8 +228,8 @@
     <div class="header" style="margin-bottom: 12px; border-top: none;">
       <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" style="flex: 2;" onchange="onNameChange()" autocomplete="off">
       <input type="text" id="charModel" placeholder="МОДЕЛЬ (STCR, STAR...)" style="flex: 1;" onchange="autoSave()" autocomplete="off">
-      <input type="text" id="sheetOwner" placeholder="Владелец (ник/почта)" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off" title="Кому принадлежит этот лист">
-      <button onclick="saveData(true)">[ СОХРАНИТЬ В БАЗУ ]</button>
+      <input type="text" id="sheetOwner" placeholder="Владелец (ник/почта)" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off">
+      <button onclick="saveData(true)">[ СОХРАНИТЬ ]</button>
     </div>
 
     <main class="row-3-col">
@@ -228,65 +238,96 @@
         <div class="box">
           <div class="box-title">Атрибуты</div>
           <div class="box-content stats-grid">
-            <div class="stat-item"><span>СИЛА</span><input type="number" id="str" value="10" onchange="calc()"><div class="stat-mod" id="str_m">+0</div></div>
-            <div class="stat-item"><span>ЛОВКОСТЬ</span><input type="number" id="dex" value="10" onchange="calc()"><div class="stat-mod" id="dex_m">+0</div></div>
-            <div class="stat-item"><span>ТЕЛО</span><input type="number" id="con" value="10" onchange="calc()"><div class="stat-mod" id="con_m">+0</div></div>
-            <div class="stat-item"><span>ИНТЕЛЛЕКТ</span><input type="number" id="int" value="10" onchange="calc()"><div class="stat-mod" id="int_m">+0</div></div>
-            <div class="stat-item"><span>МУДРОСТЬ</span><input type="number" id="wis" value="10" onchange="calc()"><div class="stat-mod" id="wis_m">+0</div></div>
-            <div class="stat-item"><span>ХАРИЗМА</span><input type="number" id="cha" value="10" onchange="calc()"><div class="stat-mod" id="cha_m">+0</div></div>
+            <div class="stat-item"><span>СИЛА</span><input type="number" id="str" value="10" oninput="fastCalc()"><div class="stat-mod" id="str_m">+0</div></div>
+            <div class="stat-item"><span>ЛОВКОСТЬ</span><input type="number" id="dex" value="10" oninput="fastCalc()"><div class="stat-mod" id="dex_m">+0</div></div>
+            <div class="stat-item"><span>ТЕЛО</span><input type="number" id="con" value="10" oninput="fastCalc()"><div class="stat-mod" id="con_m">+0</div></div>
+            <div class="stat-item"><span>ИНТЕЛЛЕКТ</span><input type="number" id="int" value="10" oninput="fastCalc()"><div class="stat-mod" id="int_m">+0</div></div>
+            <div class="stat-item"><span>МУДРОСТЬ</span><input type="number" id="wis" value="10" oninput="fastCalc()"><div class="stat-mod" id="wis_m">+0</div></div>
+            <div class="stat-item"><span>ХАРИЗМА</span><input type="number" id="cha" value="10" oninput="fastCalc()"><div class="stat-mod" id="cha_m">+0</div></div>
           </div>
         </div>
 
         <div class="box">
           <div class="box-title">Спасброски</div>
-          <div class="box-content" style="padding-top: 4px;">
-            <div class="val-interactive" onclick="toggleExpand('saves_details')" title="Нажмите для просмотра формулы">
-              <div class="flex-row" style="text-align:center; padding: 4px 10px;">
-                <div class="calc-col"><span class="calc-label">Стойкость</span><span id="sv_phys_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span></div>
-                <div class="calc-col"><span class="calc-label">Рефлексы</span><span id="sv_eva_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span></div>
-                <div class="calc-col"><span class="calc-label">Воля</span><span id="sv_men_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span></div>
-              </div>
-            </div>
+          <div class="box-content" style="padding-top: 4px; gap: 0;">
             
-            <div id="saves_details" class="expandable" style="border-top:1px dashed #3a3f4b;">
-              <div class="calc-row">
-                <span style="width: 45px; font-size:10px; color:var(--text-muted);">СТК</span><span>=</span>
-                <div class="calc-col"><input type="number" value="15" readonly style="width:30px;"><span class="calc-label">База</span></div><span>-</span>
-                <div class="calc-col"><input type="number" id="sv_phys_mod" readonly style="width:30px;"><span class="calc-label">Мод</span></div><span>+</span>
-                <div class="calc-col"><input type="number" id="sv_phys_misc" value="0" onchange="calc()" style="width:30px;" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+            <div class="inv-row">
+              <div class="val-interactive" onclick="toggleExpand('sv_phys_details')">
+                <span class="item-name interactive-text" style="flex:1;">Стойкость <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(STR/CON)</span></span>
+                <span id="sv_phys_display" style="font-size:16px; font-weight:bold; color:#fff;">15</span>
               </div>
-              <div class="calc-row">
-                <span style="width: 45px; font-size:10px; color:var(--text-muted);">РЕФЛ</span><span>=</span>
-                <div class="calc-col"><input type="number" value="15" readonly style="width:30px;"><span class="calc-label">База</span></div><span>-</span>
-                <div class="calc-col"><input type="number" id="sv_eva_mod" readonly style="width:30px;"><span class="calc-label">Мод</span></div><span>+</span>
-                <div class="calc-col"><input type="number" id="sv_eva_misc" value="0" onchange="calc()" style="width:30px;" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
-              </div>
-              <div class="calc-row">
-                <span style="width: 45px; font-size:10px; color:var(--text-muted);">ВОЛЯ</span><span>=</span>
-                <div class="calc-col"><input type="number" value="15" readonly style="width:30px;"><span class="calc-label">База</span></div><span>-</span>
-                <div class="calc-col"><input type="number" id="sv_men_mod" readonly style="width:30px;"><span class="calc-label">Мод</span></div><span>+</span>
-                <div class="calc-col"><input type="number" id="sv_men_misc" value="0" onchange="calc()" style="width:30px;" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+              <div id="sv_phys_details" class="expandable" style="background:#161719; border-radius:4px;">
+                <div class="calc-row">
+                  <div class="calc-col"><input type="number" value="15" readonly><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">-</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_phys_mod" readonly><span class="calc-label">Мод</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_phys_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_phys" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
+                </div>
               </div>
             </div>
+
+            <div class="inv-row">
+              <div class="val-interactive" onclick="toggleExpand('sv_eva_details')">
+                <span class="item-name interactive-text" style="flex:1;">Рефлексы <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(DEX/INT)</span></span>
+                <span id="sv_eva_display" style="font-size:16px; font-weight:bold; color:#fff;">15</span>
+              </div>
+              <div id="sv_eva_details" class="expandable" style="background:#161719; border-radius:4px;">
+                <div class="calc-row">
+                  <div class="calc-col"><input type="number" value="15" readonly><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">-</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_eva_mod" readonly><span class="calc-label">Мод</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_eva_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_eva" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="inv-row">
+              <div class="val-interactive" onclick="toggleExpand('sv_men_details')">
+                <span class="item-name interactive-text" style="flex:1;">Воля <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(WIS/CHA)</span></span>
+                <span id="sv_men_display" style="font-size:16px; font-weight:bold; color:#fff;">15</span>
+              </div>
+              <div id="sv_men_details" class="expandable" style="background:#161719; border-radius:4px;">
+                <div class="calc-row">
+                  <div class="calc-col"><input type="number" value="15" readonly><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">-</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_men_mod" readonly><span class="calc-label">Мод</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_men_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="sv_men" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
         <div class="box">
           <div class="box-title">Скорость Перемещения</div>
-          <div class="box-content" style="padding-top: 4px; display:flex; flex-direction:column; align-items:center;">
+          <div class="box-content" style="padding-top: 4px; gap: 0;">
             <div id="overencumber_alert" class="alert-box" style="display:none; font-weight:bold; width:100%; margin-bottom:5px;">[!] ПЕРЕГРУЗ (СКОРОСТЬ 2М)</div>
             
-            <div class="val-interactive" onclick="toggleExpand('speed_details')" style="text-align:center; width: 100%;" title="Нажмите для просмотра формулы">
-              <span id="spd_main_display" style="font-size:24px; font-weight:bold; color:var(--accent);">10 м</span>
-            </div>
-            
-            <div id="speed_details" class="expandable" style="border-top:1px dashed #3a3f4b; width:100%;">
-              <div class="calc-row">
-                <div class="calc-col"><input type="number" id="spd_base" value="10" onchange="calc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
-                <span>+</span>
-                <div class="calc-col"><input type="number" id="spd_gear" value="0" readonly title="Снаряжение (РПС + Рюкзак)"><span class="calc-label">Снаряж</span></div>
-                <span>+</span>
-                <div class="calc-col"><input type="number" id="spd_misc" value="0" onchange="calc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+            <div class="inv-row" style="border-bottom:none;">
+              <div class="val-interactive" onclick="toggleExpand('speed_details')" style="justify-content:center; padding:10px 0;">
+                <span class="interactive-text" style="font-size:14px; font-weight:bold; text-transform:uppercase; margin-right:15px;">Скорость</span>
+                <span id="spd_main_display" style="font-size:24px; font-weight:bold; color:var(--accent);">10 м</span>
+              </div>
+              <div id="speed_details" class="expandable" style="background:#161719; border-radius:4px; width:100%;">
+                <div class="calc-row">
+                  <div class="calc-col"><input type="number" id="spd_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="spd_gear" value="0" readonly title="Снаряжение"><span class="calc-label">Снаряж</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="spd_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="spd_total" value="10" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
+                </div>
               </div>
             </div>
           </div>
@@ -310,8 +351,8 @@
           <div class="box-title">Целостность Каркаса</div>
           <div class="box-content">
             <div class="flex-row">
-              <span>MAX HP: <input type="number" id="hp_max" value="20" onchange="calc()"></span>
-              <span>CUR HP: <input type="number" id="hp_cur" value="20" class="hp-input" onchange="calc()"></span>
+              <span>MAX HP: <input type="number" id="hp_max" value="20" oninput="fastCalc()"></span>
+              <span>CUR HP: <input type="number" id="hp_cur" value="20" class="hp-input" oninput="fastCalc()"></span>
             </div>
             <div class="wound-track">
               <div id="w_light">[100-76%] Легкие: Норма</div>
@@ -327,8 +368,8 @@
           <div class="box-title">Системное напряжение</div>
           <div class="box-content">
             <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold">10</span></div>
-            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" onchange="calc()"></div>
-            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" onchange="calc()"></div>
+            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" oninput="fastCalc()"></div>
+            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" oninput="fastCalc()"></div>
             <div id="strain_alert" class="alert-box" style="border:none;">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
           </div>
         </div>
@@ -360,7 +401,6 @@
   <!-- ВКЛАДКА 2: СНАРЯЖЕНИЕ -->
   <div id="viewInv" style="display: none;">
     <div class="row-3-col">
-      <!-- Броня и Фиксаторы -->
       <section class="col">
         <div class="box">
           <div class="box-title">Броня (Stopping Power)</div>
@@ -382,26 +422,25 @@
         </div>
       </section>
 
-      <!-- Разгрузка -->
+      <!-- РПС (Разгрузка) -->
       <section class="col">
         <div class="box">
           <div class="box-title">Разгрузочная система (РПС)</div>
           <div class="box-content">
-            <select id="vest_type" onchange="updateVest(); calc(); autoSave();" style="margin-bottom: 5px;">
-              <option value="basic">Стандартная РПС (4 слота | Штраф: 0м)</option>
-              <option value="heavy">Штурмовая РПС (8 слотов | Штраф: -1м)</option>
-            </select>
-            <span class="sub-label">МЕЛКИЕ ПРЕДМЕТЫ (Вес: 0):</span>
-            <div class="pouch-grid" id="vest_grid">
-              <input type="text" id="pouch_1" placeholder="Подсумок 1" onchange="autoSave()"> 
-              <input type="text" id="pouch_2" placeholder="Подсумок 2" onchange="autoSave()">
-              <input type="text" id="pouch_3" placeholder="Подсумок 3" onchange="autoSave()"> 
-              <input type="text" id="pouch_4" placeholder="Подсумок 4" onchange="autoSave()">
-              <input type="text" id="pouch_5" placeholder="Подсумок 5" onchange="autoSave()"> 
-              <input type="text" id="pouch_6" placeholder="Подсумок 6" onchange="autoSave()">
-              <input type="text" id="pouch_7" placeholder="Подсумок 7" onchange="autoSave()"> 
-              <input type="text" id="pouch_8" placeholder="Подсумок 8" onchange="autoSave()">
+            <div class="flex-row" style="gap: 10px; margin-bottom: 5px;">
+              <select id="vest_type" onchange="updateVestLimit(); fastCalc(); autoSave();" style="flex:1;">
+                <option value="basic">Стандартная РПС (4 слота | Штраф 0)</option>
+                <option value="heavy">Тяжелая РПС (8 слотов | Штраф -1)</option>
+              </select>
             </div>
+            
+            <div class="flex-row" style="font-size:10px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px;">
+              <span style="flex:1; letter-spacing:1px;">ПОДСУМКИ (МАКС 1КГ)</span>
+              <span>ВЕС: <span id="vest_status" class="accent-bold" style="font-size:12px; margin-left:4px;">0</span> кг</span>
+            </div>
+            
+            <div class="drag-area" id="vest_grid" ondrop="dropToVest(event)" ondragover="allowDrop(event)"></div>
+            <input type="hidden" id="vest_items_json" value="[]">
           </div>
         </div>
       </section>
@@ -412,7 +451,7 @@
           <div class="box-title">Инвентарь / Рюкзак</div>
           <div class="box-content">
             <div class="flex-row" style="gap: 10px; margin-bottom: 4px;">
-              <select id="bag_type" onchange="renderInventory(); calc(); autoSave();" style="flex: 1;">
+              <select id="bag_type" onchange="fastCalc(); renderInventory(); autoSave();" style="flex: 1;">
                 <option value="sling">Рюкзак однолямка (Лимит: 5)</option>
                 <option value="bag">Сумка (Лимит: 10)</option>
                 <option value="assault">Штурмовой вещмешок (Лимит: 16)</option>
@@ -420,12 +459,16 @@
               <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size: 14px;" title="Разблокировать редактирование">🔒</button>
             </div>
             
-            <div class="flex-row" style="font-size:10px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px;">
-              <span style="flex:1;">ПРЕДМЕТЫ</span>
-              <span>ВЕС: <span id="pack_status" class="accent-bold" style="font-size:12px;">0 / 5</span></span>
+            <div class="flex-row" style="font-size:9px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; text-transform:uppercase;">
+              <span style="flex:1; letter-spacing:1px;">Предметы</span>
+              <span style="width: 45px; text-align:center;">Кол-во</span>
+              <span style="width: 50px; text-align:center;">Вес 1шт</span>
+              <span style="width: 50px; text-align:center;">Итого</span>
+              <span style="width: 20px;"></span>
             </div>
 
-            <div id="dynamic_pack_grid"></div>
+            <!-- Список вещей (Drag Target) -->
+            <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
             <input type="hidden" id="bag_items_json" value="[]">
           </div>
         </div>
@@ -433,7 +476,6 @@
     </main>
   </div>
 
-  <!-- ВКЛАДКА 3: АДМИН-ПАНЕЛЬ ШТАБА -->
   <div id="viewAdmin" style="display: none;">
     <div class="box">
       <div class="box-title">МОНИТОРИНГ ЗВЕНА // ПАНЕЛЬ МАСТЕРА</div>
@@ -475,7 +517,9 @@
   let currentSheetId = null;
   let currentSheetOwner = null; 
   let activeSubscription = null;
+  
   let bagItemsArray = []; 
+  let vestItemsArray = [null, null, null, null, null, null, null, null]; 
   let invLocked = true;
 
   function toggleExpand(id) {
@@ -594,7 +638,7 @@
     if (!error && data && data.length > 0) {
       list = data.map(r => ({ 
         id: r.id, 
-        name: (r.data && r.data.charName && r.data.charName.trim() !== '') ? r.data.charName : 'Безымянный',
+        name: (r.data && r.data.charName && r.data.charName.trim() !== '') ? r.data.charName : formatIDToName(r.id),
         owner: r.owner
       }));
     }
@@ -680,29 +724,18 @@
 
   function changeOwner() {
     const newOwner = document.getElementById('sheetOwner').value.trim();
-    if (newOwner) {
-      currentSheetOwner = newOwner;
-      autoSave();
-    }
+    if (newOwner) { currentSheetOwner = newOwner; autoSave(); }
   }
 
-  function updateVest() {
-    const vestType = document.getElementById('vest_type').value;
-    const limit = vestType === 'basic' ? 4 : 8;
-    for (let i = 1; i <= 8; i++) {
-      const el = document.getElementById('pouch_' + i);
-      if (i > limit) {
-        el.style.display = 'none';
-        el.value = '';
-      } else {
-        el.style.display = 'block';
-      }
-    }
+  function updateVestLimit() {
+    renderVest();
   }
 
   function resetForm() {
     bagItemsArray = [];
+    vestItemsArray = [null, null, null, null, null, null, null, null];
     document.getElementById('bag_items_json').value = '[]';
+    document.getElementById('vest_items_json').value = '[]';
     
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
       if (inp.id === 'sheetOwner') return; 
@@ -712,14 +745,14 @@
       } else if (inp.type === 'number') {
         if (inp.id.includes('hp')) inp.value = 20;
         else if (inp.id.includes('sp_') || inp.id === 'spd_base') inp.value = 10;
-        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc')) inp.value = 0;
+        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc') || inp.id === 'new_item_weight') inp.value = 0;
         else inp.value = 10;
       } else {
         inp.value = '';
       }
     });
-    updateVest();
-    calc();
+    updateVestLimit();
+    fastCalc();
     renderInventory();
   }
 
@@ -733,7 +766,7 @@
     tbody.innerHTML = '';
     data.forEach(row => {
       const d = row.data || {};
-      const charName = (d.charName && d.charName.trim() !== '') ? d.charName : 'Безымянный';
+      const charName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(row.id);
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="color:#38bdf8;">${row.owner || '—'}</td>
@@ -761,7 +794,8 @@
     if (val <= 3) return -2; if (val <= 7) return -1; if (val <= 13) return 0; if (val <= 17) return 1; return 2;
   }
 
-  function calc() {
+  // Мгновенный перерасчет без потери фокуса
+  function fastCalc() {
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
     statIds.forEach(id => {
@@ -770,7 +804,6 @@
       document.getElementById(id + '_m').innerText = (mod >= 0 ? '+' : '') + mod;
     });
 
-    // Спасброски
     const physMod = Math.max(getMod(vals.str), getMod(vals.con));
     const evaMod  = Math.max(getMod(vals.dex), getMod(vals.int));
     const menMod  = Math.max(getMod(vals.wis), getMod(vals.cha));
@@ -795,13 +828,11 @@
     document.getElementById('sv_eva_display').innerText = finalEva;
     document.getElementById('sv_men_display').innerText = finalMen;
 
-    // Напряжение
     document.getElementById('strain_limit').innerText = vals.con;
     const perm = parseInt(document.getElementById('st_perm').value) || 0;
     const temp = parseInt(document.getElementById('st_temp').value) || 0;
     document.getElementById('strain_alert').style.display = (perm + temp >= vals.con) ? 'block' : 'none';
 
-    // HP
     const maxHp = parseInt(document.getElementById('hp_max').value) || 20;
     const curHp = parseInt(document.getElementById('hp_cur').value) || 0;
     const ratio = curHp / maxHp;
@@ -813,7 +844,7 @@
     else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
     else document.getElementById('w_light').classList.add('wound-active');
 
-    // Скорость
+    // Скорость и Вес
     const spdBase = parseInt(document.getElementById('spd_base').value) || 10;
     const spdMisc = parseInt(document.getElementById('spd_misc').value) || 0;
     
@@ -828,11 +859,11 @@
     const totalGearPenalty = vestPenalty + bagPenalty;
     document.getElementById('spd_gear').value = totalGearPenalty;
 
-    let currentWeight = bagItemsArray.reduce((sum, item) => sum + item.size, 0);
+    let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let finalSpeed = spdBase + totalGearPenalty + spdMisc;
     
     const overAlert = document.getElementById('overencumber_alert');
-    if (currentWeight > maxSlots) {
+    if (bagWeight > maxSlots) {
       finalSpeed = 2; // Перегруз
       overAlert.style.display = 'block';
     } else {
@@ -841,14 +872,30 @@
 
     document.getElementById('spd_total').value = finalSpeed;
     document.getElementById('spd_main_display').innerText = finalSpeed + ' м';
+    
+    // Обновляем счетчики в заголовках
+    const packStatus = document.getElementById('pack_status');
+    if (packStatus) {
+        const displayUsed = Math.round(bagWeight * 10) / 10;
+        packStatus.innerText = `${displayUsed} / ${maxSlots}`;
+        packStatus.className = bagWeight > maxSlots ? 'status-crit' : (bagWeight === maxSlots ? 'status-warn' : '');
+    }
+
+    let vestWeight = 0;
+    vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
+    const vestStatus = document.getElementById('vest_status');
+    if (vestStatus) vestStatus.innerText = Math.round(vestWeight * 10) / 10;
+
     autoSave();
   }
+
+  function calc() { fastCalc(); }
 
   function ablate(id) {
     const el = document.getElementById(id);
     const val = parseInt(el.value) || 0;
     if (val > 0) el.value = val - 1;
-    calc();
+    fastCalc();
   }
 
   function rollPanic() {
@@ -879,68 +926,223 @@
       btn.title = 'Разблокировать редактирование';
     } else {
       btn.innerHTML = '🔓';
-      btn.title = 'Заблокировать и скрыть меню';
+      btn.title = 'Заблокировать меню';
     }
+    renderVest();
     renderInventory();
+  }
+
+  // --- Drag and Drop Logic ---
+  function allowDrop(ev) {
+    ev.preventDefault();
+    ev.currentTarget.classList.add('drag-over');
+  }
+
+  document.addEventListener('dragleave', function(ev) {
+    if(ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area'))) {
+        ev.target.classList.remove('drag-over');
+    }
+  });
+
+  function drag(ev, source, id, index) {
+    ev.dataTransfer.setData("source", source);
+    ev.dataTransfer.setData("id", id);
+    ev.dataTransfer.setData("index", index);
+  }
+
+  function dropToVest(ev) {
+    ev.preventDefault();
+    const targetSlotElement = ev.target.closest('.vest-slot');
+    document.querySelectorAll('.vest-slot').forEach(el => el.classList.remove('drag-over'));
+    
+    if (!targetSlotElement) return;
+    
+    const targetIndex = parseInt(targetSlotElement.getAttribute('data-index'));
+    const source = ev.dataTransfer.getData("source");
+    const sourceId = parseInt(ev.dataTransfer.getData("id"));
+
+    if (source === 'bag') {
+      const itemIndex = bagItemsArray.findIndex(i => i.id === sourceId);
+      if (itemIndex > -1) {
+        const item = bagItemsArray[itemIndex];
+        if (item.unitWeight > 1) {
+          alert('Слишком тяжелый предмет! Подсумок вмещает предметы весом не более 1 кг.');
+          return;
+        }
+        if (vestItemsArray[targetIndex] !== null) {
+          alert('Этот подсумок уже занят!');
+          return;
+        }
+        
+        vestItemsArray[targetIndex] = { id: Date.now(), name: item.name, unitWeight: item.unitWeight, desc: item.desc };
+        item.qty -= 1;
+        if (item.qty <= 0) bagItemsArray.splice(itemIndex, 1);
+        
+        renderVest();
+        renderInventory();
+        fastCalc();
+      }
+    } else if (source === 'vest') {
+      const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
+      const temp = vestItemsArray[targetIndex];
+      vestItemsArray[targetIndex] = vestItemsArray[sourceIndex];
+      vestItemsArray[sourceIndex] = temp;
+      renderVest();
+      fastCalc();
+    }
+  }
+
+  function dropToBag(ev) {
+    ev.preventDefault();
+    document.getElementById('dynamic_pack_grid').classList.remove('drag-over');
+    
+    const source = ev.dataTransfer.getData("source");
+    if (source === 'vest') {
+      const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
+      const item = vestItemsArray[sourceIndex];
+      if (item) {
+        // Ищем идентичный предмет в рюкзаке, чтобы сложить в стак
+        const existingIndex = bagItemsArray.findIndex(i => i.name === item.name && i.unitWeight === item.unitWeight && i.desc === item.desc);
+        if (existingIndex > -1) {
+          bagItemsArray[existingIndex].qty += 1;
+        } else {
+          bagItemsArray.push({ id: Date.now(), name: item.name, unitWeight: item.unitWeight, qty: 1, desc: item.desc });
+        }
+        vestItemsArray[sourceIndex] = null;
+        renderVest();
+        renderInventory();
+        fastCalc();
+      }
+    }
+  }
+
+  function handleVestItemInput(index, field, value) {
+    const item = vestItemsArray[index];
+    if (item) {
+      item[field] = (field === 'unitWeight') ? (parseFloat(value) || 0) : value;
+      fastCalc();
+    }
+  }
+
+  function removeVestItem(index) {
+    vestItemsArray[index] = null;
+    renderVest();
+    fastCalc();
+  }
+
+  function renderVest() {
+    const vestType = document.getElementById('vest_type').value;
+    const limit = vestType === 'basic' ? 4 : 8;
+    const grid = document.getElementById('vest_grid');
+    grid.innerHTML = '';
+
+    for (let i = 0; i < limit; i++) {
+      const item = vestItemsArray[i];
+      let html = '';
+      if (!item) {
+        html = `
+          <div class="vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
+            <div style="text-align:center; color:#404652; font-size:11px;">[ Пустой слот ]</div>
+          </div>`;
+      } else {
+        if (invLocked) {
+          html = `
+            <div class="vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
+              <div class="val-interactive" onclick="toggleExpand('desc_vest_${item.id}')" style="padding:4px 8px;">
+                <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный'}</span>
+                <span style="font-size:11px; color:var(--text-muted);">${item.unitWeight} кг</span>
+              </div>
+              <div id="desc_vest_${item.id}" class="expandable">
+                <div style="padding:4px 8px 8px 8px; font-size:10px; color:#aaa;">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
+              </div>
+            </div>`;
+        } else {
+          html = `
+            <div class="vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding: 4px; background:#161719;">
+              <div style="display:flex; gap:4px; align-items:center; margin-bottom:4px;">
+                <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')" title="Описание">⚙️</button>
+                <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; padding:2px;" oninput="handleVestItemInput(${i}, 'name', this.value)">
+                <input type="number" value="${item.unitWeight}" step="0.5" style="width:45px; padding:2px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
+                <button class="item-del" onclick="removeVestItem(${i})">✕</button>
+              </div>
+              <div id="desc_vest_edit_${item.id}" class="expandable" style="width:100%;">
+                 <textarea placeholder="Описание..." rows="1" style="width:100%; font-size:11px; padding:4px;" oninput="handleVestItemInput(${i}, 'desc', this.value)">${item.desc || ''}</textarea>
+              </div>
+            </div>`;
+        }
+      }
+      grid.innerHTML += html;
+    }
+    document.getElementById('vest_items_json').value = JSON.stringify(vestItemsArray);
   }
 
   function addBagItem() {
-    bagItemsArray.push({ id: Date.now(), name: '', size: 1, desc: '' });
+    bagItemsArray.push({ id: Date.now(), name: '', qty: 1, unitWeight: 1, desc: '' });
     renderInventory();
-    calc(); 
-    autoSave();
+    fastCalc(); 
   }
 
-  function updateBagItem(id, field, value) {
+  function handleBagItemInput(id, field, value) {
     const item = bagItemsArray.find(i => i.id === id);
     if (item) {
-      item[field] = (field === 'size') ? (parseFloat(value) || 0) : value;
-      calc();
-      autoSave();
+      item[field] = (field === 'unitWeight' || field === 'qty') ? (parseFloat(value) || 0) : value;
+      
+      if (field === 'unitWeight' || field === 'qty') {
+        const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
+        const totalEl = document.getElementById('bag_total_' + id);
+        if (totalEl) totalEl.value = totalWt;
+      }
+      fastCalc();
     }
   }
 
   function removeBagItem(id) {
     bagItemsArray = bagItemsArray.filter(i => i.id !== id);
     renderInventory();
-    calc();
-    autoSave();
+    fastCalc();
   }
 
   function renderInventory() {
-    const bagType = document.getElementById('bag_type').value;
-    let maxSlots = 5;
-    if (bagType === 'bag') maxSlots = 10;
-    else if (bagType === 'assault') maxSlots = 16;
-
     const grid = document.getElementById('dynamic_pack_grid');
     grid.innerHTML = '';
 
-    let used = 0;
     bagItemsArray.forEach(item => {
-      used += item.size;
+      const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
       
       if (invLocked) {
         grid.innerHTML += `
-          <div class="inv-row">
-            <div class="inv-row-header val-interactive" onclick="toggleExpand('desc_${item.id}')">
-              <span class="item-name">${item.name || 'Безымянный предмет'}</span>
-              <span style="font-size:12px; color:var(--text-muted); white-space:nowrap;">${item.size} - кг</span>
+          <div class="inv-row" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
+            <div class="val-interactive" style="display:flex; gap:6px; align-items:center; padding:6px 4px;" onclick="toggleExpand('desc_view_${item.id}')">
+              <span style="color:var(--text-muted); font-size:14px;">👁</span>
+              <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный предмет'}</span>
+              <span style="width: 45px; text-align:center; font-weight:bold;">${item.qty}</span>
+              <span style="width: 50px; text-align:center; color:var(--text-muted);">${item.unitWeight}</span>
+              <span style="width: 50px; text-align:center; color:var(--text-muted);">${totalWt}</span>
+              <span style="width: 20px;"></span>
             </div>
-            <div id="desc_${item.id}" class="expandable" style="font-size:11px; color:#aaa;">
-              ${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}
+            <div id="desc_view_${item.id}" class="expandable">
+              <div style="padding:6px 8px 10px 30px; font-size:11px; color:#aaa;">
+                ${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}
+              </div>
             </div>
           </div>
         `;
       } else {
         grid.innerHTML += `
-          <div class="inv-item-edit">
-            <div style="display:flex; gap:6px;">
-              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; text-align:left; padding-left:8px;" onchange="updateBagItem(${item.id}, 'name', this.value)">
-              <input type="number" value="${item.size}" step="0.5" title="Вес (кг)" style="width:50px;" onchange="updateBagItem(${item.id}, 'size', this.value)">
-              <button class="item-del" onclick="removeBagItem(${item.id})">✕</button>
+          <div class="inv-item-edit" id="bag_row_${item.id}">
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')" title="Настройки">⚙️</button>
+              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; text-align:left; padding-left:8px;" oninput="handleBagItemInput(${item.id}, 'name', this.value)">
+              <input type="number" value="${item.qty}" min="1" title="Количество" style="width:45px;" oninput="handleBagItemInput(${item.id}, 'qty', this.value)">
+              <input type="number" value="${item.unitWeight}" step="0.5" title="Вес 1 шт." style="width:50px;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)">
+              <input type="number" id="bag_total_${item.id}" value="${totalWt}" readonly style="width:50px; background:transparent; border-color:transparent; color:var(--text-muted);">
+              <button class="item-del" onclick="removeBagItem(${item.id})" title="Удалить">✕</button>
             </div>
-            <textarea placeholder="Описание предмета..." rows="1" onchange="updateBagItem(${item.id}, 'desc', this.value)" style="resize:vertical;">${item.desc || ''}</textarea>
+            <div id="desc_edit_${item.id}" class="expandable" style="width:100%;">
+              <div style="display:flex; gap:6px; margin-top:6px; padding-left:26px;">
+                <textarea placeholder="Описание или свойства предмета..." rows="2" style="flex:1; resize:vertical; font-size:11px;" oninput="handleBagItemInput(${item.id}, 'desc', this.value)">${item.desc || ''}</textarea>
+              </div>
+            </div>
           </div>
         `;
       }
@@ -948,24 +1150,18 @@
 
     if (!invLocked) {
       grid.innerHTML += `
-        <button onclick="addBagItem()" style="margin-top: 8px; width: 100%; border: 1px dashed var(--text-muted); background: transparent; color: var(--text-muted);">
+        <button onclick="addBagItem()" style="margin-top: 8px; width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 8px;">
           ⊕ ДОБАВИТЬ ПРЕДМЕТ
         </button>
       `;
     }
-
-    const packStatus = document.getElementById('pack_status');
-    const displayUsed = Math.round(used * 10) / 10;
-    packStatus.innerText = `${displayUsed} / ${maxSlots}`;
-    packStatus.className = used > maxSlots ? 'status-crit' : (used === maxSlots ? 'status-warn' : '');
-
     document.getElementById('bag_items_json').value = JSON.stringify(bagItemsArray);
   }
 
   function getFormData() {
     const data = {};
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
-      if (inp.id === 'sheetOwner') return; 
+      if (inp.id === 'sheetOwner' || inp.id.startsWith('bag_total_')) return; 
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
     return data;
@@ -987,8 +1183,11 @@
 
   async function saveData(manual = false) {
     if (!currentSheetId || !currentUser || isRemoteUpdating) return;
-    const payload = getFormData();
     
+    document.getElementById('bag_items_json').value = JSON.stringify(bagItemsArray);
+    document.getElementById('vest_items_json').value = JSON.stringify(vestItemsArray);
+    
+    const payload = getFormData();
     localStorage.setItem('vineta_sheet_' + currentSheetId, JSON.stringify(payload));
 
     try {
@@ -1035,21 +1234,25 @@
     } catch (err) {
       setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
     }
-    updateVest();
-    calc();
+    renderVest();
     renderInventory();
+    fastCalc();
   }
 
   function applyData(data) {
     for (let key in data) {
       const el = document.getElementById(key);
-      if (el && key !== 'sheetOwner') {
+      if (el && key !== 'sheetOwner' && !key.startsWith('bag_total_')) {
         el.value = data[key];
       }
     }
     if (data.bag_items_json) {
       try { bagItemsArray = JSON.parse(data.bag_items_json); } catch(e) { bagItemsArray = []; }
     } else { bagItemsArray = []; }
+    
+    if (data.vest_items_json) {
+      try { vestItemsArray = JSON.parse(data.vest_items_json); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; }
+    } else { vestItemsArray = [null,null,null,null,null,null,null,null]; }
   }
 
   function setupRealtimeSubscription() {
@@ -1062,9 +1265,9 @@
           if (payload.new && payload.new.data) {
             isRemoteUpdating = true;
             applyData(payload.new.data);
-            updateVest();
-            calc();
+            renderVest();
             renderInventory();
+            fastCalc();
             isRemoteUpdating = false;
             setSyncStatus('ОБНОВЛЕНО СЕТЬЮ', '#38bdf8');
           }
