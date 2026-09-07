@@ -56,7 +56,7 @@
 
     .header { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
     .header-brand { display: flex; align-items: center; gap: 10px; }
-    .header h1 { margin: 0; font-size: 16px; color: var(--border-color); letter-spacing: 2px; }
+    .header h1 { margin: 0; font-size: 16px; color: var(--border-color); letter-spacing: 2px; transition: color 0.3s; }
     .sync-tag { font-size: 11px; color: #4ade80; border: 1px solid #4ade80; padding: 2px 5px; white-space: nowrap; cursor: pointer; }
     .sync-tag:hover { background: rgba(74, 222, 128, 0.1); }
     .user-tag { font-size: 12px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; text-transform: uppercase;}
@@ -191,7 +191,6 @@
   </div>
 </div>
 
-<!-- ОКНО АВТОРИЗАЦИИ -->
 <div id="authModal" class="modal-overlay" style="display: none;">
   <div class="auth-card">
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
@@ -238,7 +237,7 @@
 
   <header class="header">
     <div class="header-brand">
-      <h1>AEON // ТЕРМИНАЛ</h1>
+      <h1 id="mainHeaderTitle">AEON // ТЕРМИНАЛ</h1>
       <span id="sync_status" class="sync-tag" onclick="loadData(true)" title="Принудительное обновление">[ ОЖИДАНИЕ ]</span>
     </div>
     <div style="display: flex; gap: 6px; align-items: center;">
@@ -366,6 +365,7 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -429,6 +429,7 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -488,7 +489,7 @@
         </div>
       </section>
 
-      <!-- КОЛОНКА 3: НАВЫКИ, ПАНИКА, СЧЕТЧИК -->
+      <!-- КОЛОНКА 3: НАВЫКИ, ПАНИКА -->
       <section class="col">
         <div class="box">
           <div class="box-title">Базовые Навыки</div>
@@ -576,7 +577,7 @@
       </div>
     </div>
 
-    <div class="row-3-col">
+    <main class="row-3-col">
       <section class="col">
         <div class="box">
           <div class="box-title">Броня (Stopping Power)</div>
@@ -592,15 +593,15 @@
           <div class="box-content">
             <span class="sub-label">КРУПНЫЕ ПРЕДМЕТЫ:</span>
             <div class="flex-row" style="gap:4px;">
-              <input type="text" id="mag_1" placeholder="Оружие 1" style="flex:1;" onchange="autoSave()">
+              <input type="text" id="mag_1" placeholder="Оружие 1" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
               <input type="number" id="mag_1_wt" placeholder="кг" style="width:50px;" oninput="fastCalc()">
             </div>
             <div class="flex-row" style="gap:4px;">
-              <input type="text" id="mag_2" placeholder="Оружие 2" style="flex:1;" onchange="autoSave()">
+              <input type="text" id="mag_2" placeholder="Оружие 2" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
               <input type="number" id="mag_2_wt" placeholder="кг" style="width:50px;" oninput="fastCalc()">
             </div>
             <div class="flex-row" style="gap:4px;">
-              <input type="text" id="mag_3" placeholder="Спецсредство" style="flex:1;" onchange="autoSave()">
+              <input type="text" id="mag_3" placeholder="Спецсредство" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
               <input type="number" id="mag_3_wt" placeholder="кг" style="width:50px;" oninput="fastCalc()">
             </div>
           </div>
@@ -612,10 +613,15 @@
           <div class="box-title">Разгрузочная система (РПС)</div>
           <div class="box-content">
             <div class="flex-row" style="gap: 10px; margin-bottom: 5px;">
-              <select id="vest_type" onchange="updateVestLimit(); fastCalc(); autoSave();" style="flex:1;">
-                <option value="basic">Стандартная РПС (4 слота | Штраф 0)</option>
-                <option value="heavy">Штурмовая РПС (8 слотов | Штраф -1)</option>
-              </select>
+              <div id="vest_config_view" style="flex:1; font-size:12px; color:var(--text-muted);">
+                Слоты: <span id="vest_slots_display" style="color:#fff;">4</span> | Штраф: <span id="vest_penalty_display" style="color:var(--accent);">0</span> м
+              </div>
+              <div id="vest_config_edit" style="flex:1; display:none; gap:6px; align-items:center;">
+                <span style="font-size:10px; color:var(--text-muted);">СЛОТЫ:</span> 
+                <input type="number" id="vest_slots" value="4" style="width:40px; padding:2px;" oninput="updateVestLimit(); fastCalc(); autoSave();">
+                <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span> 
+                <input type="number" id="vest_penalty" value="0" style="width:40px; padding:2px;" oninput="fastCalc(); autoSave();">
+              </div>
               <button id="vest_toggle_btn" onclick="toggleVestLock()" style="padding: 2px 6px; font-size: 16px;" title="Разблокировать редактирование">🔒</button>
             </div>
             
@@ -634,11 +640,15 @@
           <div class="box-title">Инвентарь / Рюкзак</div>
           <div class="box-content">
             <div class="flex-row" style="gap: 10px; margin-bottom: 4px;">
-              <select id="bag_type" onchange="fastCalc(); autoSave();" style="flex: 1;">
-                <option value="sling">Рюкзак однолямка (Штраф 0)</option>
-                <option value="bag">Сумка (Штраф -1м)</option>
-                <option value="assault">Штурмовой вещмешок (Штраф -2м)</option>
-              </select>
+              <div id="bag_config_view" style="flex:1; font-size:12px; color:var(--text-muted);">
+                Лимит: <span id="bag_limit_display" style="color:#fff;">5</span> кг | Штраф: <span id="bag_penalty_display" style="color:var(--accent);">0</span> м
+              </div>
+              <div id="bag_config_edit" style="flex:1; display:none; gap:6px; align-items:center;">
+                <span style="font-size:10px; color:var(--text-muted);">ЛИМИТ(КГ):</span> 
+                <input type="number" id="bag_limit" value="5" style="width:45px; padding:2px;" oninput="fastCalc(); autoSave();">
+                <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span> 
+                <input type="number" id="bag_penalty" value="0" style="width:40px; padding:2px;" oninput="fastCalc(); autoSave();">
+              </div>
               <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size: 16px;" title="Разблокировать редактирование">🔒</button>
             </div>
             
@@ -650,7 +660,7 @@
               <span style="width: 20px;"></span>
             </div>
 
-            <!-- Список вещей -->
+            <!-- Список вещей (Drag Target) -->
             <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
           </div>
         </div>
@@ -667,6 +677,7 @@
           <button onclick="loadAdminRoster()">[ ОБНОВИТЬ СПИСОК ]</button>
         </div>
         
+        <!-- Контейнер для сгруппированных таблиц -->
         <div id="adminTableContainer">
             <div style="text-align:center; padding: 20px; color: var(--text-muted);">Загрузка данных штаба...</div>
         </div>
@@ -685,6 +696,7 @@
   const SUPABASE_URL = 'https://gpblfglgvxlfqhoavzlr.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_LDTJVEcaBH1m4a47pOTJZQ_qy3fk76C';
   
+  // Для прямого FETCH запроса из старого TTS браузера
   const HEADERS = {
     'apikey': SUPABASE_ANON_KEY,
     'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -705,7 +717,7 @@
   // Простой кэш DOM
   const DOM = {};
   function initDOM() {
-    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_type', 'bag_type', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert'];
+    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle'];
     ids.forEach(id => { DOM[id] = document.getElementById(id); });
   }
   document.addEventListener("DOMContentLoaded", initDOM);
@@ -942,6 +954,20 @@
     toggleSidePanel();
     await loadData();
     refreshCharacterList(); 
+    switchTab('sheet');
+    
+    // Визуальный отклик успешной загрузки
+    if(DOM.mainHeaderTitle) {
+      const originalColor = DOM.mainHeaderTitle.style.color;
+      DOM.mainHeaderTitle.innerText = 'ПРОФИЛЬ УСПЕШНО ЗАГРУЖЕН';
+      DOM.mainHeaderTitle.style.color = '#4ade80';
+      setSyncStatus('УСПЕШНО', '#4ade80');
+      
+      setTimeout(() => {
+        DOM.mainHeaderTitle.innerText = 'AEON // ТЕРМИНАЛ';
+        DOM.mainHeaderTitle.style.color = originalColor;
+      }, 2000);
+    }
   }
 
   async function createNewCharacter() {
@@ -977,18 +1003,19 @@
     
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
       if (inp.id === 'sheetOwner' || inp.id.startsWith('login') || inp.id === 'deleteConfirmInput') return; 
-      if (inp.tagName.toLowerCase() === 'select') {
-        if (inp.id === 'bag_type') inp.value = 'sling';
-        if (inp.id === 'vest_type') inp.value = 'basic';
-      } else if (inp.type === 'number') {
+      if (inp.type === 'number') {
         if (inp.id.includes('hp')) inp.value = 20;
         else if (inp.id.includes('sp_') || inp.id === 'spd_base' || inp.id === 'spd_base_top') inp.value = 10;
-        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc') || inp.id.includes('_wt')) inp.value = 0;
+        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc') || inp.id.includes('_wt') || inp.id.includes('penalty')) inp.value = 0;
         else if (inp.id.includes('_base')) inp.value = 10;
         else if (inp.id.includes('_bonus')) inp.value = 0;
+        else if (inp.id === 'vest_slots') inp.value = 4;
+        else if (inp.id === 'bag_limit') inp.value = 5;
         else inp.value = 10;
       } else {
-        inp.value = '';
+        if (inp.id === 'vest_slots') inp.value = 4;
+        else if (inp.id === 'bag_limit') inp.value = 5;
+        else inp.value = '';
       }
     });
     updateVestLimit();
@@ -1091,7 +1118,7 @@
   }
 
   function fastCalc() {
-    if (!DOM.str_base) initDOM();
+    if (!DOM.str_base) initDOM(); // Защита на случай вызова до DOMContentLoaded
 
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
@@ -1148,6 +1175,7 @@
     else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
     else document.getElementById('w_light').classList.add('wound-active');
 
+    // Скорость и Вес
     const carryBase = vals.str + vals.con;
     const carryMisc = parseInt(DOM.carry_misc.value) || 0;
     const carryTotal = carryBase + carryMisc;
@@ -1159,13 +1187,14 @@
     DOM.spd_base_top.value = spdBase;
     const spdMisc = parseInt(DOM.spd_misc.value) || 0;
     
-    const vestType = DOM.vest_type.value;
-    const vestPenalty = (vestType === 'heavy') ? -1 : 0;
+    const vestPenalty = parseInt(DOM.vest_penalty.value) || 0;
+    const bagPenalty = parseInt(DOM.bag_penalty.value) || 0;
 
-    const bagType = DOM.bag_type.value;
-    let bagPenalty = 0;
-    if (bagType === 'bag') { bagPenalty = -1; }
-    else if (bagType === 'assault') { bagPenalty = -2; }
+    // Обновляем отображение конфигов
+    if (DOM.vest_slots_display) DOM.vest_slots_display.innerText = DOM.vest_slots.value;
+    if (DOM.vest_penalty_display) DOM.vest_penalty_display.innerText = vestPenalty;
+    if (DOM.bag_limit_display) DOM.bag_limit_display.innerText = DOM.bag_limit.value;
+    if (DOM.bag_penalty_display) DOM.bag_penalty_display.innerText = bagPenalty;
 
     const totalGearPenalty = vestPenalty + bagPenalty;
     DOM.spd_gear.value = totalGearPenalty;
@@ -1173,6 +1202,7 @@
     DOM.penalty_bag.value = bagPenalty;
     DOM.penalty_total.value = totalGearPenalty; 
 
+    // Суммируем весь вес
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
@@ -1183,6 +1213,7 @@
     let totalWeight = bagWeight + vestWeight + mag1Wt + mag2Wt + mag3Wt;
     let finalSpeed = spdBase + totalGearPenalty + spdMisc;
     
+    // Перегруз (Общий вес)
     if (totalWeight > carryTotal) {
       finalSpeed = 2; 
       if(DOM.overencumber_alert) DOM.overencumber_alert.style.display = 'block';
@@ -1207,25 +1238,20 @@
     autoSave();
   }
 
-  function calc() { fastCalc(); }
-
-  function ablate(id) {
-    const el = document.getElementById(id);
-    const val = parseInt(el.value) || 0;
-    if (val > 0) el.value = val - 1;
-    fastCalc();
-  }
-
-  // --- ИНВЕНТАРЬ И РПС ---
+  // --- ИНВЕНТАРЬ ---
   function toggleInvLock() {
     invLocked = !invLocked;
     const btn = document.getElementById('inv_toggle_btn');
     if (invLocked) {
       btn.innerHTML = '🔒';
       btn.title = 'Разблокировать редактирование';
+      if(DOM.bag_config_view) DOM.bag_config_view.style.display = 'block';
+      if(DOM.bag_config_edit) DOM.bag_config_edit.style.display = 'none';
     } else {
       btn.innerHTML = '🔓';
       btn.title = 'Заблокировать меню';
+      if(DOM.bag_config_view) DOM.bag_config_view.style.display = 'none';
+      if(DOM.bag_config_edit) DOM.bag_config_edit.style.display = 'flex';
     }
     renderInventory();
   }
@@ -1236,9 +1262,13 @@
     if (vestLocked) {
       btn.innerHTML = '🔒';
       btn.title = 'Разблокировать редактирование';
+      if(DOM.vest_config_view) DOM.vest_config_view.style.display = 'block';
+      if(DOM.vest_config_edit) DOM.vest_config_edit.style.display = 'none';
     } else {
       btn.innerHTML = '🔓';
       btn.title = 'Заблокировать меню';
+      if(DOM.vest_config_view) DOM.vest_config_view.style.display = 'none';
+      if(DOM.vest_config_edit) DOM.vest_config_edit.style.display = 'flex';
     }
     renderVest();
   }
@@ -1362,10 +1392,12 @@
   }
 
   function renderVest() {
-    const vestType = document.getElementById('vest_type').value;
-    const limit = vestType === 'basic' ? 4 : 8;
+    const limit = parseInt(document.getElementById('vest_slots').value) || 4;
     const grid = document.getElementById('vest_grid');
     let gridHTML = '';
+
+    // Подгоняем массив под лимит слотов
+    while (vestItemsArray.length < limit) vestItemsArray.push(null);
 
     let totalVestWt = 0;
 
@@ -1467,8 +1499,6 @@
       if (inp.id === 'sheetOwner' || inp.id.startsWith('bag_total_') || inp.id.startsWith('login') || inp.id.startsWith('delete')) return; 
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
-    data.bag_items_json = JSON.stringify(bagItemsArray);
-    data.vest_items_json = JSON.stringify(vestItemsArray);
     return data;
   }
 
@@ -1489,6 +1519,8 @@
   async function saveData(manual = false) {
     if (!currentSheetId || !currentUser || isRemoteUpdating) return;
     const payload = getFormData();
+    payload.bag_items_json = JSON.stringify(bagItemsArray);
+    payload.vest_items_json = JSON.stringify(vestItemsArray);
 
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets`, {
@@ -1556,16 +1588,21 @@
     
     if (data.vest_items_json) { try { vestItemsArray = JSON.parse(data.vest_items_json); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; } } 
     else { vestItemsArray = [null,null,null,null,null,null,null,null]; }
+    
+    // Скрываем конфиги, если они были заблокированы (по умолчанию закрыты)
+    if(DOM.vest_config_view) DOM.vest_config_view.style.display = vestLocked ? 'block' : 'none';
+    if(DOM.vest_config_edit) DOM.vest_config_edit.style.display = vestLocked ? 'none' : 'flex';
+    if(DOM.bag_config_view) DOM.bag_config_view.style.display = invLocked ? 'block' : 'none';
+    if(DOM.bag_config_edit) DOM.bag_config_edit.style.display = invLocked ? 'none' : 'flex';
   }
 
   // Рекурсивный поллинг (опрос базы) для замены зависших setInterval
   function startPolling() {
     setTimeout(async () => {
-      // Опрашиваем только если юзер не редактирует инвентарь и выбран лист
       if (invLocked && vestLocked && !isRemoteUpdating && currentSheetId) {
         await loadData(false);
       }
-      startPolling(); // Зацикливаем после ответа
+      startPolling(); 
     }, 10000);
   }
 
