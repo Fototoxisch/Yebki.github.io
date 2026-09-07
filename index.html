@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   
-  <!-- Полифилл для старого браузера Tabletop Simulator -->
+  <!-- Заглушка для старых браузеров (TTS) -->
   <script>if (typeof globalThis === 'undefined') { window.globalThis = window; }</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -84,27 +84,10 @@
     .btn-danger { border-color: var(--accent); color: var(--accent); }
     .btn-danger:hover { background: var(--accent); color: #fff; }
 
-    .expandable { 
-      max-height: 0; 
-      overflow: hidden; 
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; 
-      opacity: 0; 
-    }
-    .expandable.open { 
-      max-height: 600px; 
-      opacity: 1; 
-      transition: max-height 0.5s ease-in-out, opacity 0.4s ease; 
-    }
+    .expandable { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; opacity: 0; }
+    .expandable.open { max-height: 600px; opacity: 1; transition: max-height 0.5s ease-in-out, opacity 0.4s ease; }
     
-    .val-interactive { 
-      cursor: pointer; 
-      transition: background 0.2s, color 0.2s; 
-      padding: 6px 8px; 
-      border-radius: 4px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-    }
+    .val-interactive { cursor: pointer; transition: background 0.2s, color 0.2s; padding: 6px 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
     .val-interactive:hover { background: rgba(255, 77, 77, 0.08); }
     .val-interactive:hover .interactive-text { color: var(--accent); }
     .interactive-text { transition: color 0.2s; }
@@ -138,8 +121,8 @@
     .alert-box { color: var(--accent); font-size: 12px; text-align: center; display: none; margin-top: 4px; border: 1px dashed var(--accent); padding: 6px; }
 
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .stat-container { border: 1px solid #3a3f4b; background: var(--input-bg-read); border-radius: 4px; display: flex; flex-direction: column; }
-    .stat-mod { position: absolute; top: -8px; right: -8px; background: var(--border-color); color: #000; border-radius: 50%; width: 22px; height: 22px; line-height: 22px; font-size: 12px; text-align: center; font-weight: bold; z-index: 2; }
+    .stat-container { border: 1px solid #3a3f4b; background: var(--input-bg-read); border-radius: 4px; display: flex; flex-direction: column; position: relative; }
+    .stat-mod { position: absolute; top: -8px; right: -8px; background: var(--border-color); color: #000; border-radius: 50%; width: 22px; height: 22px; line-height: 22px; font-size: 12px; text-align: center; font-weight: bold; z-index: 2; pointer-events: none; }
 
     .calc-row { display: flex; align-items: center; gap: 6px; justify-content: center; padding: 8px 0; }
     .calc-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -217,7 +200,7 @@
       <button type="button" onclick="handleLogin()" style="flex:1;">ВОЙТИ</button>
       <button type="button" onclick="handleRegister()" style="flex:1;">РЕГИСТРАЦИЯ</button>
     </div>
-    <div id="authError" style="color: var(--accent); font-size: 12px; text-align: center; min-height: 14px;"></div>
+    <div id="authError" style="color: var(--accent); font-size: 12px; text-align: center; min-height: 14px; word-wrap: break-word;"></div>
   </div>
 </div>
 
@@ -248,7 +231,7 @@
       <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" style="flex: 2;" onchange="onNameChange()" autocomplete="off">
       <input type="text" id="charModel" placeholder="МОДЕЛЬ (STCR, STAR...)" style="flex: 1;" onchange="autoSave()" autocomplete="off">
       <input type="text" id="sheetOwner" placeholder="Владелец (ник/почта)" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off">
-      <button onclick="saveData(true)">[ СОХРАНИТЬ ]</button>
+      <button onclick="saveData(true)">[ СОХРАНИТЬ В БД ]</button>
     </div>
 
     <main class="row-3-col">
@@ -256,12 +239,13 @@
         <div class="box">
           <div class="box-title">Атрибуты</div>
           <div class="box-content stats-grid" style="padding-top: 8px;">
+            
             <div class="stat-container">
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('str_details')">
+              <div class="stat-mod" id="str_m">+0</div>
+              <div class="val-interactive" onclick="toggleExpand('str_details')">
                 <span class="item-name interactive-text" style="flex:1;">СИЛ</span>
                 <span id="str_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:15px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('Сила', 'str_total', event)">🎲</span>
-                <div class="stat-mod" id="str_m">+0</div>
               </div>
               <div id="str_details" class="expandable" style="background:#0e0f12; border-top:1px solid #1f2229;">
                 <div class="calc-row">
@@ -274,11 +258,11 @@
             </div>
 
             <div class="stat-container">
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('dex_details')">
+              <div class="stat-mod" id="dex_m">+0</div>
+              <div class="val-interactive" onclick="toggleExpand('dex_details')">
                 <span class="item-name interactive-text" style="flex:1;">ЛОВ</span>
                 <span id="dex_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:15px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('Ловкость', 'dex_total', event)">🎲</span>
-                <div class="stat-mod" id="dex_m">+0</div>
               </div>
               <div id="dex_details" class="expandable" style="background:#0e0f12; border-top:1px solid #1f2229;">
                 <div class="calc-row">
@@ -291,11 +275,11 @@
             </div>
 
             <div class="stat-container">
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('con_details')">
+              <div class="stat-mod" id="con_m">+0</div>
+              <div class="val-interactive" onclick="toggleExpand('con_details')">
                 <span class="item-name interactive-text" style="flex:1;">ТЕЛ</span>
                 <span id="con_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:15px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('Тело', 'con_total', event)">🎲</span>
-                <div class="stat-mod" id="con_m">+0</div>
               </div>
               <div id="con_details" class="expandable" style="background:#0e0f12; border-top:1px solid #1f2229;">
                 <div class="calc-row">
@@ -308,11 +292,11 @@
             </div>
 
             <div class="stat-container">
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('int_details')">
+              <div class="stat-mod" id="int_m">+0</div>
+              <div class="val-interactive" onclick="toggleExpand('int_details')">
                 <span class="item-name interactive-text" style="flex:1;">ИНТ</span>
                 <span id="int_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:15px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('Интеллект', 'int_total', event)">🎲</span>
-                <div class="stat-mod" id="int_m">+0</div>
               </div>
               <div id="int_details" class="expandable" style="background:#0e0f12; border-top:1px solid #1f2229;">
                 <div class="calc-row">
@@ -325,11 +309,11 @@
             </div>
 
             <div class="stat-container">
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('wis_details')">
+              <div class="stat-mod" id="wis_m">+0</div>
+              <div class="val-interactive" onclick="toggleExpand('wis_details')">
                 <span class="item-name interactive-text" style="flex:1;">МУД</span>
                 <span id="wis_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:15px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('Мудрость', 'wis_total', event)">🎲</span>
-                <div class="stat-mod" id="wis_m">+0</div>
               </div>
               <div id="wis_details" class="expandable" style="background:#0e0f12; border-top:1px solid #1f2229;">
                 <div class="calc-row">
@@ -342,11 +326,11 @@
             </div>
 
             <div class="stat-container">
-              <div class="val-interactive" style="position:relative;" onclick="toggleExpand('cha_details')">
+              <div class="stat-mod" id="cha_m">+0</div>
+              <div class="val-interactive" onclick="toggleExpand('cha_details')">
                 <span class="item-name interactive-text" style="flex:1;">ХАР</span>
                 <span id="cha_display" style="font-size:18px; font-weight:bold; color:#fff; margin-right:15px;">10</span>
                 <span class="roll-btn" onclick="rollUniversal('Харизма', 'cha_total', event)">🎲</span>
-                <div class="stat-mod" id="cha_m">+0</div>
               </div>
               <div id="cha_details" class="expandable" style="background:#0e0f12; border-top:1px solid #1f2229;">
                 <div class="calc-row">
@@ -357,17 +341,19 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
         <div class="box">
           <div class="box-title">Спасброски</div>
           <div class="box-content" style="padding-top: 4px; gap: 0;">
+            
             <div class="inv-item-card" style="margin-bottom:4px; border:none; border-bottom:1px solid #20232a; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_phys_details')">
                 <span class="item-name interactive-text" style="flex:1;">Стойкость <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(STR/CON)</span></span>
                 <span id="sv_phys_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
-                <span class="roll-btn" onclick="rollUniversal('Спасбросок: Стойкость', 'sv_phys', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('Спас: Стойкость', 'sv_phys', event)">🎲</span>
               </div>
               <div id="sv_phys_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
@@ -386,7 +372,7 @@
               <div class="val-interactive" onclick="toggleExpand('sv_eva_details')">
                 <span class="item-name interactive-text" style="flex:1;">Рефлексы <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(DEX/INT)</span></span>
                 <span id="sv_eva_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
-                <span class="roll-btn" onclick="rollUniversal('Спасбросок: Рефлексы', 'sv_eva', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('Спас: Рефлексы', 'sv_eva', event)">🎲</span>
               </div>
               <div id="sv_eva_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
@@ -405,7 +391,7 @@
               <div class="val-interactive" onclick="toggleExpand('sv_men_details')">
                 <span class="item-name interactive-text" style="flex:1;">Воля <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(WIS/CHA)</span></span>
                 <span id="sv_men_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
-                <span class="roll-btn" onclick="rollUniversal('Спасбросок: Воля', 'sv_men', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('Спас: Воля', 'sv_men', event)">🎲</span>
               </div>
               <div id="sv_men_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
@@ -419,11 +405,11 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
-      <!-- КОЛОНКА 2: ЗДОРОВЬЕ, НАПРЯЖЕНИЕ, СКОРОСТЬ -->
       <section class="col">
         <div class="box">
           <div class="box-title">Целостность Каркаса</div>
@@ -478,7 +464,6 @@
         </div>
       </section>
 
-      <!-- КОЛОНКА 3: НАВЫКИ, ПАНИКА, СЧЕТЧИК -->
       <section class="col">
         <div class="box">
           <div class="box-title">Базовые Навыки</div>
@@ -531,7 +516,7 @@
         
         <div class="inv-item-card" style="border:none; margin:0;">
           <div class="val-interactive" onclick="toggleExpand('weight_total_details')" style="justify-content:center;">
-            <span class="interactive-text" style="font-size:14px; font-weight:bold; margin-right:10px;">ОБЩИЙ ВЕС</span>
+            <span class="interactive-text" style="font-size:15px; font-weight:bold; margin-right:10px;">ОБЩИЙ ВЕС</span>
             <span id="top_weight_display" style="font-size:20px; font-weight:bold; color:#fff;">0 / 20 кг</span>
           </div>
           <div id="weight_total_details" class="expandable" style="background:#0e0f12;">
@@ -547,7 +532,7 @@
 
         <div class="inv-item-card" style="border:none; margin:0;">
           <div class="val-interactive" onclick="toggleExpand('gear_penalty_details')" style="justify-content:center;">
-            <span class="interactive-text" style="font-size:14px; font-weight:bold; margin-right:10px;">СКОРОСТЬ (ШТРАФЫ)</span>
+            <span class="interactive-text" style="font-size:15px; font-weight:bold; margin-right:10px;">СКОРОСТЬ (ШТРАФЫ)</span>
             <span id="top_speed_display" style="font-size:20px; font-weight:bold; color:var(--accent);">10 м</span>
           </div>
           <div id="gear_penalty_details" class="expandable" style="background:#0e0f12;">
@@ -673,7 +658,7 @@
 </div>
 
 <script>
-  // Безопасная работа с локальным хранилищем (фикс для TTS CEF)
+  // Безопасная работа с локальным хранилищем (защита для TTS CEF)
   let memoryStorage = {};
   function safeSetItem(k, v) { try { localStorage.setItem(k, v); } catch(e) { memoryStorage[k] = v; } }
   function safeGetItem(k) { try { return localStorage.getItem(k) || memoryStorage[k]; } catch(e) { return memoryStorage[k]; } }
@@ -684,7 +669,7 @@
   
   let supabaseClient = null;
   if (window.supabase) {
-    // Отключаем persistSession, чтобы старый браузер TTS не блокировался
+    // Отключаем persistSession: старые браузеры TTS падают при попытке доступа к localStorage
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
     });
@@ -733,7 +718,7 @@
     const log = document.getElementById('panic_log');
     if(log) log.innerText = `Бросок: ${statName} [Значение: ${val}]`;
     
-    // Сбрасываем хэш, чтобы бросок можно было повторить
+    // Сбрасываем хэш, чтобы бросок можно было повторить без перезагрузки
     setTimeout(() => { window.location.hash = ""; }, 150);
   }
 
@@ -743,7 +728,7 @@
     const errEl = document.getElementById('authError');
     errEl.innerText = '';
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
-    if (!supabaseClient) { errEl.innerText = 'БД не загружена (проверьте интернет)'; return; }
+    if (!supabaseClient) { errEl.innerText = 'Сетевой модуль не загружен. Проверьте интернет в игре.'; return; }
 
     try {
       const { data, error } = await supabaseClient.from('vineta_users').select('*').ilike('username', u).eq('password', p).single();
@@ -755,7 +740,7 @@
       if (!data) { errEl.innerText = 'Неверный позывной или пароль'; return; }
       setSessionUser(data);
     } catch(e) {
-      errEl.innerText = 'Сбой сети TTS: ' + e.message;
+      errEl.innerText = 'Сбой сети (CORS/TTS): ' + e.message;
     }
   }
 
@@ -765,7 +750,7 @@
     const errEl = document.getElementById('authError');
     errEl.innerText = '';
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
-    if (!supabaseClient) { errEl.innerText = 'БД не загружена (проверьте интернет)'; return; }
+    if (!supabaseClient) { errEl.innerText = 'Сетевой модуль не загружен.'; return; }
 
     try {
       const assignedRole = (u.toLowerCase() === 'lemming') ? 'admin' : 'player';
@@ -773,7 +758,7 @@
       if (error) { errEl.innerText = 'Позывной уже занят'; return; }
       setSessionUser({ username: u, role: assignedRole });
     } catch(e) {
-      errEl.innerText = 'Сбой сети TTS: ' + e.message;
+      errEl.innerText = 'Сбой сети (CORS/TTS): ' + e.message;
     }
   }
 
@@ -840,8 +825,9 @@
   }
 
   async function refreshCharacterList() {
-    let query = supabaseClient.from('vineta_sheets').select('id, data, owner').eq('owner', currentUser.username);
-    const { data, error } = await query;
+    // В боковой панели выводим только свои листы
+    const { data, error } = await supabaseClient.from('vineta_sheets').select('id, data, owner').eq('owner', currentUser.username);
+    
     let list = [];
     if (!error && data && data.length > 0) {
       list = data.map(r => ({ 
@@ -970,21 +956,23 @@
 
   async function loadAdminRoster() {
     const container = document.getElementById('adminTableContainer');
-    container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос терминалов...</div>';
+    container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос БД...</div>';
     
     try {
+        // Получаем всех юзеров и все листы отдельно (надежнее, чем JOIN в старых клиентах)
         const { data: usersData, error: uErr } = await supabaseClient.from('vineta_users').select('username');
         const { data: sheetsData, error: sErr } = await supabaseClient.from('vineta_sheets').select('*').order('owner', { ascending: true });
 
         if (sErr || uErr) throw new Error("Ошибка чтения БД");
 
         const grouped = {};
-        // Добавляем всех юзеров изначально
+        
+        // Создаем пустые массивы для ВСЕХ зарегистрированных юзеров
         if (usersData) {
             usersData.forEach(u => { grouped[u.username.toUpperCase()] = []; });
         }
         
-        // Добавляем листы в нужные группы
+        // Раскидываем листы по владельцам
         if (sheetsData) {
             sheetsData.forEach(row => {
                 const owner = (row.owner && row.owner.trim() !== '') ? row.owner.toUpperCase() : 'НЕИЗВЕСТНО';
@@ -1034,7 +1022,7 @@
         if (html === '') html = '<div style="text-align:center; color: var(--text-muted);">База данных пуста.</div>';
         container.innerHTML = html;
     } catch(e) {
-        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка: ${e.message}</div>`;
+        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба: ${e.message}</div>`;
     }
   }
 
@@ -1052,6 +1040,7 @@
     if (val <= 3) return -2; if (val <= 7) return -1; if (val <= 13) return 0; if (val <= 17) return 1; return 2;
   }
 
+  // Мгновенный перерасчет
   function fastCalc() {
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
@@ -1113,7 +1102,7 @@
     else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
     else document.getElementById('w_light').classList.add('wound-active');
 
-    // Скорость и Вес (Сила + Тело)
+    // Скорость и Грузоподъемность (Сила + Тело)
     const carryBase = vals.str + vals.con;
     const carryMisc = parseInt(document.getElementById('carry_misc').value) || 0;
     const carryTotal = carryBase + carryMisc;
@@ -1153,14 +1142,11 @@
     
     // Перегруз
     const overAlert = document.getElementById('overencumber_alert');
-    const topOverAlert = document.querySelector('#gear_penalty_details .alert-box');
     if (totalWeight > carryTotal) {
       finalSpeed = 2; 
       if(overAlert) overAlert.style.display = 'block';
-      if(topOverAlert) topOverAlert.style.display = 'block';
     } else {
       if(overAlert) overAlert.style.display = 'none';
-      if(topOverAlert) topOverAlert.style.display = 'none';
     }
 
     document.getElementById('spd_total').value = finalSpeed;
@@ -1169,13 +1155,9 @@
     
     // Обновляем вес
     const displayWt = Math.round(totalWeight * 10) / 10;
-    document.getElementById('top_weight_display').innerText = `${displayWt} / ${carryTotal} кг`;
-
-    if (document.getElementById('pack_status')) {
-        document.getElementById('pack_status').innerText = `${Math.round(bagWeight * 10) / 10}`;
-    }
-    const vestStatus = document.getElementById('vest_status');
-    if (vestStatus) vestStatus.innerText = Math.round(vestWeight * 10) / 10;
+    const topWtDisplay = document.getElementById('top_weight_display');
+    topWtDisplay.innerText = `${displayWt} / ${carryTotal} кг`;
+    topWtDisplay.style.color = (totalWeight > carryTotal) ? 'var(--accent)' : '#fff';
 
     autoSave();
   }
@@ -1194,12 +1176,12 @@
     const d6 = Math.floor(Math.random() * 6) + 1;
     const total = d6 + st;
     window.location.hash = "#roll_Паника_" + total;
-    document.getElementById('panic_log').innerText = `Запрос отправлен... [Стресс: ${st}]`;
+    document.getElementById('panic_log').innerText = `Бросок паники отправлен в чат... [Стресс: ${st}]`;
     setTimeout(() => { window.location.hash = ""; }, 150);
     autoSave();
   }
 
-  // --- ИНВЕНТАРЬ И РПС ---
+  // --- ИНВЕНТАРЬ ---
   function toggleInvLock() {
     invLocked = !invLocked;
     const btn = document.getElementById('inv_toggle_btn');
@@ -1245,9 +1227,28 @@
     }
   }
 
+  function handleVestItemInput(index, field, value) {
+    const item = vestItemsArray[index];
+    if (item) {
+      item[field] = (field === 'unitWeight') ? (parseFloat(value) || 0) : value;
+      if (field === 'unitWeight' && item.unitWeight > 1) {
+        alert('Подсумок вмещает максимум 1 кг!');
+        item.unitWeight = 1;
+        document.getElementById('vest_wt_' + index).value = 1;
+      }
+      fastCalc();
+    }
+  }
+
   function removeBagItem(id) {
     bagItemsArray = bagItemsArray.filter(i => i.id !== id);
     renderInventory();
+    fastCalc();
+  }
+
+  function removeVestItem(index) {
+    vestItemsArray[index] = null;
+    renderVest();
     fastCalc();
   }
 
@@ -1335,25 +1336,6 @@
 
   function addVestItemDirectly(index) {
     vestItemsArray[index] = { id: Date.now(), name: '', unitWeight: 1, desc: '' };
-    renderVest();
-    fastCalc();
-  }
-
-  function handleVestItemInput(index, field, value) {
-    const item = vestItemsArray[index];
-    if (item) {
-      item[field] = (field === 'unitWeight') ? (parseFloat(value) || 0) : value;
-      if (field === 'unitWeight' && item.unitWeight > 1) {
-        alert('Подсумок вмещает максимум 1 кг!');
-        item.unitWeight = 1;
-        document.getElementById('vest_wt_' + index).value = 1;
-      }
-      fastCalc();
-    }
-  }
-
-  function removeVestItem(index) {
-    vestItemsArray[index] = null;
     renderVest();
     fastCalc();
   }
@@ -1483,7 +1465,7 @@
   function getFormData() {
     const data = {};
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
-      if (inp.id === 'sheetOwner' || inp.id.startsWith('bag_total_')) return; 
+      if (inp.id === 'sheetOwner' || inp.id.startsWith('bag_total_') || inp.id.startsWith('login')) return; 
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
     return data;
@@ -1533,6 +1515,7 @@
     setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
 
     try {
+      // Игнорируем localStorage для данных листов. Читаем строго БД.
       const { data, error } = await supabaseClient.from('vineta_sheets').select('data, owner').eq('id', currentSheetId).maybeSingle();
       if (!error && data) {
         currentSheetOwner = data.owner;
@@ -1545,13 +1528,11 @@
           setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
         }
       } else {
-        const local = safeGetItem('vineta_sheet_' + currentSheetId);
-        if (local) {
-          isRemoteUpdating = true; applyData(JSON.parse(local)); isRemoteUpdating = false;
-          setSyncStatus('ДАННЫЕ ИЗ КЭША', '#7b8390');
-        } else {
-          setSyncStatus('НОВЫЙ ЛИСТ', '#7b8390');
-        }
+        // Если листа нет в БД, значит он новый или удален. Сбрасываем поля.
+        isRemoteUpdating = true; 
+        resetForm(); 
+        isRemoteUpdating = false;
+        setSyncStatus('НОВЫЙ ЛИСТ', '#7b8390');
       }
     } catch (err) {
       setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
