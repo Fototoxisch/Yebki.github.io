@@ -662,7 +662,7 @@
               <span style="width: 20px;"></span>
             </div>
 
-            <!-- Список вещей -->
+            <!-- Список вещей (Drag Target) -->
             <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
           </div>
         </div>
@@ -679,6 +679,7 @@
           <button onclick="loadAdminRoster()">[ ОБНОВИТЬ СПИСОК ]</button>
         </div>
         
+        <!-- Контейнер для сгруппированных таблиц -->
         <div id="adminTableContainer">
             <div style="text-align:center; padding: 20px; color: var(--text-muted);">Загрузка данных штаба...</div>
         </div>
@@ -767,7 +768,6 @@
         if(document.getElementById('viewAdmin').style.display === 'block') loadAdminRoster();
         else await loadData();
       } else if (delType === 'user') {
-        // Безопасное удаление юзера без изменения регистра
         await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?owner=eq.${encodeURIComponent(delName)}`, { method: 'DELETE', headers: HEADERS });
         await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(delName)}`, { method: 'DELETE', headers: HEADERS });
         closeDeleteModal();
@@ -786,14 +786,13 @@
     if (inputId) { val = document.getElementById(inputId).value || 0; } 
     else { val = document.getElementById('stress').value || 0; }
     
-    // Метка времени (t) гарантирует, что ссылка обновится даже если бросать одно и то же число
-    const encName = encodeURIComponent(statName);
-    window.location.hash = `#roll?stat=${encName}&val=${val}&t=${Date.now()}`;
+    // НЕ КОДИРУЕМ русские буквы, чтобы TTS читал их нормально. Якорь передаем напрямую.
+    window.location.hash = `#roll?stat=${statName}&val=${val}&t=${Date.now()}`;
     
     const log = document.getElementById('panic_log');
     if(log) log.innerText = `Бросок: ${statName} [Значение: ${val}]`;
     
-    setTimeout(() => { window.location.hash = ""; }, 250);
+    setTimeout(() => { window.location.hash = ""; }, 150);
   }
 
   async function handleLogin() {
@@ -805,7 +804,6 @@
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
 
     try {
-      // ilike игнорирует регистр при входе
       const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=ilike.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`, { headers: HEADERS });
       if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
       const data = await res.json();
@@ -813,7 +811,7 @@
       if (data.length === 0) { errEl.innerText = 'Неверный позывной или пароль'; return; }
       setSessionUser(data[0]);
     } catch(e) {
-      errEl.innerText = 'Сбой сети (CORS/TTS). Проверьте интернет.';
+      errEl.innerText = 'Сбой сети (CORS/TTS). Попробуйте внешний браузер.';
     }
   }
 
@@ -836,7 +834,7 @@
       if (!res.ok) { errEl.innerText = 'Позывной уже занят или ошибка БД.'; return; }
       setSessionUser({ username: u, role: assignedRole });
     } catch(e) {
-      errEl.innerText = 'Сбой сети (CORS/TTS). Проверьте интернет.';
+      errEl.innerText = 'Сбой сети (CORS/TTS). Попробуйте внешний браузер.';
     }
   }
 
@@ -868,12 +866,26 @@
     location.reload();
   }
 
-  function checkSession() {
+  // ТИХАЯ ПРОВЕРКА АККАУНТА ПРИ ВХОДЕ
+  async function checkSession() {
     const saved = safeGetItem('vineta_user');
     if (saved) {
       const user = JSON.parse(saved);
-      if (user.username.toLowerCase() === 'lemming') user.role = 'admin';
-      setSessionUser(user);
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(user.username)}&password=eq.${encodeURIComponent(user.password)}&select=*`, { headers: HEADERS });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.length > 0) {
+                setSessionUser(data[0]);
+                return;
+            }
+        }
+        // Если база ответила, но юзера нет - сжигаем кэш и выкидываем на логин
+        logout();
+      } catch (e) {
+        // Если ошибка сети - пускаем по кэшу
+        setSessionUser(user);
+      }
     } else {
       document.getElementById('authModal').style.display = 'flex';
     }
@@ -968,7 +980,6 @@
   async function switchCharacter(id) {
     try {
         currentSheetId = id;
-        // Сбрасываем чужого владельца на своего, если переключаемся на своего перса
         currentSheetOwner = currentUser.username;
         safeSetItem('vineta_active_id', currentSheetId);
         toggleSidePanel();
