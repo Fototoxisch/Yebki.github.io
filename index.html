@@ -11,13 +11,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  
-  <!-- Заглушка для TTS -->
-  <script>if (typeof globalThis === 'undefined') { window.globalThis = window; }</script>
-  <!-- Основной CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Резервный CDN, если TTS заблокирует первый -->
-  <script>if (!window.supabase) { document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>'); }</script>
 
   <style>
     :root {
@@ -59,12 +52,12 @@
     .header { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
     .header-brand { display: flex; align-items: center; gap: 10px; }
     .header h1 { margin: 0; font-size: 16px; color: var(--border-color); letter-spacing: 2px; }
-    .sync-tag { font-size: 11px; color: #4ade80; border: 1px solid #4ade80; padding: 2px 5px; white-space: nowrap; }
+    .sync-tag { font-size: 11px; color: #4ade80; border: 1px solid #4ade80; padding: 2px 5px; white-space: nowrap; cursor: pointer; }
+    .sync-tag:hover { background: rgba(74, 222, 128, 0.1); }
     .user-tag { font-size: 12px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; text-transform: uppercase;}
 
     select, input, button, textarea { font-family: inherit; font-size: 14px; }
     
-    /* Цветовая разметка: Редактируемые поля */
     input[type="text"], input[type="number"], input[type="password"], textarea, select { 
       background: var(--input-bg-edit); 
       border: 1px solid #3a3f4b; 
@@ -76,7 +69,6 @@
     }
     input:focus, textarea:focus, select:focus { border-color: var(--accent); outline: none; background: #2a2e38; }
     
-    /* Цветовая разметка: Нередактируемые поля */
     input[readonly], textarea[readonly] { 
       background: var(--input-bg-read) !important; 
       border-color: transparent !important; 
@@ -90,29 +82,21 @@
     .btn-danger { border-color: var(--accent); color: var(--accent); }
     .btn-danger:hover { background: var(--accent); color: #fff; }
 
-    /* Плавные анимации выкатывания */
-    .expandable { 
-      max-height: 0; 
-      overflow: hidden; 
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease; 
-      opacity: 0; 
+    /* Плавающие подсказки для авторизации */
+    .input-float { position: relative; width: 100%; display: flex; align-items: center; }
+    .input-float input { width: 100%; padding: 14px 8px 4px 8px; font-size: 14px; text-align: left; }
+    .input-float label { 
+      position: absolute; left: 10px; top: 12px; color: var(--text-muted); 
+      font-size: 13px; transition: 0.2s ease; pointer-events: none; text-transform: uppercase;
     }
-    .expandable.open { 
-      max-height: 600px; 
-      opacity: 1; 
-      margin-top: 6px;
-      transition: max-height 0.5s ease-in-out, opacity 0.4s ease, margin 0.3s ease; 
+    .input-float input:focus + label, .input-float input:not(:placeholder-shown) + label {
+      top: 2px; font-size: 9px; color: var(--border-color); font-weight: bold;
     }
+
+    .expandable { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease; opacity: 0; }
+    .expandable.open { max-height: 600px; opacity: 1; margin-top: 6px; transition: max-height 0.5s ease-in-out, opacity 0.4s ease, margin 0.3s ease; }
     
-    .val-interactive { 
-      cursor: pointer; 
-      transition: background 0.2s, color 0.2s; 
-      padding: 6px 8px; 
-      border-radius: 4px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-    }
+    .val-interactive { cursor: pointer; transition: background 0.2s, color 0.2s; padding: 6px 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
     .val-interactive:hover { background: rgba(255, 77, 77, 0.08); }
     .val-interactive:hover .interactive-text { color: var(--accent); }
     .interactive-text { transition: color 0.2s; }
@@ -120,7 +104,6 @@
     .roll-btn { cursor: pointer; transition: 0.15s; display:inline-block; font-size:16px; margin-left:6px; opacity:0.7; }
     .roll-btn:hover { opacity:1; transform: scale(1.2); text-shadow: 0 0 8px var(--accent); }
 
-    /* Боковая панель профилей */
     .side-panel {
       position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
       background: #111215; border-left: 2px solid var(--border-color);
@@ -137,7 +120,6 @@
     .char-name { font-weight: bold; color: #fff; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .char-actions { display: flex; gap: 5px; }
 
-    /* Сетка и блоки */
     .row-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: start; }
     .col { display: flex; flex-direction: column; gap: 15px; }
     .box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
@@ -147,16 +129,13 @@
     .accent-bold { color: var(--border-color) !important; font-weight: bold; }
     .alert-box { color: var(--accent); font-size: 12px; text-align: center; display: none; margin-top: 4px; border: 1px dashed var(--accent); padding: 6px; border-radius: 4px;}
 
-    /* Атрибуты */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .stat-container { border: 1px solid #3a3f4b; background: var(--panel-bg); border-radius: 4px; display: flex; flex-direction: column; position: relative; }
     .stat-mod { position: absolute; top: -8px; right: -8px; background: var(--border-color); color: #000; border-radius: 50%; width: 22px; height: 22px; line-height: 22px; font-size: 12px; text-align: center; font-weight: bold; z-index: 2; pointer-events: none; }
 
-    /* Математические Калькуляторы */
     .calc-row { display: flex; align-items: center; gap: 6px; justify-content: center; padding: 8px 0; }
     .calc-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .calc-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    /* Выравнивание знаков по центру инпутов (компенсация высоты лейблов) */
     .math-sign { display: flex; align-items: center; justify-content: center; height: 26px; font-size: 18px; color: var(--text-muted); margin-bottom: 14px; font-weight: bold;}
 
     .hp-input { color: var(--accent); font-weight: bold; }
@@ -172,10 +151,8 @@
 
     .sub-label { font-size: 11px; color: var(--border-color); text-transform: uppercase; }
     
-    /* Инвентарь и РПС */
     @keyframes fadeInRow { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* Окантовка для предметов */
     .inv-item-card { border: 1px solid #3a3f4b; border-radius: 4px; background: #111215; margin-bottom: 6px; animation: fadeInRow 0.2s ease-out forwards; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
     
@@ -192,7 +169,6 @@
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
 
-    /* Таблицы Штаба */
     .admin-account-group { border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 20px; padding: 12px; background: #111215; }
     .admin-account-group h3 { margin-top: 0; margin-bottom: 12px; color: var(--accent); letter-spacing: 1px; font-size: 16px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px;}
     .admin-table { width: 100%; border-collapse: collapse; }
@@ -201,16 +177,11 @@
     .admin-table tr:hover { background: #1a1c23; }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 999; }
-    .auth-card { background: var(--panel-bg); border: 2px solid var(--border-color); width: 350px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 0 20px rgba(201,42,42,0.3); border-radius: 4px;}
-    .password-wrap { position: relative; display: flex; align-items: center; width: 100%; }
-    .password-wrap input { width: 100%; padding-right: 36px; }
-    .toggle-pwd-btn { position: absolute; right: 2px; background: transparent; border: none; color: var(--border-color); cursor: pointer; font-size: 16px; padding: 4px 6px; width: auto; }
-    .toggle-pwd-btn:hover { background: transparent; color: #fff; }
+    .auth-card { background: var(--panel-bg); border: 2px solid var(--border-color); width: 350px; padding: 20px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 0 20px rgba(201,42,42,0.3); border-radius: 4px;}
   </style>
 </head>
 <body>
 
-<!-- БОКОВАЯ ПАНЕЛЬ -->
 <div id="sidePanel" class="side-panel">
   <div class="side-panel-header">
     <h2>Мои профили</h2>
@@ -222,17 +193,23 @@
   </div>
 </div>
 
-<!-- ОКНО АВТОРИЗАЦИИ -->
 <div id="authModal" class="modal-overlay" style="display: none;">
   <div class="auth-card">
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
-    <div style="font-size: 12px; color: var(--text-muted); text-align: center;">Вход в терминал боевого звена</div>
-    <input type="text" id="loginUser" placeholder="Позывной / Никнейм" autocomplete="off">
-    <div class="password-wrap">
-      <input type="password" id="loginPass" placeholder="Пароль" autocomplete="off">
-      <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility()" id="pwdToggleBtn">👁</button>
+    <div style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 5px;">Вход в терминал боевого звена</div>
+    
+    <div class="input-float">
+      <input type="text" id="loginUser" placeholder=" " autocomplete="off">
+      <label for="loginUser">Позывной / Никнейм</label>
     </div>
-    <div style="display: flex; gap: 8px;">
+    
+    <div class="input-float">
+      <input type="password" id="loginPass" placeholder=" " autocomplete="off" style="padding-right: 36px;">
+      <label for="loginPass">Пароль доступа</label>
+      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:16px;">👁</button>
+    </div>
+    
+    <div style="display: flex; gap: 8px; margin-top: 5px;">
       <button type="button" onclick="handleLogin()" style="flex:1;">ВОЙТИ</button>
       <button type="button" onclick="handleRegister()" style="flex:1;">РЕГИСТРАЦИЯ</button>
     </div>
@@ -250,7 +227,7 @@
   <header class="header">
     <div class="header-brand">
       <h1>AEON // ТЕРМИНАЛ</h1>
-      <span id="sync_status" class="sync-tag">[ ОЖИДАНИЕ ]</span>
+      <span id="sync_status" class="sync-tag" onclick="loadData(true)" title="Нажмите для принудительного обновления">[ ОЖИДАНИЕ ]</span>
     </div>
     <div style="display: flex; gap: 6px; align-items: center;">
       <button onclick="toggleSidePanel()">[ ПРОФИЛИ ]</button>
@@ -267,7 +244,7 @@
       <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" style="flex: 2;" onchange="onNameChange()" autocomplete="off">
       <input type="text" id="charModel" placeholder="МОДЕЛЬ (STCR, STAR...)" style="flex: 1;" onchange="autoSave()" autocomplete="off">
       <input type="text" id="sheetOwner" placeholder="Владелец (ник/почта)" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off">
-      <button onclick="saveData(true)">[ СОХРАНИТЬ ]</button>
+      <button onclick="saveData(true)">[ СОХРАНИТЬ В БД ]</button>
     </div>
 
     <main class="row-3-col">
@@ -386,13 +363,13 @@
           <div class="box-title">Спасброски</div>
           <div class="box-content" style="padding-top: 4px; gap: 0;">
             
-            <div class="inv-item-card" style="margin-bottom:4px;">
+            <div class="inv-item-card" style="margin-bottom:4px; border:none; border-bottom:1px solid #20232a; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_phys_details')">
                 <span class="item-name interactive-text" style="flex:1;">Стойкость <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(STR/CON)</span></span>
                 <span id="sv_phys_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
                 <span class="roll-btn" onclick="rollUniversal('Спас: Стойкость', 'sv_phys', event)">🎲</span>
               </div>
-              <div id="sv_phys_details" class="expandable" style="background:#0e0f12; border-top: 1px dashed #20232a;">
+              <div id="sv_phys_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" value="15" readonly><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">-</span></div>
@@ -405,13 +382,13 @@
               </div>
             </div>
 
-            <div class="inv-item-card" style="margin-bottom:4px;">
+            <div class="inv-item-card" style="margin-bottom:4px; border:none; border-bottom:1px solid #20232a; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_eva_details')">
                 <span class="item-name interactive-text" style="flex:1;">Рефлексы <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(DEX/INT)</span></span>
                 <span id="sv_eva_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
                 <span class="roll-btn" onclick="rollUniversal('Спас: Рефлексы', 'sv_eva', event)">🎲</span>
               </div>
-              <div id="sv_eva_details" class="expandable" style="background:#0e0f12; border-top: 1px dashed #20232a;">
+              <div id="sv_eva_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" value="15" readonly><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">-</span></div>
@@ -424,13 +401,13 @@
               </div>
             </div>
 
-            <div class="inv-item-card" style="margin-bottom:0;">
+            <div class="inv-item-card" style="margin-bottom:0; border:none; border-radius:0;">
               <div class="val-interactive" onclick="toggleExpand('sv_men_details')">
                 <span class="item-name interactive-text" style="flex:1;">Воля <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(WIS/CHA)</span></span>
                 <span id="sv_men_display" style="font-size:18px; font-weight:bold; color:#fff;">15</span>
                 <span class="roll-btn" onclick="rollUniversal('Спас: Воля', 'sv_men', event)">🎲</span>
               </div>
-              <div id="sv_men_details" class="expandable" style="background:#0e0f12; border-top: 1px dashed #20232a;">
+              <div id="sv_men_details" class="expandable" style="background:#0e0f12;">
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" value="15" readonly><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">-</span></div>
@@ -442,6 +419,7 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -587,7 +565,8 @@
       </div>
     </div>
 
-    <div class="row-3-col">
+    <!-- ВАЖНО: Добавлен тег main -->
+    <main class="row-3-col">
       <section class="col">
         <div class="box">
           <div class="box-title">Броня (Stopping Power)</div>
@@ -625,7 +604,7 @@
             <div class="flex-row" style="gap: 10px; margin-bottom: 5px;">
               <select id="vest_type" onchange="updateVestLimit(); fastCalc(); autoSave();" style="flex:1;">
                 <option value="basic">Стандартная РПС (4 слота | Штраф 0)</option>
-                <option value="heavy">Тяжелая РПС (8 слотов | Штраф -1)</option>
+                <option value="heavy">Штурмовая РПС (8 слотов | Штраф -1)</option>
               </select>
               <button id="vest_toggle_btn" onclick="toggleVestLock()" style="padding: 2px 6px; font-size: 16px;" title="Разблокировать редактирование">🔒</button>
             </div>
@@ -671,6 +650,7 @@
     </main>
   </div>
 
+  <!-- ВКЛАДКА 3: АДМИН-ПАНЕЛЬ ШТАБА -->
   <div id="viewAdmin" style="display: none;">
     <div class="box">
       <div class="box-title">МОНИТОРИНГ ЗВЕНА // БАЗА ДАННЫХ</div>
@@ -701,23 +681,17 @@
   const SUPABASE_URL = 'https://gpblfglgvxlfqhoavzlr.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_LDTJVEcaBH1m4a47pOTJZQ_qy3fk76C';
   
-  let supabaseClient = null;
-  
-  // Инициализация Supabase без вылета в TTS
-  try {
-    if (window.supabase) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
-      });
-    }
-  } catch(e) {
-    console.error("Supabase init error:", e);
-  }
+  // НАСТРОЙКИ ДЛЯ ПРЯМОГО FETCH (БЕЗ БИБЛИОТЕКИ SUPABASE, ЧТОБЫ РАБОТАЛО В TTS)
+  const HEADERS = {
+    'apikey': SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+  };
 
   let currentUser = null;
   let currentSheetId = null;
   let currentSheetOwner = null; 
-  let activeSubscription = null;
   
   let bagItemsArray = []; 
   let vestItemsArray = [null, null, null, null, null, null, null, null]; 
@@ -761,6 +735,7 @@
     setTimeout(() => { window.location.hash = ""; }, 150);
   }
 
+  // --- НАПИСАНО НА FETCH ДЛЯ TTS ---
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
@@ -768,17 +743,14 @@
     errEl.innerText = '';
     
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
-    if (!supabaseClient) { errEl.innerText = 'Сетевой модуль заблокирован браузером TTS. Запустите сайт во внешнем браузере.'; return; }
 
     try {
-      const { data, error } = await supabaseClient.from('vineta_users').select('*').ilike('username', u).eq('password', p).single();
-      if (error) { 
-         if (error.code === 'PGRST116') errEl.innerText = 'Неверный позывной или пароль'; 
-         else errEl.innerText = 'Ошибка БД: ' + error.message;
-         return; 
-      }
-      if (!data) { errEl.innerText = 'Неверный позывной или пароль'; return; }
-      setSessionUser(data);
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=ilike.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`, { headers: HEADERS });
+      if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
+      const data = await res.json();
+      
+      if (data.length === 0) { errEl.innerText = 'Неверный позывной или пароль'; return; }
+      setSessionUser(data[0]);
     } catch(e) {
       errEl.innerText = 'Сбой сети (CORS/TTS): ' + e.message;
     }
@@ -791,12 +763,16 @@
     errEl.innerText = '';
     
     if (!u || !p) { errEl.innerText = 'Заполните оба поля'; return; }
-    if (!supabaseClient) { errEl.innerText = 'Сетевой модуль заблокирован браузером TTS.'; return; }
 
     try {
       const assignedRole = (u.toLowerCase() === 'lemming') ? 'admin' : 'player';
-      const { error } = await supabaseClient.from('vineta_users').insert({ username: u, password: p, role: assignedRole });
-      if (error) { errEl.innerText = 'Позывной уже занят'; return; }
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users`, {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({ username: u, password: p, role: assignedRole })
+      });
+      
+      if (!res.ok) { errEl.innerText = 'Позывной уже занят или ошибка БД.'; return; }
       setSessionUser({ username: u, role: assignedRole });
     } catch(e) {
       errEl.innerText = 'Сбой сети (CORS/TTS): ' + e.message;
@@ -866,50 +842,55 @@
   }
 
   async function refreshCharacterList() {
-    const { data, error } = await supabaseClient.from('vineta_sheets').select('id, data, owner').eq('owner', currentUser.username);
-    
-    let list = [];
-    if (!error && data && data.length > 0) {
-      list = data.map(r => ({ 
-        id: r.id, 
-        name: (r.data && r.data.charName && r.data.charName.trim() !== '') ? r.data.charName : formatIDToName(r.id),
-        owner: r.owner
-      }));
-    }
-
-    if (list.length === 0) {
-      const defaultId = Date.now().toString(36);
-      list.push({ id: defaultId, name: 'Новый Боец', owner: currentUser.username });
-      if (!currentSheetId) {
-        currentSheetId = defaultId;
-        currentSheetOwner = currentUser.username;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?owner=eq.${encodeURIComponent(currentUser.username)}&select=id,data,owner`, { headers: HEADERS });
+      const data = await res.json();
+      
+      let list = [];
+      if (data && data.length > 0) {
+        list = data.map(r => ({ 
+          id: r.id, 
+          name: (r.data && r.data.charName && r.data.charName.trim() !== '') ? r.data.charName : formatIDToName(r.id),
+          owner: r.owner
+        }));
       }
-    } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
-      currentSheetId = list[0].id;
-      currentSheetOwner = list[0].owner;
-    } else {
-      const activeObj = list.find(x => x.id === currentSheetId);
-      if (activeObj) currentSheetOwner = activeObj.owner;
-    }
 
-    const panelList = document.getElementById('sidePanelList');
-    panelList.innerHTML = '';
-    list.forEach(c => {
-      const isActive = c.id === currentSheetId ? 'active' : '';
-      panelList.innerHTML += `
-        <div class="char-card ${isActive}">
-          <div class="char-name" title="${c.name}">${c.name}</div>
-          <div class="char-actions">
-            <button style="flex:1;" onclick="switchCharacter('${c.id}')">${isActive ? 'ВЫБРАН' : 'ВЫБРАТЬ'}</button>
-            <button class="btn-danger" title="Удалить" onclick="deleteCharacterById('${c.id}', '${c.name.replace(/'/g, "\\'")}')">✕</button>
+      if (list.length === 0) {
+        const defaultId = Date.now().toString(36);
+        list.push({ id: defaultId, name: 'Новый Боец', owner: currentUser.username });
+        if (!currentSheetId) {
+          currentSheetId = defaultId;
+          currentSheetOwner = currentUser.username;
+        }
+      } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
+        currentSheetId = list[0].id;
+        currentSheetOwner = list[0].owner;
+      } else {
+        const activeObj = list.find(x => x.id === currentSheetId);
+        if (activeObj) currentSheetOwner = activeObj.owner;
+      }
+
+      const panelList = document.getElementById('sidePanelList');
+      panelList.innerHTML = '';
+      list.forEach(c => {
+        const isActive = c.id === currentSheetId ? 'active' : '';
+        panelList.innerHTML += `
+          <div class="char-card ${isActive}">
+            <div class="char-name" title="${c.name}">${c.name}</div>
+            <div class="char-actions">
+              <button style="flex:1;" onclick="switchCharacter('${c.id}')">${isActive ? 'ВЫБРАН' : 'ВЫБРАТЬ'}</button>
+              <button class="btn-danger" title="Удалить" onclick="deleteCharacterById('${c.id}', '${c.name.replace(/'/g, "\\'")}')">✕</button>
+            </div>
           </div>
-        </div>
-      `;
-    });
+        `;
+      });
 
-    safeSetItem('vineta_active_id', currentSheetId);
-    if (currentUser.role === 'admin' && currentSheetOwner) {
-      document.getElementById('sheetOwner').value = currentSheetOwner || '';
+      safeSetItem('vineta_active_id', currentSheetId);
+      if (currentUser.role === 'admin' && currentSheetOwner) {
+        document.getElementById('sheetOwner').value = currentSheetOwner || '';
+      }
+    } catch(e) {
+      console.warn("Сбой загрузки сайдбара", e);
     }
   }
 
@@ -918,7 +899,6 @@
     safeSetItem('vineta_active_id', currentSheetId);
     toggleSidePanel();
     await loadData();
-    setupRealtimeSubscription();
     refreshCharacterList(); 
   }
 
@@ -935,7 +915,6 @@
     
     await saveData(false);
     await refreshCharacterList();
-    setupRealtimeSubscription();
   }
 
   async function deleteCharacterById(id, name) {
@@ -943,13 +922,12 @@
     const verify = prompt(`Защита от случайного удаления.\nВведите ваш никнейм (${currentUser.username}), чтобы подтвердить:`);
     if (verify !== currentUser.username) { alert('Удаление отменено: никнейм введен неверно.'); return; }
 
-    await supabaseClient.from('vineta_sheets').delete().eq('id', id);
+    await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
     
     if (currentSheetId === id) currentSheetId = null;
     
     await refreshCharacterList();
     await loadData();
-    setupRealtimeSubscription();
   }
 
   function onNameChange() {
@@ -995,16 +973,22 @@
 
   async function loadAdminRoster() {
     const container = document.getElementById('adminTableContainer');
-    container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос базы данных...</div>';
+    container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос базы данных (REST API)...</div>';
     
     try {
-        // Мы больше не обращаемся к 'vineta_users', так как это может быть заблочено RLS.
-        // Вытаскиваем ВСЕ существующие листы из 'vineta_sheets' и парсим владельцев оттуда.
-        const { data: sheetsData, error: sErr } = await supabaseClient.from('vineta_sheets').select('id, data, owner').order('owner', { ascending: true });
-        
-        if (sErr) throw new Error("Ошибка чтения листов: " + sErr.message);
+        const uRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?select=username`, { headers: HEADERS });
+        const sRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?select=*&order=owner.asc`, { headers: HEADERS });
+
+        if (!uRes.ok || !sRes.ok) throw new Error("Сетевая ошибка REST API");
+
+        const usersData = await uRes.json();
+        const sheetsData = await sRes.json();
 
         const grouped = {};
+        
+        if (usersData) {
+            usersData.forEach(u => { grouped[u.username.toUpperCase()] = []; });
+        }
         
         if (sheetsData) {
             sheetsData.forEach(row => {
@@ -1032,26 +1016,30 @@
                   </thead>
                   <tbody>`;
             
-            rows.forEach(r => {
-                const d = r.data || {};
-                const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
-                html += `
-                    <tr>
-                        <td style="font-weight:bold; color:#fff;">${cName}</td>
-                        <td>${d.charModel || '—'}</td>
-                        <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
-                        <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
-                        <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
-                        <td><button onclick="inspectCharacter('${r.id}', '${r.owner}')">ОТКРЫТЬ</button></td>
-                    </tr>`;
-            });
+            if (rows.length === 0) {
+                html += `<tr><td colspan="6" style="color:var(--text-muted);">Нет зарегистрированных листов</td></tr>`;
+            } else {
+                rows.forEach(r => {
+                    const d = r.data || {};
+                    const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
+                    html += `
+                        <tr>
+                            <td style="font-weight:bold; color:#fff;">${cName}</td>
+                            <td>${d.charModel || '—'}</td>
+                            <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
+                            <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
+                            <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
+                            <td><button onclick="inspectCharacter('${r.id}', '${r.owner}')">ОТКРЫТЬ</button></td>
+                        </tr>`;
+                });
+            }
             html += `</tbody></table></div>`;
         }
         
-        if (html === '') html = '<div style="text-align:center; color: var(--text-muted);">База данных пуста (Нет ни одного листа).</div>';
+        if (html === '') html = '<div style="text-align:center; color: var(--text-muted);">База данных пуста.</div>';
         container.innerHTML = html;
     } catch(e) {
-        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба: ${e.message}</div>`;
+        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба (TTS): ${e.message}</div>`;
     }
   }
 
@@ -1061,7 +1049,6 @@
     safeSetItem('vineta_active_id', id);
     await loadData();
     switchTab('sheet');
-    setupRealtimeSubscription();
     refreshCharacterList(); 
   }
 
@@ -1155,9 +1142,8 @@
     document.getElementById('spd_gear').value = totalGearPenalty;
     document.getElementById('penalty_vest').value = vestPenalty;
     document.getElementById('penalty_bag').value = bagPenalty;
-    document.getElementById('penalty_total').value = totalGearPenalty + spdMisc;
+    document.getElementById('penalty_total').value = totalGearPenalty; // Показываем чистый штраф снаряжения
 
-    // Суммируем весь вес
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
@@ -1168,7 +1154,6 @@
     let totalWeight = bagWeight + vestWeight + mag1Wt + mag2Wt + mag3Wt;
     let finalSpeed = spdBase + totalGearPenalty + spdMisc;
     
-    // Перегруз
     const overAlert = document.getElementById('overencumber_alert');
     if (totalWeight > carryTotal) {
       finalSpeed = 2; 
@@ -1182,12 +1167,10 @@
     
     const penaltyDisplay = document.getElementById('top_penalty_display');
     if(penaltyDisplay) {
-        const totalP = totalGearPenalty + spdMisc;
-        penaltyDisplay.innerText = totalP + ' м';
-        penaltyDisplay.style.color = (totalP < 0) ? 'var(--accent)' : '#fff';
+        penaltyDisplay.innerText = totalGearPenalty + ' м';
+        penaltyDisplay.style.color = (totalGearPenalty < 0) ? 'var(--accent)' : '#fff';
     }
     
-    // Обновляем вес
     const displayWt = Math.round(totalWeight * 10) / 10;
     const topWtDisplay = document.getElementById('top_weight_display');
     topWtDisplay.innerText = `${displayWt} / ${carryTotal} кг`;
@@ -1401,7 +1384,7 @@
                 <span style="font-size:12px; color:var(--text-muted); font-weight:bold;">${item.unitWeight} кг</span>
               </div>
               <div id="desc_vest_${item.id}" class="expandable">
-                <div style="padding:4px 8px 8px 30px; font-size:11px; color:#aaa;">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
+                <div style="padding:4px 8px 8px 30px; font-size:10px; color:#aaa;">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
               </div>
             </div>`;
         } else {
@@ -1410,7 +1393,7 @@
               <div style="display:flex; gap:4px; align-items:center;">
                 <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')" title="Описание">⚙️</button>
                 <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; padding:4px;" oninput="handleVestItemInput(${i}, 'name', this.value)">
-                <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:45px; padding:4px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
+                <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:50px; padding:4px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
                 <button class="item-del" onclick="removeVestItem(${i})">✕</button>
               </div>
               <div id="desc_vest_edit_${item.id}" class="expandable" style="width:100%;">
@@ -1518,14 +1501,18 @@
     const payload = getFormData();
 
     try {
-      const { error } = await supabaseClient.from('vineta_sheets').upsert({ 
-        id: currentSheetId, 
-        owner: currentSheetOwner || currentUser.username, 
-        data: payload, 
-        updated_at: new Date().toISOString() 
-      }, { onConflict: 'id' });
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets`, {
+        method: 'POST',
+        headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify({ 
+          id: currentSheetId, 
+          owner: currentSheetOwner || currentUser.username, 
+          data: payload, 
+          updated_at: new Date().toISOString() 
+        })
+      });
 
-      if (error) throw error;
+      if (!res.ok) throw new Error(await res.text());
       setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
       if (manual) alert('Данные сохранены в базе.');
     } catch (err) {
@@ -1533,14 +1520,17 @@
     }
   }
 
-  async function loadData() {
+  async function loadData(force = false) {
     if (!currentSheetId) return;
     setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
 
     try {
-      // Игнорируем localStorage полностью. Берем только из БД.
-      const { data, error } = await supabaseClient.from('vineta_sheets').select('data, owner').eq('id', currentSheetId).maybeSingle();
-      if (!error && data) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${currentSheetId}&select=data,owner`, { headers: HEADERS });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const rows = await res.json();
+      
+      if (rows && rows.length > 0) {
+        const data = rows[0];
         currentSheetOwner = data.owner;
         if (currentUser.role === 'admin') document.getElementById('sheetOwner').value = currentSheetOwner || '';
 
@@ -1580,32 +1570,17 @@
     } else { vestItemsArray = [null,null,null,null,null,null,null,null]; }
   }
 
-  function setupRealtimeSubscription() {
-    if (!supabaseClient) return;
-    if (activeSubscription) supabaseClient.removeChannel(activeSubscription);
-
-    activeSubscription = supabaseClient.channel('sheet-changes-' + currentSheetId)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'vineta_sheets', filter: `id=eq.${currentSheetId}` },
-        (payload) => {
-          if (payload.new && payload.new.data) {
-            isRemoteUpdating = true;
-            applyData(payload.new.data);
-            updateVestLimit();
-            fastCalc();
-            renderInventory();
-            isRemoteUpdating = false;
-            setSyncStatus('ОБНОВЛЕНО СЕТЬЮ', '#38bdf8');
-          }
-        }
-      ).subscribe();
-  }
+  // Заглушка вместо вебсокетов (ручное обновление + легкий опрос для TTS)
+  setInterval(() => {
+    if (!invLocked || !vestLocked || isRemoteUpdating || !currentSheetId) return;
+    loadData(false);
+  }, 10000); // Обновление каждые 10 сек, только если инвентарь закрыт для ред.
 
   async function initApp() {
     const savedId = safeGetItem('vineta_active_id');
     if (savedId) currentSheetId = savedId;
     await refreshCharacterList();
     await loadData();
-    setupRealtimeSubscription();
   }
 
   window.onload = checkSession;
