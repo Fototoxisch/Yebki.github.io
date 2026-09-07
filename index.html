@@ -45,7 +45,7 @@
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; display: none !important; }
     input[type="number"] { -moz-appearance: textfield !important; appearance: textfield !important; }
 
-    .container { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+    .container { width: 100%; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
 
     .tabs-bar { display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); }
     .tab-btn { background: #13151a; border: 1px solid #333; border-bottom: none; color: var(--text-muted); padding: 5px 14px; font-family: inherit; font-size: 12px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
@@ -112,7 +112,6 @@
     .char-name { font-weight: bold; color: #fff; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .char-actions { display: flex; gap: 4px; }
 
-    /* Равнозначные 3 колонки с защитой от выпадания */
     .row-3-col { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: start; }
     .col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
     .box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 3px; overflow: hidden; min-width: 0; }
@@ -122,14 +121,13 @@
     .accent-bold { color: var(--border-color) !important; font-weight: bold; }
     .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 2px; border: 1px dashed var(--accent); padding: 4px; border-radius: 3px;}
 
-    /* Плитка характеристик 2х3 */
     .stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; width: 100%; }
     .stat-container { border: 1px solid #3a3f4b; background: var(--panel-bg); border-radius: 3px; display: flex; flex-direction: column; position: relative; margin: 0; min-width: 0; }
     .stat-mod { position: absolute; top: -5px; right: -5px; background: var(--border-color); color: #000; border-radius: 50%; width: 18px; height: 18px; line-height: 18px; font-size: 10px; text-align: center; font-weight: bold; z-index: 2; pointer-events: none; }
 
     .calc-row { display: flex; align-items: center; gap: 4px; justify-content: center; padding: 4px 0; }
     .calc-col { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-    .calc-col input { width: 32px; padding: 2px; font-size: 11px; }
+    .calc-col input { width: 34px; padding: 2px; font-size: 11px; }
     .calc-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
     .math-sign { display: flex; align-items: center; justify-content: center; height: 20px; font-size: 14px; color: var(--text-muted); margin-bottom: 10px; font-weight: bold;}
 
@@ -148,7 +146,7 @@
     .inv-item-card { border: 1px solid #3a3f4b; border-radius: 3px; background: #111215; margin-bottom: 4px; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
     
-    .inv-edit-row { display: flex; gap: 4px; align-items: center; padding: 4px; background: #161719; }
+    .inv-edit-row { display: flex; gap: 4px; align-items: center; padding: 4px; background: #161719; flex-wrap: nowrap; }
     .inv-edit-desc { padding: 0 6px 6px 30px; background: #161719; }
     .inv-edit-desc textarea { width: 100%; font-size: 11px; height: 36px; }
     .inv-view-row { display: flex; gap: 4px; align-items: center; padding: 5px; }
@@ -164,10 +162,6 @@
     .settings-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 0 4px; font-size: 14px; }
     .settings-btn:hover { color: var(--accent); }
 
-    .status-warn { color: #f59e0b; font-weight: bold; }
-    .status-crit { color: var(--accent); font-weight: bold; }
-
-    #adminTableContainer { min-height: 40vh; }
     .admin-account-group { border: 1px solid var(--border-color); border-radius: 3px; margin-bottom: 15px; padding: 8px; background: #111215; }
     .admin-account-group h3 { margin: 0 0 8px 0; color: var(--accent); font-size: 13px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;}
     .admin-table { width: 100%; border-collapse: collapse; }
@@ -273,9 +267,9 @@
               </div>
               <div id="str_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
-                  <div class="calc-col"><input type="number" id="str_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><input type="number" id="str_base" value="10" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="str_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><input type="number" id="str_bonus" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
                 </div>
               </div>
             </div>
@@ -289,9 +283,9 @@
               </div>
               <div id="dex_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
-                  <div class="calc-col"><input type="number" id="dex_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><input type="number" id="dex_base" value="10" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="dex_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><input type="number" id="dex_bonus" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
                 </div>
               </div>
             </div>
@@ -305,9 +299,9 @@
               </div>
               <div id="con_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
-                  <div class="calc-col"><input type="number" id="con_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><input type="number" id="con_base" value="10" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="con_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><input type="number" id="con_bonus" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
                 </div>
               </div>
             </div>
@@ -321,9 +315,9 @@
               </div>
               <div id="int_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
-                  <div class="calc-col"><input type="number" id="int_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><input type="number" id="int_base" value="10" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="int_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><input type="number" id="int_bonus" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
                 </div>
               </div>
             </div>
@@ -337,9 +331,9 @@
               </div>
               <div id="wis_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
-                  <div class="calc-col"><input type="number" id="wis_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><input type="number" id="wis_base" value="10" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="wis_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><input type="number" id="wis_bonus" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
                 </div>
               </div>
             </div>
@@ -353,9 +347,9 @@
               </div>
               <div id="cha_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
-                  <div class="calc-col"><input type="number" id="cha_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><input type="number" id="cha_base" value="10" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="cha_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><input type="number" id="cha_bonus" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Бонус</span></div>
                 </div>
               </div>
             </div>
@@ -379,7 +373,7 @@
                   <div class="calc-col"><span class="math-sign">-</span></div>
                   <div class="calc-col"><input type="number" id="sv_phys_mod" readonly><span class="calc-label">Мод</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="sv_phys_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+                  <div class="calc-col"><input type="number" id="sv_phys_misc" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
                   <div class="calc-col"><span class="math-sign">=</span></div>
                   <div class="calc-col"><input type="number" id="sv_phys" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
                 </div>
@@ -398,7 +392,7 @@
                   <div class="calc-col"><span class="math-sign">-</span></div>
                   <div class="calc-col"><input type="number" id="sv_eva_mod" readonly><span class="calc-label">Мод</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="sv_eva_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+                  <div class="calc-col"><input type="number" id="sv_eva_misc" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
                   <div class="calc-col"><span class="math-sign">=</span></div>
                   <div class="calc-col"><input type="number" id="sv_eva" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
                 </div>
@@ -417,7 +411,7 @@
                   <div class="calc-col"><span class="math-sign">-</span></div>
                   <div class="calc-col"><input type="number" id="sv_men_mod" readonly><span class="calc-label">Мод</span></div>
                   <div class="calc-col"><span class="math-sign">+</span></div>
-                  <div class="calc-col"><input type="number" id="sv_men_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+                  <div class="calc-col"><input type="number" id="sv_men_misc" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
                   <div class="calc-col"><span class="math-sign">=</span></div>
                   <div class="calc-col"><input type="number" id="sv_men" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
                 </div>
@@ -434,8 +428,8 @@
           <div class="box-title">Целостность Каркаса</div>
           <div class="box-content">
             <div class="flex-row">
-              <span>MAX HP: <input type="number" id="hp_max" value="20" style="width:45px;" onchange="fastCalc(); autoSave();"></span>
-              <span>CUR HP: <input type="number" id="hp_cur" value="20" style="width:45px;" class="hp-input" onchange="fastCalc(); autoSave();"></span>
+              <span>MAX HP: <input type="number" id="hp_max" value="20" style="width:45px;" oninput="fastCalc(); autoSave();"></span>
+              <span>CUR HP: <input type="number" id="hp_cur" value="20" style="width:45px;" class="hp-input" oninput="fastCalc(); autoSave();"></span>
             </div>
             <div class="wound-track">
               <div id="w_light">[100-76%] Легкие: Норма</div>
@@ -451,8 +445,8 @@
           <div class="box-title">Системное напряжение</div>
           <div class="box-content">
             <div class="flex-row"><span>Лимит (CON):</span><span id="strain_limit" class="accent-bold" style="font-size:15px;">10</span></div>
-            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" style="width:45px;" onchange="fastCalc(); autoSave();"></div>
-            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" style="width:45px;" onchange="fastCalc(); autoSave();"></div>
+            <div class="flex-row"><span>Постоянное (Хром)</span><input type="number" id="st_perm" value="0" style="width:45px;" oninput="fastCalc(); autoSave();"></div>
+            <div class="flex-row"><span>Временное (Стимы)</span><input type="number" id="st_temp" value="0" style="width:45px;" oninput="fastCalc(); autoSave();"></div>
             <div id="strain_alert" class="alert-box" style="border:none;">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
           </div>
         </div>
@@ -469,11 +463,11 @@
               </div>
               <div id="speed_details" class="expandable" style="background:#0e0f12; border-radius:3px;">
                 <div class="calc-row">
-                  <div class="calc-col"><input type="number" id="spd_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><input type="number" id="spd_base" value="10" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">-</span></div>
                   <div class="calc-col"><input type="number" id="spd_gear" value="0" readonly title="Снаряжение"><span class="calc-label">Штраф</span></div>
                   <div class="calc-col"><span class="math-sign">-</span></div>
-                  <div class="calc-col"><input type="number" id="spd_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+                  <div class="calc-col"><input type="number" id="spd_misc" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
                   <div class="calc-col"><span class="math-sign">=</span></div>
                   <div class="calc-col"><input type="number" id="spd_total" value="10" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
                 </div>
@@ -490,15 +484,15 @@
           <div class="box-content">
             <div class="flex-row">
               <span>Стрельба (Shoot) <span class="roll-btn" onclick="rollSkill('sk_shoot', 'dex', event)">🎲</span></span>
-              <input type="number" id="sk_shoot" value="0" style="width:40px;" onchange="autoSave()">
+              <input type="number" id="sk_shoot" value="0" style="width:40px;" oninput="autoSave()">
             </div>
             <div class="flex-row">
               <span>Взлом (Program) <span class="roll-btn" onclick="rollSkill('sk_prog', 'int', event)">🎲</span></span>
-              <input type="number" id="sk_prog" value="0" style="width:40px;" onchange="autoSave()">
+              <input type="number" id="sk_prog" value="0" style="width:40px;" oninput="autoSave()">
             </div>
             <div class="flex-row">
               <span>Ремонт (Fix) <span class="roll-btn" onclick="rollSkill('sk_fix', 'int', event)">🎲</span></span>
-              <input type="number" id="sk_fix" value="0" style="width:40px;" onchange="autoSave()">
+              <input type="number" id="sk_fix" value="0" style="width:40px;" oninput="autoSave()">
             </div>
           </div>
         </div>
@@ -506,7 +500,7 @@
         <div class="box panic-box">
           <div class="box-title panic-title">Психометрия (Alien RPG)</div>
           <div class="box-content">
-            <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" style="width:40px;" class="stress-input" onchange="autoSave()"></div>
+            <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" style="width:40px;" class="stress-input" oninput="autoSave()"></div>
             <button class="panic-btn" onclick="rollPanic(event)">БРОСОК ПАНИКИ 🎲</button>
             <div id="panic_log" class="panic-log"></div>
           </div>
@@ -516,10 +510,10 @@
           <div class="box-title">Счетчик / Ресурс</div>
           <div class="box-content" style="gap: 4px;">
             <div class="flex-row">
-              <input type="text" id="counter_name" placeholder="Название (напр. Удача)" style="flex: 1; font-weight:bold; text-align:left; border:none; border-bottom:1px solid #333;" onchange="autoSave()" spellcheck="false" autocomplete="off">
-              <input type="number" id="counter_val" placeholder="0" style="width: 45px; font-weight:bold; color:var(--accent);" onchange="autoSave()" autocomplete="off">
+              <input type="text" id="counter_name" placeholder="Название (напр. Удача)" style="flex: 1; font-weight:bold; text-align:left; border:none; border-bottom:1px solid #333;" oninput="autoSave()" spellcheck="false" autocomplete="off">
+              <input type="number" id="counter_val" placeholder="0" style="width: 45px; font-weight:bold; color:var(--accent);" oninput="autoSave()" autocomplete="off">
             </div>
-            <textarea id="counter_desc" placeholder="Описание или условия..." rows="2" onchange="autoSave()" spellcheck="false"></textarea>
+            <textarea id="counter_desc" placeholder="Описание или условия..." rows="2" oninput="autoSave()" spellcheck="false"></textarea>
           </div>
         </div>
       </section>
@@ -541,7 +535,7 @@
             <div class="calc-row">
               <div class="calc-col"><input type="number" id="carry_base" readonly><span class="calc-label">СИЛ+ТЕЛ</span></div>
               <div class="calc-col"><span class="math-sign">+</span></div>
-              <div class="calc-col"><input type="number" id="carry_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
+              <div class="calc-col"><input type="number" id="carry_misc" value="0" oninput="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
               <div class="calc-col"><span class="math-sign">=</span></div>
               <div class="calc-col"><input type="number" id="carry_total" readonly class="accent-bold"><span class="calc-label">Лимит</span></div>
             </div>
@@ -559,7 +553,7 @@
               <div class="calc-col"><span class="math-sign">+</span></div>
               <div class="calc-col"><input type="number" id="penalty_bag" readonly><span class="calc-label">Рюкзак</span></div>
               <div class="calc-col"><span class="math-sign">+</span></div>
-              <div class="calc-col"><input type="number" id="armor_penalty" value="0" onchange="fastCalc(); autoSave();"><span class="calc-label">Броня</span></div>
+              <div class="calc-col"><input type="number" id="armor_penalty" value="0" oninput="fastCalc(); autoSave();"><span class="calc-label">Броня</span></div>
               <div class="calc-col"><span class="math-sign">=</span></div>
               <div class="calc-col"><input type="number" id="penalty_total" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
             </div>
@@ -574,9 +568,9 @@
         <div class="box">
           <div class="box-title">Броня (Stopping Power)</div>
           <div class="box-content">
-            <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_head" value="10" style="width:40px;" onchange="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
-            <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_torso" value="15" style="width:40px;" onchange="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
-            <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_limb" value="12" style="width:40px;" onchange="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
+            <div class="flex-row"><span>Голова (-4)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_head" value="10" style="width:40px;" oninput="autoSave()"><button onclick="ablate('sp_head')">-1</button></div></div>
+            <div class="flex-row"><span>Торс (0)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_torso" value="15" style="width:40px;" oninput="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
+            <div class="flex-row"><span>Конечности (-2)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_limb" value="12" style="width:40px;" oninput="autoSave()"><button onclick="ablate('sp_limb')">-1</button></div></div>
           </div>
         </div>
 
@@ -585,16 +579,16 @@
           <div class="box-content">
             <span class="sub-label">КРУПНЫЕ ПРЕДМЕТЫ:</span>
             <div class="flex-row">
-              <input type="text" id="mag_1" placeholder="Оружие 1" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_1_wt" placeholder="кг" style="width:45px;" onchange="fastCalc(); autoSave();">
+              <input type="text" id="mag_1" placeholder="Оружие 1" style="flex:1;" oninput="autoSave()" autocomplete="off" spellcheck="false">
+              <input type="number" id="mag_1_wt" placeholder="кг" style="width:45px;" oninput="fastCalc(); autoSave();">
             </div>
             <div class="flex-row">
-              <input type="text" id="mag_2" placeholder="Оружие 2" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_2_wt" placeholder="кг" style="width:45px;" onchange="fastCalc(); autoSave();">
+              <input type="text" id="mag_2" placeholder="Оружие 2" style="flex:1;" oninput="autoSave()" autocomplete="off" spellcheck="false">
+              <input type="number" id="mag_2_wt" placeholder="кг" style="width:45px;" oninput="fastCalc(); autoSave();">
             </div>
             <div class="flex-row">
-              <input type="text" id="mag_3" placeholder="Спецсредство" style="flex:1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
-              <input type="number" id="mag_3_wt" placeholder="кг" style="width:45px;" onchange="fastCalc(); autoSave();">
+              <input type="text" id="mag_3" placeholder="Спецсредство" style="flex:1;" oninput="autoSave()" autocomplete="off" spellcheck="false">
+              <input type="number" id="mag_3_wt" placeholder="кг" style="width:45px;" oninput="fastCalc(); autoSave();">
             </div>
           </div>
         </div>
@@ -604,17 +598,27 @@
         <div class="box">
           <div class="box-title">Разгрузочная система (РПС)</div>
           <div class="box-content">
-            <div class="flex-row" style="margin-bottom: 4px;">
-              <div id="vest_config_view" style="flex:1; font-size:11px; color:var(--text-muted); overflow:hidden;">
-                <span id="vest_name_display" style="color:#fff; font-weight:bold; font-size:12px; text-transform:uppercase;">СТАНДАРТНАЯ РПС</span><br>
-                Слоты: <span id="vest_slots_display" style="color:#fff;">4</span> | Штраф: <span id="vest_penalty_display" style="color:var(--accent);">0</span>
+            <div style="margin-bottom: 4px; display:flex; flex-direction:column; gap:4px;">
+              <div id="vest_config_view" style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size:11px; color:var(--text-muted); overflow:hidden;">
+                  <span id="vest_name_display" style="color:#fff; font-weight:bold; font-size:12px; text-transform:uppercase;">СТАНДАРТНАЯ РПС</span><br>
+                  Слоты: <span id="vest_slots_display" style="color:#fff;">4</span> | Штраф: <span id="vest_penalty_display" style="color:var(--accent);">0</span>
+                </div>
+                <button onclick="toggleVestLock()" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;">🔒</button>
               </div>
-              <div id="vest_config_edit" style="flex:1; display:none; gap:3px; align-items:center;">
-                <input type="text" id="vest_name" value="Стандартная РПС" placeholder="Имя..." style="flex:1; padding:2px; min-width:60px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
-                <input type="number" id="vest_slots" value="4" style="width:32px; padding:2px;" title="Слоты" onchange="updateVestLimit(); fastCalc(); autoSave();">
-                <input type="number" id="vest_penalty" value="0" style="width:32px; padding:2px;" title="Штраф" onchange="fastCalc(); autoSave();">
+
+              <div id="vest_config_edit" style="display:none; flex-direction:column; gap:3px;">
+                <div style="display:flex; gap:4px;">
+                  <input type="text" id="vest_name" value="Стандартная РПС" placeholder="Имя..." style="flex:1; padding:2px;" oninput="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
+                  <button onclick="toggleVestLock()" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;">🔓</button>
+                </div>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  <span style="font-size:10px; color:var(--text-muted);">СЛОТЫ:</span>
+                  <input type="number" id="vest_slots" value="4" style="width:40px; padding:2px;" oninput="updateVestLimit(); fastCalc(); autoSave();">
+                  <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span>
+                  <input type="number" id="vest_penalty" value="0" style="width:40px; padding:2px;" oninput="fastCalc(); autoSave();">
+                </div>
               </div>
-              <button id="vest_toggle_btn" onclick="toggleVestLock()" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;" title="Редактировать">🔒</button>
             </div>
             
             <div class="flex-row" style="font-size:10px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
@@ -631,17 +635,27 @@
         <div class="box">
           <div class="box-title">Инвентарь / Рюкзак</div>
           <div class="box-content">
-            <div class="flex-row" style="margin-bottom: 4px;">
-              <div id="bag_config_view" style="flex:1; font-size:11px; color:var(--text-muted); overflow:hidden;">
-                <span id="bag_name_display" style="color:#fff; font-weight:bold; font-size:12px; text-transform:uppercase;">РЮКЗАК ОДНОЛЯМКА</span><br>
-                Лимит: <span id="bag_limit_display" style="color:#fff;">5</span> кг | Штраф: <span id="bag_penalty_display" style="color:var(--accent);">0</span>
+            <div style="margin-bottom: 4px; display:flex; flex-direction:column; gap:4px;">
+              <div id="bag_config_view" style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size:11px; color:var(--text-muted); overflow:hidden;">
+                  <span id="bag_name_display" style="color:#fff; font-weight:bold; font-size:12px; text-transform:uppercase;">РЮКЗАК ОДНОЛЯМКА</span><br>
+                  Лимит: <span id="bag_limit_display" style="color:#fff;">5</span> кг | Штраф: <span id="bag_penalty_display" style="color:var(--accent);">0</span>
+                </div>
+                <button onclick="toggleInvLock()" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;">🔒</button>
               </div>
-              <div id="bag_config_edit" style="flex:1; display:none; gap:3px; align-items:center;">
-                <input type="text" id="bag_name" value="Рюкзак однолямка" placeholder="Имя..." style="flex:1; padding:2px; min-width:60px;" onchange="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
-                <input type="number" id="bag_limit" value="5" style="width:32px; padding:2px;" title="Лимит (кг)" onchange="fastCalc(); autoSave();">
-                <input type="number" id="bag_penalty" value="0" style="width:32px; padding:2px;" title="Штраф" onchange="fastCalc(); autoSave();">
+
+              <div id="bag_config_edit" style="display:none; flex-direction:column; gap:3px;">
+                <div style="display:flex; gap:4px;">
+                  <input type="text" id="bag_name" value="Рюкзак однолямка" placeholder="Имя..." style="flex:1; padding:2px;" oninput="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
+                  <button onclick="toggleInvLock()" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;">🔓</button>
+                </div>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  <span style="font-size:10px; color:var(--text-muted);">ЛИМИТ(КГ):</span>
+                  <input type="number" id="bag_limit" value="5" style="width:40px; padding:2px;" oninput="fastCalc(); autoSave();">
+                  <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span>
+                  <input type="number" id="bag_penalty" value="0" style="width:40px; padding:2px;" oninput="fastCalc(); autoSave();">
+                </div>
               </div>
-              <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;" title="Редактировать">🔒</button>
             </div>
             
             <div class="flex-row" style="font-size:10px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
@@ -701,10 +715,15 @@
   let invLocked = true;
   let vestLocked = true;
 
-  // Безопасные функции работы с DOM
-  const getVal = (id, def = 0) => { const el = document.getElementById(id); return el ? (parseFloat(el.value) || def) : def; };
-  const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-  const setText = (id, txt) => { const el = document.getElementById(id); if (el) el.innerText = txt; };
+  // Абсолютно безопасный доступ к полям DOM
+  function getVal(id, def = 0) {
+    const el = document.getElementById(id);
+    if (!el) return def;
+    const v = parseFloat(el.value);
+    return isNaN(v) ? def : v;
+  }
+  function setVal(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+  function setText(id, txt) { const el = document.getElementById(id); if (el) el.innerText = txt; }
 
   function toggleExpand(id) {
     const el = document.getElementById(id);
@@ -722,7 +741,7 @@
     document.getElementById('sidePanel').classList.toggle('open');
   }
 
-  // --- СИСТЕМА БРОСКОВ d20 ---
+  // --- СИСТЕМА БРОСКОВ d20 (Stars Without Number) ---
   function getMod(val) {
     if (val <= 3) return -2;
     if (val <= 7) return -1;
@@ -844,6 +863,7 @@
         body: JSON.stringify({ username: u, password: p, role: assignedRole })
       });
       if (!res.ok) { errEl.innerText = 'Позывной уже занят.'; return; }
+      // Обязательно сохраняем пароль в кэше
       setSessionUser({ username: u, password: p, role: assignedRole });
     } catch(e) { errEl.innerText = 'Сбой сети.'; }
   }
@@ -875,14 +895,17 @@
     const saved = safeGetItem('vineta_user');
     if (saved) {
       const user = JSON.parse(saved);
+      if(!user.password) { logout(); return; } // Если пароль потерян
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(user.username)}&password=eq.${encodeURIComponent(user.password)}&select=*`, { headers: HEADERS });
         if (res.ok) {
           const data = await res.json();
           if (data.length > 0) { setSessionUser(data[0]); return; }
         }
-        logout();
-      } catch (e) { setSessionUser(user); }
+        logout(); // Если БД ответила 200, но юзер не найден
+      } catch (e) { 
+        setSessionUser(user); // При реальной ошибке интернета пропускаем по кэшу
+      }
     } else {
       document.getElementById('authModal').style.display = 'flex';
     }
@@ -909,6 +932,18 @@
 
   function formatIDToName(id) { return id.replace(/^unit_|^char_/, 'ID: '); }
 
+  async function forceCreateEmptySheet(id, owner) {
+    try {
+        const payload = getFormData();
+        payload.charName = 'Новый Боец';
+        await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets`, {
+            method: 'POST',
+            headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+            body: JSON.stringify({ id: id, owner: owner, data: payload, updated_at: new Date().toISOString() })
+        });
+    } catch(e) { console.error("Force create fail", e); }
+  }
+
   async function refreshCharacterList() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?owner=eq.${encodeURIComponent(currentUser.username)}&select=id,data,owner`, { headers: HEADERS });
@@ -931,6 +966,8 @@
         if (!currentSheetId && !isInspectingForeign) { 
           currentSheetId = defaultId; 
           currentSheetOwner = currentUser.username; 
+          // Принудительно закрепляем первый лист в БД (Анти-призрак)
+          await forceCreateEmptySheet(currentSheetId, currentSheetOwner);
         }
       } else if (!currentSheetId || (!list.some(x => x.id === currentSheetId) && !isInspectingForeign)) {
         currentSheetId = list[0].id; 
@@ -1071,6 +1108,7 @@
             const d = r.data || {};
             const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
             const safeName = cName.replace(/'/g, "\\'");
+            const safeOwnerRow = (r.owner || '').replace(/'/g, "\\'");
             html += `
               <tr>
                 <td style="font-weight:bold; color:#fff;">${cName}</td>
@@ -1079,7 +1117,7 @@
                 <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
                 <td>${d.sp_head || 0}/${d.sp_torso || 0}/${d.sp_limb || 0}</td>
                 <td>
-                  <button onclick="inspectCharacter('${r.id}', '${safeOwner}')">ОТКРЫТЬ</button>
+                  <button onclick="inspectCharacter('${r.id}', '${safeOwnerRow}')">ОТКРЫТЬ</button>
                   <button class="btn-danger" onclick="openDeleteModal('sheet', '${r.id}', '${safeName}')">✕</button>
                 </td>
               </tr>`;
@@ -1093,27 +1131,12 @@
     }
   }
 
-  async function inspectCharacter(id, owner) {
-    currentSheetId = id;
-    currentSheetOwner = owner;
-    safeSetItem('vineta_active_id', id);
-    await loadData(true);
-    switchTab('sheet');
-    refreshCharacterList(); 
-    
-    setText('mainHeaderTitle', 'ПРОФИЛЬ УСПЕШНО ЗАГРУЖЕН');
-    document.getElementById('mainHeaderTitle').style.color = '#4ade80';
-    setTimeout(() => {
-      setText('mainHeaderTitle', 'AEON // ТЕРМИНАЛ');
-      document.getElementById('mainHeaderTitle').style.color = 'var(--border-color)';
-    }, 1800);
-  }
-
-  // --- ПЕРЕРАСЧЕТЫ (100% БЕЗОПАСНЫЙ) ---
+  // --- МАТЕМАТИКА (БЕЗОПАСНАЯ) ---
   function fastCalc() {
     const stats = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
     
+    // 1. Атрибуты
     stats.forEach(s => {
       const base = getVal(s + '_base', 10);
       const bonus = getVal(s + '_bonus', 0);
@@ -1124,6 +1147,7 @@
       setText(s + '_m', (m >= 0 ? '+' : '') + m);
     });
 
+    // 2. Спасброски
     const physMod = Math.max(getMod(vals.str), getMod(vals.con));
     const evaMod  = Math.max(getMod(vals.dex), getMod(vals.int));
     const menMod  = Math.max(getMod(vals.wis), getMod(vals.cha));
@@ -1140,12 +1164,14 @@
     setVal('sv_eva', svEva); setText('sv_eva_display', svEva);
     setVal('sv_men', svMen); setText('sv_men_display', svMen);
 
+    // 3. Напряжение
     setText('strain_limit', vals.con);
     const perm = getVal('st_perm', 0);
     const temp = getVal('st_temp', 0);
     const strAlert = document.getElementById('strain_alert');
     if (strAlert) strAlert.style.display = (perm + temp >= vals.con) ? 'block' : 'none';
 
+    // 4. Каркас HP
     const maxHp = getVal('hp_max', 20);
     const curHp = getVal('hp_cur', 20);
     const ratio = curHp / maxHp;
@@ -1157,12 +1183,13 @@
     else if (ratio <= 0.75) document.getElementById('w_serious')?.classList.add('wound-active');
     else document.getElementById('w_light')?.classList.add('wound-active');
 
+    // 5. Лимит веса
     const carryBase = vals.str + vals.con;
     const carryTotal = carryBase + getVal('carry_misc', 0);
     setVal('carry_base', carryBase);
     setVal('carry_total', carryTotal);
 
-    // Штрафы скорости
+    // 6. Штрафы скорости
     const vestPenalty = Math.abs(getVal('vest_penalty', 0));
     const bagPenalty = Math.abs(getVal('bag_penalty', 0));
     const armorPenalty = Math.abs(getVal('armor_penalty', 0));
@@ -1170,21 +1197,24 @@
 
     setVal('penalty_vest', vestPenalty);
     setVal('penalty_bag', bagPenalty);
+    setVal('armor_penalty', armorPenalty);
     setVal('penalty_total', totalGearPenalty);
     setVal('spd_gear', totalGearPenalty);
     
     setText('top_speed_display', totalGearPenalty + ' м');
-    setText('vest_slots_display', getVal('vest_slots', 4));
+    setText('vest_slots_display', Math.max(0, parseInt(getVal('vest_slots', 4))));
     setText('vest_penalty_display', vestPenalty);
     setText('bag_limit_display', getVal('bag_limit', 5));
     setText('bag_penalty_display', bagPenalty);
 
+    // 7. Итоговый вес
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
     const magWt = getVal('mag_1_wt', 0) + getVal('mag_2_wt', 0) + getVal('mag_3_wt', 0);
     const totalWeight = bagWeight + vestWeight + magWt;
 
+    // 8. Скорость с вычетом штрафа
     const spdBase = getVal('spd_base', 10);
     const spdMisc = Math.abs(getVal('spd_misc', 0));
     let finalSpeed = spdBase - totalGearPenalty - spdMisc;
@@ -1197,12 +1227,14 @@
       if (overAlert) overAlert.style.display = 'none';
     }
 
-    setVal('spd_total', finalSpeed);
-    setText('spd_main_display', finalSpeed + ' м');
+    setVal('spd_total', Math.max(0, finalSpeed));
+    setText('spd_main_display', Math.max(0, finalSpeed) + ' м');
     
     const displayWt = Math.round(totalWeight * 10) / 10;
     setText('top_weight_display', `${displayWt} / ${carryTotal} кг`);
   }
+
+  function calc() { fastCalc(); }
 
   function ablate(id) {
     const el = document.getElementById(id);
@@ -1215,16 +1247,14 @@
 
   function toggleInvLock() {
     invLocked = !invLocked;
-    setText('inv_toggle_btn', invLocked ? '🔒' : '🔓');
-    document.getElementById('bag_config_view').style.display = invLocked ? 'block' : 'none';
+    document.getElementById('bag_config_view').style.display = invLocked ? 'flex' : 'none';
     document.getElementById('bag_config_edit').style.display = invLocked ? 'none' : 'flex';
     renderInventory();
   }
 
   function toggleVestLock() {
     vestLocked = !vestLocked;
-    setText('vest_toggle_btn', vestLocked ? '🔒' : '🔓');
-    document.getElementById('vest_config_view').style.display = vestLocked ? 'block' : 'none';
+    document.getElementById('vest_config_view').style.display = vestLocked ? 'flex' : 'none';
     document.getElementById('vest_config_edit').style.display = vestLocked ? 'none' : 'flex';
     renderVest();
   }
@@ -1347,16 +1377,16 @@
   }
 
   function renderVest() {
-    const limit = parseInt(getVal('vest_slots', 4)) || 4;
+    const slots = Math.max(0, parseInt(getVal('vest_slots', 4)));
     const grid = document.getElementById('vest_grid');
     if (!grid) return;
     let gridHTML = '';
 
-    while (vestItemsArray.length < limit) vestItemsArray.push(null);
-    if (vestItemsArray.length > limit) vestItemsArray.length = limit;
+    while (vestItemsArray.length < slots) vestItemsArray.push(null);
+    if (vestItemsArray.length > slots) vestItemsArray = vestItemsArray.slice(0, slots);
 
     let totalVestWt = 0;
-    for (let i = 0; i < limit; i++) {
+    for (let i = 0; i < slots; i++) {
       const item = vestItemsArray[i];
       if (!item) {
         if (vestLocked) {
@@ -1380,11 +1410,11 @@
           gridHTML += `
             <div class="inv-item-card vest-slot inv-edit-row" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
               <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')">⚙️</button>
-              <input type="text" value="${item.name}" placeholder="Имя..." style="flex:1; padding:2px;" onchange="handleVestItemInput(${i}, 'name', this.value); autoSave();">
-              <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:36px; padding:2px;" onchange="handleVestItemInput(${i}, 'unitWeight', this.value); autoSave();">
+              <input type="text" value="${item.name}" placeholder="Имя..." style="flex:1; padding:2px;" oninput="handleVestItemInput(${i}, 'name', this.value); autoSave();">
+              <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:36px; padding:2px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value); autoSave();">
               <button class="item-del" onclick="removeVestItem(${i})">✕</button>
               <div id="desc_vest_edit_${item.id}" class="expandable inv-edit-desc" style="width:100%;">
-                 <textarea placeholder="Описание..." onchange="handleVestItemInput(${i}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
+                 <textarea placeholder="Описание..." oninput="handleVestItemInput(${i}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
               </div>
             </div>`;
         }
@@ -1418,13 +1448,13 @@
         gridHTML += `
           <div class="inv-item-card inv-edit-row" id="bag_row_${item.id}" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
             <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')">⚙️</button>
-            <input type="text" value="${item.name}" placeholder="Имя..." style="flex:1; text-align:left; padding:2px;" onchange="handleBagItemInput(${item.id}, 'name', this.value); autoSave();">
-            <input type="number" value="${item.qty}" min="1" style="width:32px; padding:2px;" onchange="handleBagItemInput(${item.id}, 'qty', this.value); autoSave();">
-            <input type="number" value="${item.unitWeight}" step="0.5" style="width:36px; padding:2px;" onchange="handleBagItemInput(${item.id}, 'unitWeight', this.value); autoSave();">
+            <input type="text" value="${item.name}" placeholder="Имя..." style="flex:1; text-align:left; padding:2px;" oninput="handleBagItemInput(${item.id}, 'name', this.value); autoSave();">
+            <input type="number" value="${item.qty}" min="1" style="width:32px; padding:2px;" oninput="handleBagItemInput(${item.id}, 'qty', this.value); autoSave();">
+            <input type="number" value="${item.unitWeight}" step="0.5" style="width:36px; padding:2px;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value); autoSave();">
             <span style="width:35px; text-align:center; font-weight:bold; color:var(--text-muted); font-size:11px;">${totalWt}</span>
             <button class="item-del" onclick="removeBagItem(${item.id})">✕</button>
             <div id="desc_edit_${item.id}" class="expandable inv-edit-desc" style="width:100%;">
-              <textarea placeholder="Описание..." onchange="handleBagItemInput(${item.id}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
+              <textarea placeholder="Описание..." oninput="handleBagItemInput(${item.id}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
             </div>
           </div>`;
       }
@@ -1453,34 +1483,6 @@
     document.getElementById('sync_status').style.color = '#f59e0b';
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(() => { saveData(false); }, 1200);
-  }
-
-  async function saveData(manual = false) {
-    if (!currentSheetId || !currentUser || isRemoteUpdating) return;
-    const payload = getFormData();
-    payload.bag_items_json = JSON.stringify(bagItemsArray);
-    payload.vest_items_json = JSON.stringify(vestItemsArray);
-
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets`, {
-        method: 'POST',
-        headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
-        body: JSON.stringify({ 
-          id: currentSheetId, 
-          owner: currentSheetOwner || currentUser.username, 
-          data: payload, 
-          updated_at: new Date().toISOString() 
-        })
-      });
-
-      if (!res.ok) throw new Error();
-      setText('sync_status', '[ СИНХРОНИЗИРОВАНО ]');
-      document.getElementById('sync_status').style.color = '#4ade80';
-      if (manual) alert('Данные сохранены в облаке.');
-    } catch (err) {
-      setText('sync_status', '[ ОШИБКА СЕТИ ]');
-      document.getElementById('sync_status').style.color = '#ff4d4d';
-    }
   }
 
   async function loadData(manual = false) {
@@ -1518,8 +1520,42 @@
       setText('sync_status', '[ ОШИБКА СЕТИ ]');
       document.getElementById('sync_status').style.color = '#ff4d4d';
     }
-    updateVestLimit();
-    fastCalc();
+    
+    // Блок расчетов отделен от сетевых ошибок
+    try {
+      updateVestLimit();
+      fastCalc();
+    } catch(calcErr) {
+      console.error(calcErr);
+    }
+  }
+
+  async function saveData(manual = false) {
+    if (!currentSheetId || !currentUser || isRemoteUpdating) return;
+    const payload = getFormData();
+    payload.bag_items_json = JSON.stringify(bagItemsArray);
+    payload.vest_items_json = JSON.stringify(vestItemsArray);
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets`, {
+        method: 'POST',
+        headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify({ 
+          id: currentSheetId, 
+          owner: currentSheetOwner || currentUser.username, 
+          data: payload, 
+          updated_at: new Date().toISOString() 
+        })
+      });
+
+      if (!res.ok) throw new Error();
+      setText('sync_status', '[ СИНХРОНИЗИРОВАНО ]');
+      document.getElementById('sync_status').style.color = '#4ade80';
+      if (manual) alert('Данные сохранены в базе.');
+    } catch (err) {
+      setText('sync_status', '[ ОШИБКА СЕТИ ]');
+      document.getElementById('sync_status').style.color = '#ff4d4d';
+    }
   }
 
   function applyData(data) {
@@ -1534,7 +1570,7 @@
     const isInvFocused = activeEl && (activeEl.closest('#dynamic_pack_grid') || activeEl.closest('#vest_grid'));
     if (!isInvFocused) {
       try { bagItemsArray = JSON.parse(data.bag_items_json || '[]'); } catch(e) { bagItemsArray = []; }
-      try { vestItemsArray = JSON.parse(data.vest_items_json || '[]'); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; }
+      try { vestItemsArray = JSON.parse(data.vest_items_json || '[]'); } catch(e) { vestItemsArray = [null,null,null,null]; }
       renderInventory();
       renderVest();
     }
