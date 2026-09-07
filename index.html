@@ -59,20 +59,19 @@
     .btn-danger { border-color: var(--accent); color: var(--accent); }
     .btn-danger:hover { background: var(--accent); color: #fff; }
 
-    /* Плавные анимации выкатывания (Roll20 Style) */
+    /* Плавные анимации выкатывания */
     .expandable { 
       max-height: 0; 
       overflow: hidden; 
-      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; 
+      transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease; 
       opacity: 0; 
     }
     .expandable.open { 
-      max-height: 400px; 
+      max-height: 500px; 
       opacity: 1; 
-      transition: max-height 0.4s ease-in-out, opacity 0.4s ease; 
+      transition: max-height 0.5s ease-in-out, opacity 0.4s ease; 
     }
     
-    /* Интерактивные строки с наведением */
     .val-interactive { 
       cursor: pointer; 
       transition: background 0.2s, color 0.2s; 
@@ -86,6 +85,7 @@
     .val-interactive:hover .interactive-text { color: var(--accent); }
     .interactive-text { transition: color 0.2s; }
 
+    /* Боковая панель профилей */
     .side-panel {
       position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
       background: #111215; border-left: 2px solid var(--border-color);
@@ -102,6 +102,7 @@
     .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .char-actions { display: flex; gap: 5px; }
 
+    /* Сетка и блоки */
     .row-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: start; }
     .col { display: flex; flex-direction: column; gap: 15px; }
     .box { background: var(--panel-bg); border: 1px solid var(--border-color); }
@@ -111,15 +112,9 @@
     .accent-bold { color: var(--border-color); font-weight: bold; }
     .alert-box { color: var(--accent); font-size: 11px; text-align: center; display: none; margin-top: 4px; border: 1px dashed var(--accent); padding: 4px; }
 
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .stat-item { border: 1px solid #3a3f4b; padding: 6px; text-align: center; position: relative; background: var(--input-bg); }
-    .stat-item span { display: block; font-size: 10px; color: var(--border-color); margin-bottom: 4px; }
-    .stat-item input { font-size: 16px; font-weight: bold; width: 100%; border: none; border-bottom: 1px solid #333; }
-    .stat-mod { position: absolute; top: -7px; right: -7px; background: var(--border-color); color: #000; border-radius: 50%; width: 20px; height: 20px; line-height: 20px; font-size: 11px; font-weight: bold; }
-
-    /* Выровненные математические формулы */
-    .calc-row { display: flex; align-items: center; gap: 6px; justify-content: center; padding: 8px 0; }
-    .calc-row input { width: 35px; padding: 4px; font-size: 14px; border-color: #404652; text-align: center; font-weight: bold; }
+    /* Математические Калькуляторы */
+    .calc-row { display: flex; align-items: center; gap: 6px; font-size: 14px; justify-content: center; padding: 8px 0; }
+    .calc-row input { width: 35px; padding: 4px; font-size: 13px; border-color: #404652; text-align: center; font-weight: bold; }
     .calc-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .calc-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: normal; }
     .math-sign { display: flex; align-items: center; justify-content: center; height: 26px; font-size: 16px; font-weight: bold; color: var(--text-muted); }
@@ -135,7 +130,7 @@
     .panic-btn { border-color: var(--accent); color: var(--accent); }
     .panic-log { font-size: 11px; min-height: 24px; border: 1px dashed #404652; padding: 4px; margin-top: 4px; }
 
-    .sub-label { font-size: 10px; color: var(--border-color); }
+    .sub-label { font-size: 10px; color: var(--border-color); text-transform: uppercase; }
     
     /* Инвентарь и РПС (Drag and Drop & Roll20 Style) */
     .drag-area { min-height: 45px; display: flex; flex-direction: column; gap: 4px; }
@@ -143,8 +138,8 @@
     .inv-row:last-child { border-bottom: none; }
     .item-name { font-weight: bold; font-size: 13px; text-align: left; }
     
-    .inv-item-edit { display: flex; flex-direction: column; padding: 6px; background: #161719; border: 1px solid #3a3f4b; margin-bottom: 4px; }
-    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 4px; font-size: 14px; }
+    .inv-item-edit { display: flex; flex-direction: column; padding: 8px 6px; background: #161719; border-bottom: 1px solid #20232a;}
+    .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 6px; font-size: 14px; }
     .item-del:hover { color: #fff; background: transparent; }
     .settings-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 0 6px; font-size: 14px; }
     .settings-btn:hover { color: var(--accent); background: transparent; }
@@ -168,14 +163,18 @@
     .password-wrap input { width: 100%; padding-right: 36px; }
     .toggle-pwd-btn { position: absolute; right: 2px; background: transparent; border: none; color: var(--border-color); cursor: pointer; font-size: 14px; padding: 4px 6px; width: auto; }
     .toggle-pwd-btn:hover { background: transparent; color: #fff; }
+
+    /* Спец-контейнеры для инпутов инвентаря */
+    .inv-input-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .inv-input-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
   </style>
 </head>
 <body>
 
-<!-- БОКОВАЯ ПАНЕЛЬ -->
+<!-- БОКОВАЯ ПАНЕЛЬ ПРОФИЛЕЙ -->
 <div id="sidePanel" class="side-panel">
   <div class="side-panel-header">
-    <h2>Профили Звена</h2>
+    <h2>Мои профили</h2>
     <button class="close-panel-btn" onclick="toggleSidePanel()">✕</button>
   </div>
   <div id="sidePanelList" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1;"></div>
@@ -233,17 +232,120 @@
     </div>
 
     <main class="row-3-col">
-      <!-- КОЛОНКА 1: СТАТЫ, СПАСЫ, СКОРОСТЬ -->
+      <!-- КОЛОНКА 1: АТРИБУТЫ, СПАСЫ, СКОРОСТЬ -->
       <section class="col">
         <div class="box">
           <div class="box-title">Атрибуты</div>
-          <div class="box-content stats-grid">
-            <div class="stat-item"><span>СИЛА</span><input type="number" id="str" value="10" oninput="fastCalc()"><div class="stat-mod" id="str_m">+0</div></div>
-            <div class="stat-item"><span>ЛОВКОСТЬ</span><input type="number" id="dex" value="10" oninput="fastCalc()"><div class="stat-mod" id="dex_m">+0</div></div>
-            <div class="stat-item"><span>ТЕЛО</span><input type="number" id="con" value="10" oninput="fastCalc()"><div class="stat-mod" id="con_m">+0</div></div>
-            <div class="stat-item"><span>ИНТЕЛЛЕКТ</span><input type="number" id="int" value="10" oninput="fastCalc()"><div class="stat-mod" id="int_m">+0</div></div>
-            <div class="stat-item"><span>МУДРОСТЬ</span><input type="number" id="wis" value="10" oninput="fastCalc()"><div class="stat-mod" id="wis_m">+0</div></div>
-            <div class="stat-item"><span>ХАРИЗМА</span><input type="number" id="cha" value="10" oninput="fastCalc()"><div class="stat-mod" id="cha_m">+0</div></div>
+          <div class="box-content" style="padding-top: 4px; gap: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+            
+            <!-- СИЛА -->
+            <div class="inv-row" style="border:1px solid #20232a; border-radius:4px;">
+              <div class="val-interactive" onclick="toggleExpand('str_details')" style="padding: 4px 6px;">
+                <span class="item-name interactive-text" style="flex:1;">СИЛ</span>
+                <span id="str_display" style="font-size:14px; font-weight:bold; color:#fff;">10</span>
+                <span id="str_m" style="font-size:12px; font-weight:bold; color:var(--accent); width:25px; text-align:right;">+0</span>
+              </div>
+              <div id="str_details" class="expandable" style="background:#161719;">
+                <div class="calc-row" style="padding:4px 0;">
+                  <div class="calc-col"><input type="number" id="str_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="str_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="str_total" readonly class="accent-bold" style="width:30px;"><span class="calc-label">Итог</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ЛОВКОСТЬ -->
+            <div class="inv-row" style="border:1px solid #20232a; border-radius:4px;">
+              <div class="val-interactive" onclick="toggleExpand('dex_details')" style="padding: 4px 6px;">
+                <span class="item-name interactive-text" style="flex:1;">ЛОВ</span>
+                <span id="dex_display" style="font-size:14px; font-weight:bold; color:#fff;">10</span>
+                <span id="dex_m" style="font-size:12px; font-weight:bold; color:var(--accent); width:25px; text-align:right;">+0</span>
+              </div>
+              <div id="dex_details" class="expandable" style="background:#161719;">
+                <div class="calc-row" style="padding:4px 0;">
+                  <div class="calc-col"><input type="number" id="dex_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="dex_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="dex_total" readonly class="accent-bold" style="width:30px;"><span class="calc-label">Итог</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ТЕЛО -->
+            <div class="inv-row" style="border:1px solid #20232a; border-radius:4px;">
+              <div class="val-interactive" onclick="toggleExpand('con_details')" style="padding: 4px 6px;">
+                <span class="item-name interactive-text" style="flex:1;">ТЕЛ</span>
+                <span id="con_display" style="font-size:14px; font-weight:bold; color:#fff;">10</span>
+                <span id="con_m" style="font-size:12px; font-weight:bold; color:var(--accent); width:25px; text-align:right;">+0</span>
+              </div>
+              <div id="con_details" class="expandable" style="background:#161719;">
+                <div class="calc-row" style="padding:4px 0;">
+                  <div class="calc-col"><input type="number" id="con_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="con_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="con_total" readonly class="accent-bold" style="width:30px;"><span class="calc-label">Итог</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ИНТЕЛЛЕКТ -->
+            <div class="inv-row" style="border:1px solid #20232a; border-radius:4px;">
+              <div class="val-interactive" onclick="toggleExpand('int_details')" style="padding: 4px 6px;">
+                <span class="item-name interactive-text" style="flex:1;">ИНТ</span>
+                <span id="int_display" style="font-size:14px; font-weight:bold; color:#fff;">10</span>
+                <span id="int_m" style="font-size:12px; font-weight:bold; color:var(--accent); width:25px; text-align:right;">+0</span>
+              </div>
+              <div id="int_details" class="expandable" style="background:#161719;">
+                <div class="calc-row" style="padding:4px 0;">
+                  <div class="calc-col"><input type="number" id="int_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="int_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="int_total" readonly class="accent-bold" style="width:30px;"><span class="calc-label">Итог</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- МУДРОСТЬ -->
+            <div class="inv-row" style="border:1px solid #20232a; border-radius:4px;">
+              <div class="val-interactive" onclick="toggleExpand('wis_details')" style="padding: 4px 6px;">
+                <span class="item-name interactive-text" style="flex:1;">МУД</span>
+                <span id="wis_display" style="font-size:14px; font-weight:bold; color:#fff;">10</span>
+                <span id="wis_m" style="font-size:12px; font-weight:bold; color:var(--accent); width:25px; text-align:right;">+0</span>
+              </div>
+              <div id="wis_details" class="expandable" style="background:#161719;">
+                <div class="calc-row" style="padding:4px 0;">
+                  <div class="calc-col"><input type="number" id="wis_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="wis_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="wis_total" readonly class="accent-bold" style="width:30px;"><span class="calc-label">Итог</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ХАРИЗМА -->
+            <div class="inv-row" style="border:1px solid #20232a; border-radius:4px;">
+              <div class="val-interactive" onclick="toggleExpand('cha_details')" style="padding: 4px 6px;">
+                <span class="item-name interactive-text" style="flex:1;">ХАР</span>
+                <span id="cha_display" style="font-size:14px; font-weight:bold; color:#fff;">10</span>
+                <span id="cha_m" style="font-size:12px; font-weight:bold; color:var(--accent); width:25px; text-align:right;">+0</span>
+              </div>
+              <div id="cha_details" class="expandable" style="background:#161719;">
+                <div class="calc-row" style="padding:4px 0;">
+                  <div class="calc-col"><input type="number" id="cha_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">База</span></div>
+                  <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="cha_bonus" value="0" oninput="fastCalc()" onclick="event.stopPropagation()" style="width:30px;"><span class="calc-label">Бонус</span></div>
+                  <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+                  <div class="calc-col"><input type="number" id="cha_total" readonly class="accent-bold" style="width:30px;"><span class="calc-label">Итог</span></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -322,7 +424,7 @@
                 <div class="calc-row">
                   <div class="calc-col"><input type="number" id="spd_base" value="10" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">База</span></div>
                   <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
-                  <div class="calc-col"><input type="number" id="spd_gear" value="0" readonly title="Снаряжение"><span class="calc-label">Снаряж</span></div>
+                  <div class="calc-col"><input type="number" id="spd_gear" value="0" readonly title="Штраф от снаряжения (РПС + Рюкзак)"><span class="calc-label">Снаряж</span></div>
                   <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
                   <div class="calc-col"><input type="number" id="spd_misc" value="0" oninput="fastCalc()" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
                   <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
@@ -400,6 +502,41 @@
 
   <!-- ВКЛАДКА 2: СНАРЯЖЕНИЕ -->
   <div id="viewInv" style="display: none;">
+    
+    <!-- ОБЩАЯ СВОДКА СНАРЯЖЕНИЯ -->
+    <div class="box" style="margin-bottom: 15px;">
+      <div class="box-title">Сводка Снаряжения</div>
+      <div class="box-content" style="padding-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        
+        <div class="inv-row" style="border:none;">
+          <div class="val-interactive" onclick="toggleExpand('weight_total_details')" style="justify-content:center;">
+            <span class="interactive-text" style="font-size:14px; font-weight:bold; margin-right:10px;">ВЕС РЮКЗАКА</span>
+            <span id="top_weight_display" style="font-size:20px; font-weight:bold; color:#fff;">0 кг</span>
+          </div>
+          <div id="weight_total_details" class="expandable" style="background:#161719; border-radius:4px; text-align:center; padding-top:4px;">
+            <div style="font-size:11px; color:var(--text-muted); margin-bottom: 4px;">ЛИМИТ СЛОТОВ: <span id="top_bag_limit" style="color:#fff;">5</span></div>
+          </div>
+        </div>
+
+        <div class="inv-row" style="border:none;">
+          <div class="val-interactive" onclick="toggleExpand('gear_penalty_details')" style="justify-content:center;">
+            <span class="interactive-text" style="font-size:14px; font-weight:bold; margin-right:10px;">ШТРАФ СКОРОСТИ</span>
+            <span id="top_penalty_display" style="font-size:20px; font-weight:bold; color:var(--accent);">0 м</span>
+          </div>
+          <div id="gear_penalty_details" class="expandable" style="background:#161719; border-radius:4px;">
+            <div class="calc-row">
+              <div class="calc-col"><input type="number" id="penalty_vest" readonly><span class="calc-label">РПС</span></div>
+              <div class="calc-col"><span class="math-sign">+</span><span class="calc-label">&nbsp;</span></div>
+              <div class="calc-col"><input type="number" id="penalty_bag" readonly><span class="calc-label">Рюкзак</span></div>
+              <div class="calc-col"><span class="math-sign">=</span><span class="calc-label">&nbsp;</span></div>
+              <div class="calc-col"><input type="number" id="penalty_total" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <div class="row-3-col">
       <section class="col">
         <div class="box">
@@ -422,7 +559,6 @@
         </div>
       </section>
 
-      <!-- РПС (Разгрузка) -->
       <section class="col">
         <div class="box">
           <div class="box-title">Разгрузочная система (РПС)</div>
@@ -430,7 +566,7 @@
             <div class="flex-row" style="gap: 10px; margin-bottom: 5px;">
               <select id="vest_type" onchange="updateVestLimit(); fastCalc(); autoSave();" style="flex:1;">
                 <option value="basic">Стандартная РПС (4 слота | Штраф 0)</option>
-                <option value="heavy">Тяжелая РПС (8 слотов | Штраф -1)</option>
+                <option value="heavy">Штурмовая РПС (8 слотов | Штраф -1)</option>
               </select>
             </div>
             
@@ -445,7 +581,6 @@
         </div>
       </section>
 
-      <!-- УМНЫЙ РЮКЗАК -->
       <section class="col">
         <div class="box">
           <div class="box-title">Инвентарь / Рюкзак</div>
@@ -460,14 +595,14 @@
             </div>
             
             <div class="flex-row" style="font-size:9px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; text-transform:uppercase;">
-              <span style="flex:1; letter-spacing:1px;">Предметы</span>
+              <span style="flex:1; letter-spacing:1px; margin-left:20px;">Предметы</span>
               <span style="width: 45px; text-align:center;">Кол-во</span>
               <span style="width: 50px; text-align:center;">Вес 1шт</span>
               <span style="width: 50px; text-align:center;">Итого</span>
               <span style="width: 20px;"></span>
             </div>
 
-            <!-- Список вещей (Drag Target) -->
+            <!-- Список вещей -->
             <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
             <input type="hidden" id="bag_items_json" value="[]">
           </div>
@@ -487,7 +622,7 @@
         <table class="admin-table">
           <thead>
             <tr>
-              <th>ВЛАДЕЛЕЦ</th>
+              <th>УЧЕТКА ИГРОКА</th>
               <th>ПОЗЫВНОЙ</th>
               <th>МОДЕЛЬ</th>
               <th>HP</th>
@@ -630,10 +765,10 @@
   }
 
   async function refreshCharacterList() {
-    let query = supabaseClient.from('vineta_sheets').select('id, data, owner');
-    if (currentUser.role !== 'admin') query = query.eq('owner', currentUser.username);
+    const { data, error } = await supabaseClient.from('vineta_sheets')
+      .select('id, data, owner')
+      .eq('owner', currentUser.username);
     
-    const { data, error } = await query;
     let list = [];
     if (!error && data && data.length > 0) {
       list = data.map(r => ({ 
@@ -646,14 +781,13 @@
     if (list.length === 0) {
       const defaultId = Date.now().toString(36);
       list.push({ id: defaultId, name: 'Новый Боец', owner: currentUser.username });
-      currentSheetId = defaultId;
-      currentSheetOwner = currentUser.username;
-    } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
+      if (!currentSheetId) {
+        currentSheetId = defaultId;
+        currentSheetOwner = currentUser.username;
+      }
+    } else if (!currentSheetId) {
       currentSheetId = list[0].id;
       currentSheetOwner = list[0].owner;
-    } else {
-      const activeObj = list.find(x => x.id === currentSheetId);
-      if (activeObj) currentSheetOwner = activeObj.owner;
     }
 
     const panelList = document.getElementById('sidePanelList');
@@ -672,7 +806,7 @@
     });
 
     localStorage.setItem('vineta_active_id', currentSheetId);
-    if (currentUser.role === 'admin') {
+    if (currentUser.role === 'admin' && currentSheetOwner) {
       document.getElementById('sheetOwner').value = currentSheetOwner || '';
     }
   }
@@ -745,8 +879,9 @@
       } else if (inp.type === 'number') {
         if (inp.id.includes('hp')) inp.value = 20;
         else if (inp.id.includes('sp_') || inp.id === 'spd_base') inp.value = 10;
-        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc') || inp.id === 'new_item_weight') inp.value = 0;
-        else inp.value = 10;
+        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc') || inp.id.includes('str_base') || inp.id.includes('dex_base') || inp.id.includes('con_base') || inp.id.includes('int_base') || inp.id.includes('wis_base') || inp.id.includes('cha_base')) inp.value = 10;
+        else if (inp.id.includes('str_bonus') || inp.id.includes('dex_bonus') || inp.id.includes('con_bonus') || inp.id.includes('int_bonus') || inp.id.includes('wis_bonus') || inp.id.includes('cha_bonus')) inp.value = 0;
+        else inp.value = 0;
       } else {
         inp.value = '';
       }
@@ -767,40 +902,49 @@
     data.forEach(row => {
       const d = row.data || {};
       const charName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(row.id);
+      const ownerLabel = row.owner ? row.owner.toUpperCase() : 'НЕИЗВЕСТНО';
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="color:#38bdf8;">${row.owner || '—'}</td>
+        <td style="color:#38bdf8; font-weight:bold; letter-spacing:1px;">[ ${ownerLabel} ]</td>
         <td style="font-weight:bold; color:var(--border-color);">${charName}</td>
         <td>${d.charModel || '—'}</td>
         <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': '#fff'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
         <td style="color:${(d.stress >= 6)? 'var(--accent)': '#fff'}">${d.stress || 0} / 10</td>
         <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
-        <td><button onclick="inspectCharacter('${row.id}')">ОТКРЫТЬ</button></td>
+        <td><button onclick="inspectCharacter('${row.id}', '${row.owner}')">ОТКРЫТЬ</button></td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  async function inspectCharacter(id) {
+  async function inspectCharacter(id, owner) {
     currentSheetId = id;
+    currentSheetOwner = owner;
     localStorage.setItem('vineta_active_id', id);
-    await refreshCharacterList();
     await loadData();
     switchTab('sheet');
     setupRealtimeSubscription();
+    refreshCharacterList(); 
   }
 
   function getMod(val) {
     if (val <= 3) return -2; if (val <= 7) return -1; if (val <= 13) return 0; if (val <= 17) return 1; return 2;
   }
 
-  // Мгновенный перерасчет без потери фокуса
+  // Мгновенный перерасчет
   function fastCalc() {
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
     statIds.forEach(id => {
-      vals[id] = parseInt(document.getElementById(id).value) || 10;
-      const mod = getMod(vals[id]);
+      const base = parseInt(document.getElementById(id + '_base').value) || 0;
+      const bonus = parseInt(document.getElementById(id + '_bonus').value) || 0;
+      const total = base + bonus;
+      
+      document.getElementById(id + '_total').value = total;
+      document.getElementById(id + '_display').innerText = total;
+      
+      vals[id] = total;
+      const mod = getMod(total);
       document.getElementById(id + '_m').innerText = (mod >= 0 ? '+' : '') + mod;
     });
 
@@ -858,13 +1002,19 @@
 
     const totalGearPenalty = vestPenalty + bagPenalty;
     document.getElementById('spd_gear').value = totalGearPenalty;
+    
+    // Вывод в топ Сводку Снаряжения
+    document.getElementById('penalty_vest').value = vestPenalty;
+    document.getElementById('penalty_bag').value = bagPenalty;
+    document.getElementById('penalty_total').value = totalGearPenalty;
+    document.getElementById('top_penalty_display').innerText = totalGearPenalty + ' м';
 
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let finalSpeed = spdBase + totalGearPenalty + spdMisc;
     
     const overAlert = document.getElementById('overencumber_alert');
     if (bagWeight > maxSlots) {
-      finalSpeed = 2; // Перегруз
+      finalSpeed = 2; 
       overAlert.style.display = 'block';
     } else {
       overAlert.style.display = 'none';
@@ -873,13 +1023,16 @@
     document.getElementById('spd_total').value = finalSpeed;
     document.getElementById('spd_main_display').innerText = finalSpeed + ' м';
     
-    // Обновляем счетчики в заголовках
+    // Обновляем вес
+    const displayUsed = Math.round(bagWeight * 10) / 10;
     const packStatus = document.getElementById('pack_status');
-    if (packStatus) {
-        const displayUsed = Math.round(bagWeight * 10) / 10;
+    if(packStatus) {
         packStatus.innerText = `${displayUsed} / ${maxSlots}`;
         packStatus.className = bagWeight > maxSlots ? 'status-crit' : (bagWeight === maxSlots ? 'status-warn' : '');
     }
+    
+    document.getElementById('top_weight_display').innerText = displayUsed + ' кг';
+    document.getElementById('top_bag_limit').innerText = maxSlots;
 
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
@@ -902,18 +1055,8 @@
     const st = parseInt(document.getElementById('stress').value) || 0;
     const d6 = Math.floor(Math.random() * 6) + 1;
     const total = d6 + st;
-    let res = `[${d6} + ${st}] = ${total}. `;
-
-    if (total <= 6) res += "НОРМА.";
-    else if (total === 7) res += "ТРЕМОР (+1 Стресс всем).";
-    else if (total === 8) res += "ПОТЕРЯ ХВАТА.";
-    else if (total === 9) res += "СТУПОР (-1 раунд).";
-    else if (total === 10) res += "ВОПЛЬ (Демаскировка).";
-    else if (total === 11) res += "БЕГСТВО.";
-    else if (total === 12) res += "ПАНИЧЕСКИЙ ОГОНЬ.";
-    else res += "СБОЙ ПЕРСОНЫ (Кататония).";
-
-    document.getElementById('panic_log').innerText = res;
+    window.location.hash = "#roll_panic_" + total;
+    document.getElementById('panic_log').innerText = `Запрос отправлен... [Стресс: ${st}]`;
     autoSave();
   }
 
@@ -932,7 +1075,54 @@
     renderInventory();
   }
 
-  // --- Drag and Drop Logic ---
+  function addBagItem() {
+    bagItemsArray.push({ id: Date.now(), name: '', unitWeight: 1, qty: 1, desc: '' });
+    renderInventory();
+    fastCalc(); 
+  }
+
+  function handleBagItemInput(id, field, value) {
+    const item = bagItemsArray.find(i => i.id === id);
+    if (item) {
+      item[field] = (field === 'unitWeight' || field === 'qty') ? (parseFloat(value) || 0) : value;
+      
+      if (field === 'unitWeight' || field === 'qty') {
+        const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
+        const totalEl = document.getElementById('bag_total_' + id);
+        if (totalEl) totalEl.innerText = totalWt;
+      }
+      fastCalc();
+    }
+  }
+
+  function handleVestItemInput(index, field, value) {
+    const item = vestItemsArray[index];
+    if (item) {
+      item[field] = (field === 'unitWeight') ? (parseFloat(value) || 0) : value;
+      
+      // Защита от перегруза
+      if (field === 'unitWeight' && item.unitWeight > 1) {
+        alert('Подсумок вмещает максимум 1 кг!');
+        item.unitWeight = 1;
+        document.getElementById('vest_wt_' + index).value = 1;
+      }
+      fastCalc();
+    }
+  }
+
+  function removeBagItem(id) {
+    bagItemsArray = bagItemsArray.filter(i => i.id !== id);
+    renderInventory();
+    fastCalc();
+  }
+
+  function removeVestItem(index) {
+    vestItemsArray[index] = null;
+    renderVest();
+    fastCalc();
+  }
+
+  // Drag & Drop
   function allowDrop(ev) {
     ev.preventDefault();
     ev.currentTarget.classList.add('drag-over');
@@ -966,7 +1156,7 @@
       if (itemIndex > -1) {
         const item = bagItemsArray[itemIndex];
         if (item.unitWeight > 1) {
-          alert('Слишком тяжелый предмет! Подсумок вмещает предметы весом не более 1 кг.');
+          alert('Слишком большой предмет! Подсумок РПС вмещает предметы не более 1 кг.');
           return;
         }
         if (vestItemsArray[targetIndex] !== null) {
@@ -988,7 +1178,6 @@
       vestItemsArray[targetIndex] = vestItemsArray[sourceIndex];
       vestItemsArray[sourceIndex] = temp;
       renderVest();
-      fastCalc();
     }
   }
 
@@ -1001,7 +1190,6 @@
       const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
       const item = vestItemsArray[sourceIndex];
       if (item) {
-        // Ищем идентичный предмет в рюкзаке, чтобы сложить в стак
         const existingIndex = bagItemsArray.findIndex(i => i.name === item.name && i.unitWeight === item.unitWeight && i.desc === item.desc);
         if (existingIndex > -1) {
           bagItemsArray[existingIndex].qty += 1;
@@ -1014,20 +1202,6 @@
         fastCalc();
       }
     }
-  }
-
-  function handleVestItemInput(index, field, value) {
-    const item = vestItemsArray[index];
-    if (item) {
-      item[field] = (field === 'unitWeight') ? (parseFloat(value) || 0) : value;
-      fastCalc();
-    }
-  }
-
-  function removeVestItem(index) {
-    vestItemsArray[index] = null;
-    renderVest();
-    fastCalc();
   }
 
   function renderVest() {
@@ -1048,12 +1222,13 @@
         if (invLocked) {
           html = `
             <div class="vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
-              <div class="val-interactive" onclick="toggleExpand('desc_vest_${item.id}')" style="padding:4px 8px;">
+              <div class="val-interactive" onclick="toggleExpand('desc_vest_${item.id}')" style="padding:2px 4px;">
+                <span style="color:var(--text-muted); font-size:14px; margin-right:6px;">⚙️</span>
                 <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный'}</span>
                 <span style="font-size:11px; color:var(--text-muted);">${item.unitWeight} кг</span>
               </div>
               <div id="desc_vest_${item.id}" class="expandable">
-                <div style="padding:4px 8px 8px 8px; font-size:10px; color:#aaa;">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
+                <div style="padding:4px 8px 8px 30px; font-size:10px; color:#aaa;">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
               </div>
             </div>`;
         } else {
@@ -1062,11 +1237,11 @@
               <div style="display:flex; gap:4px; align-items:center; margin-bottom:4px;">
                 <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')" title="Описание">⚙️</button>
                 <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; padding:2px;" oninput="handleVestItemInput(${i}, 'name', this.value)">
-                <input type="number" value="${item.unitWeight}" step="0.5" style="width:45px; padding:2px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
+                <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:45px; padding:2px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
                 <button class="item-del" onclick="removeVestItem(${i})">✕</button>
               </div>
               <div id="desc_vest_edit_${item.id}" class="expandable" style="width:100%;">
-                 <textarea placeholder="Описание..." rows="1" style="width:100%; font-size:11px; padding:4px;" oninput="handleVestItemInput(${i}, 'desc', this.value)">${item.desc || ''}</textarea>
+                 <textarea placeholder="Описание..." rows="2" style="width:100%; font-size:11px; padding:4px;" oninput="handleVestItemInput(${i}, 'desc', this.value)">${item.desc || ''}</textarea>
               </div>
             </div>`;
         }
@@ -1074,32 +1249,6 @@
       grid.innerHTML += html;
     }
     document.getElementById('vest_items_json').value = JSON.stringify(vestItemsArray);
-  }
-
-  function addBagItem() {
-    bagItemsArray.push({ id: Date.now(), name: '', qty: 1, unitWeight: 1, desc: '' });
-    renderInventory();
-    fastCalc(); 
-  }
-
-  function handleBagItemInput(id, field, value) {
-    const item = bagItemsArray.find(i => i.id === id);
-    if (item) {
-      item[field] = (field === 'unitWeight' || field === 'qty') ? (parseFloat(value) || 0) : value;
-      
-      if (field === 'unitWeight' || field === 'qty') {
-        const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
-        const totalEl = document.getElementById('bag_total_' + id);
-        if (totalEl) totalEl.value = totalWt;
-      }
-      fastCalc();
-    }
-  }
-
-  function removeBagItem(id) {
-    bagItemsArray = bagItemsArray.filter(i => i.id !== id);
-    renderInventory();
-    fastCalc();
   }
 
   function renderInventory() {
@@ -1113,11 +1262,11 @@
         grid.innerHTML += `
           <div class="inv-row" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
             <div class="val-interactive" style="display:flex; gap:6px; align-items:center; padding:6px 4px;" onclick="toggleExpand('desc_view_${item.id}')">
-              <span style="color:var(--text-muted); font-size:14px;">👁</span>
+              <span style="color:var(--text-muted); font-size:14px;">⚙️</span>
               <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный предмет'}</span>
               <span style="width: 45px; text-align:center; font-weight:bold;">${item.qty}</span>
-              <span style="width: 50px; text-align:center; color:var(--text-muted);">${item.unitWeight}</span>
-              <span style="width: 50px; text-align:center; color:var(--text-muted);">${totalWt}</span>
+              <span style="font-size:12px; color:var(--text-muted); width: 45px; text-align:center;">${item.unitWeight}</span>
+              <span style="font-size:12px; color:var(--text-muted); width: 45px; text-align:right;">${totalWt}</span>
               <span style="width: 20px;"></span>
             </div>
             <div id="desc_view_${item.id}" class="expandable">
@@ -1129,13 +1278,19 @@
         `;
       } else {
         grid.innerHTML += `
-          <div class="inv-item-edit" id="bag_row_${item.id}">
+          <div class="inv-item-edit" id="bag_row_${item.id}" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
             <div style="display:flex; gap:6px; align-items:center;">
               <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')" title="Настройки">⚙️</button>
               <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; text-align:left; padding-left:8px;" oninput="handleBagItemInput(${item.id}, 'name', this.value)">
-              <input type="number" value="${item.qty}" min="1" title="Количество" style="width:45px;" oninput="handleBagItemInput(${item.id}, 'qty', this.value)">
-              <input type="number" value="${item.unitWeight}" step="0.5" title="Вес 1 шт." style="width:50px;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)">
-              <input type="number" id="bag_total_${item.id}" value="${totalWt}" readonly style="width:50px; background:transparent; border-color:transparent; color:var(--text-muted);">
+              <div class="inv-input-group" style="width:45px;">
+                <input type="number" value="${item.qty}" min="1" title="Количество" style="width:100%;" oninput="handleBagItemInput(${item.id}, 'qty', this.value)">
+              </div>
+              <div class="inv-input-group" style="width:50px;">
+                <input type="number" value="${item.unitWeight}" step="0.5" title="Вес 1 шт." style="width:100%;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)">
+              </div>
+              <div class="inv-input-group" style="width:50px;">
+                <span id="bag_total_${item.id}" style="color:var(--text-muted); font-size:13px; font-weight:bold;">${totalWt}</span>
+              </div>
               <button class="item-del" onclick="removeBagItem(${item.id})" title="Удалить">✕</button>
             </div>
             <div id="desc_edit_${item.id}" class="expandable" style="width:100%;">
@@ -1234,9 +1389,9 @@
     } catch (err) {
       setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
     }
-    renderVest();
-    renderInventory();
+    updateVestLimit();
     fastCalc();
+    renderInventory();
   }
 
   function applyData(data) {
@@ -1265,9 +1420,9 @@
           if (payload.new && payload.new.data) {
             isRemoteUpdating = true;
             applyData(payload.new.data);
-            renderVest();
-            renderInventory();
+            updateVestLimit();
             fastCalc();
+            renderInventory();
             isRemoteUpdating = false;
             setSyncStatus('ОБНОВЛЕНО СЕТЬЮ', '#38bdf8');
           }
