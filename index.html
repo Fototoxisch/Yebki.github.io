@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   
-  <!-- Заглушка для TTS -->
+  <!-- Заглушки для старого Chromium в TTS -->
   <script>if (typeof globalThis === 'undefined') { window.globalThis = window; }</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>if (!window.supabase) { document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>'); }</script>
@@ -37,8 +37,8 @@
       color: var(--text-color);
       font-family: 'Share Tech Mono', monospace;
       margin: 0;
-      padding: 12px;
-      font-size: 14px;
+      padding: 10px;
+      font-size: 13px;
       overflow-x: hidden;
       letter-spacing: 0.5px;
     }
@@ -61,7 +61,7 @@
     .sync-tag:hover { background: rgba(74, 222, 128, 0.1); }
     .user-tag { font-size: 12px; color: #38bdf8; border: 1px solid #0284c7; padding: 2px 6px; background: #082f49; text-transform: uppercase;}
 
-    select, input, button, textarea { font-family: inherit; font-size: 14px; }
+    select, input, button, textarea { font-family: inherit; font-size: 13px; }
     
     input[type="text"], input[type="number"], input[type="password"], textarea, select { 
       background: var(--input-bg-edit); border: 1px solid #3a3f4b; color: #fff; 
@@ -83,10 +83,10 @@
     .btn-danger:hover:not(:disabled) { background: var(--accent); color: #fff; }
 
     .input-float { position: relative; width: 100%; display: flex; align-items: center; }
-    .input-float input { width: 100%; padding: 14px 8px 4px 8px; font-size: 14px; text-align: left; }
+    .input-float input { width: 100%; padding: 14px 8px 4px 8px; font-size: 13px; text-align: left; }
     .input-float label { 
       position: absolute; left: 10px; top: 12px; color: var(--text-muted); 
-      font-size: 13px; transition: 0.2s ease; pointer-events: none; text-transform: uppercase;
+      font-size: 12px; transition: 0.2s ease; pointer-events: none; text-transform: uppercase;
     }
     .input-float input:focus + label, .input-float input:not(:placeholder-shown) + label {
       top: 2px; font-size: 9px; color: var(--border-color); font-weight: bold;
@@ -106,12 +106,12 @@
     .side-panel { position: fixed; right: -350px; top: 0; width: 320px; height: 100%; background: #111215; border-left: 2px solid var(--border-color); z-index: 1000; transition: right 0.3s ease; padding: 15px; box-shadow: -5px 0 15px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; }
     .side-panel.open { right: 0; }
     .side-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a3f4b; padding-bottom: 10px; }
-    .side-panel-header h2 { margin: 0; color: var(--border-color); font-size: 15px; }
+    .side-panel-header h2 { margin: 0; color: var(--border-color); font-size: 14px; }
     .close-panel-btn { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0; }
     .close-panel-btn:hover { color: var(--accent); background: transparent;}
     .char-card { background: var(--panel-bg); border: 1px solid #3a3f4b; padding: 10px; display: flex; flex-direction: column; gap: 8px; border-radius: 4px;}
     .char-card.active { border-color: var(--border-color); box-shadow: inset 0 0 10px rgba(201,42,42,0.1); }
-    .char-name { font-weight: bold; color: #fff; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .char-actions { display: flex; gap: 5px; }
 
     .row-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: start; }
@@ -125,7 +125,7 @@
 
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .stat-container { border: 1px solid #3a3f4b; background: var(--panel-bg); border-radius: 4px; display: flex; flex-direction: column; position: relative; }
-    .stat-mod { position: absolute; top: -8px; right: -8px; background: var(--border-color); color: #000; border-radius: 50%; width: 22px; height: 22px; line-height: 22px; font-size: 12px; text-align: center; font-weight: bold; z-index: 2; pointer-events: none; }
+    .stat-mod { position: absolute; top: -8px; right: -8px; background: var(--border-color); color: #000; border-radius: 50%; width: 22px; height: 22px; line-height: 22px; font-size: 11px; text-align: center; font-weight: bold; z-index: 2; pointer-events: none; }
 
     .calc-row { display: flex; align-items: center; gap: 6px; justify-content: center; padding: 8px 0; }
     .calc-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -134,7 +134,7 @@
 
     .hp-input { color: var(--accent); font-weight: bold; }
     .wound-track { display: flex; flex-direction: column; gap: 2px; border: 1px solid #3a3f4b; padding: 2px; border-radius: 4px; background: #0b0c0f;}
-    .wound-track div { padding: 4px; font-size: 12px; text-align: center; color: var(--text-muted); }
+    .wound-track div { padding: 4px; font-size: 11px; text-align: center; color: var(--text-muted); }
     .wound-active { background: var(--border-color); color: #000 !important; font-weight: bold; }
 
     .panic-box { border-color: var(--accent); }
@@ -167,8 +167,9 @@
     .status-warn { color: #f59e0b; font-weight: bold; }
     .status-crit { color: var(--accent); font-weight: bold; }
 
+    #adminTableContainer { min-height: 50vh; }
     .admin-account-group { border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 20px; padding: 12px; background: #111215; }
-    .admin-account-group h3 { margin-top: 0; margin-bottom: 12px; color: var(--accent); letter-spacing: 1px; font-size: 16px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;}
+    .admin-account-group h3 { margin-top: 0; margin-bottom: 12px; color: var(--accent); letter-spacing: 1px; font-size: 15px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;}
     .admin-table { width: 100%; border-collapse: collapse; }
     .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 8px; text-align: center; font-size: 13px; }
     .admin-table th { background: #181a1f; color: var(--text-muted); }
@@ -191,17 +192,18 @@
   </div>
 </div>
 
+<!-- ОКНО АВТОРИЗАЦИИ -->
 <div id="authModal" class="modal-overlay" style="display: none;">
   <div class="auth-card">
     <div class="box-title">АВТОРИЗАЦИЯ // AEON</div>
     <div style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 5px;">Вход в терминал боевого звена</div>
     
     <div class="input-float">
-      <input type="text" id="loginUser" placeholder=" " autocomplete="off">
+      <input type="text" id="loginUser" placeholder=" " autocomplete="off" spellcheck="false">
       <label for="loginUser">Позывной / Никнейм</label>
     </div>
     <div class="input-float">
-      <input type="password" id="loginPass" placeholder=" " autocomplete="off" style="padding-right: 36px;">
+      <input type="password" id="loginPass" placeholder=" " autocomplete="off" style="padding-right: 36px;" spellcheck="false">
       <label for="loginPass">Пароль доступа</label>
       <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:16px; cursor:pointer;">👁</button>
     </div>
@@ -218,9 +220,9 @@
 <div id="deleteModal" class="modal-overlay" style="display: none;">
   <div class="auth-card" style="border-color: var(--accent);">
     <div class="box-title" style="background: var(--accent); color: #fff;">ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ</div>
-    <div style="font-size: 13px; text-align: center; color: #fff; margin-bottom: 5px;" id="deleteModalText">Вы точно хотите удалить ...?</div>
+    <div style="font-size: 13px; text-align: center; color: #fff; margin-bottom: 5px;" id="deleteModalText">Вы точно хотите удалить персонажа?</div>
     <div style="font-size: 11px; color: var(--text-muted); text-align: center;">Для подтверждения введите имя: <br><strong id="deleteModalTargetName" style="color:var(--accent); font-size:14px; letter-spacing: 1px;"></strong></div>
-    <input type="text" id="deleteConfirmInput" placeholder="Имя для подтверждения" autocomplete="off" oninput="checkDeleteMatch()">
+    <input type="text" id="deleteConfirmInput" placeholder="Имя для подтверждения" autocomplete="off" oninput="checkDeleteMatch()" spellcheck="false">
     <div style="display: flex; gap: 8px; margin-top: 10px;">
       <button type="button" onclick="closeDeleteModal()" style="flex:1; border-color:#3a3f4b; color:#fff;">ОТМЕНА</button>
       <button type="button" id="deleteConfirmBtn" onclick="executeDelete()" class="btn-danger" style="flex:1;" disabled>УДАЛИТЬ</button>
@@ -252,9 +254,9 @@
   <!-- ВКЛАДКА 1: ЛИСТ ПЕРСОНАЖА -->
   <div id="viewSheet">
     <div class="header" style="margin-bottom: 12px; border-top: none;">
-      <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" style="flex: 2;" onchange="onNameChange()" autocomplete="off">
-      <input type="text" id="charModel" placeholder="МОДЕЛЬ (STCR, STAR...)" style="flex: 1;" onchange="autoSave()" autocomplete="off">
-      <input type="text" id="sheetOwner" placeholder="Владелец (ник/почта)" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off">
+      <input type="text" id="charName" placeholder="ПОЗЫВНОЙ / ИМЯ" style="flex: 2;" onchange="onNameChange()" autocomplete="off" spellcheck="false">
+      <input type="text" id="charModel" placeholder="МОДЕЛЬ (STCR, STAR...)" style="flex: 1;" onchange="autoSave()" autocomplete="off" spellcheck="false">
+      <input type="text" id="sheetOwner" placeholder="Владелец (ник/почта)" style="flex: 1; display: none;" onchange="changeOwner()" autocomplete="off" spellcheck="false">
       <button onclick="saveData(true)">[ СОХРАНИТЬ В БД ]</button>
     </div>
 
@@ -365,7 +367,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -434,7 +435,6 @@
         </div>
       </section>
 
-      <!-- КОЛОНКА 2: ЗДОРОВЬЕ, НАПРЯЖЕНИЕ -->
       <section class="col">
         <div class="box">
           <div class="box-title">Целостность Каркаса</div>
@@ -489,7 +489,6 @@
         </div>
       </section>
 
-      <!-- КОЛОНКА 3: НАВЫКИ, ПАНИКА -->
       <section class="col">
         <div class="box">
           <div class="box-title">Базовые Навыки</div>
@@ -522,10 +521,10 @@
           <div class="box-title">Счетчик / Ресурс</div>
           <div class="box-content" style="gap: 4px;">
             <div class="flex-row">
-              <input type="text" id="counter_name" placeholder="Название (напр. Удача)" style="flex: 1; font-weight:bold; text-align:left; border:none; border-bottom:1px solid #333;" onchange="autoSave()">
-              <input type="text" id="counter_val" placeholder="0" style="width: 50px; font-weight:bold; color:var(--accent);" onchange="autoSave()">
+              <input type="text" id="counter_name" placeholder="Название (напр. Удача)" style="flex: 1; font-weight:bold; text-align:left; border:none; border-bottom:1px solid #333;" onchange="autoSave()" spellcheck="false" autocomplete="off">
+              <input type="text" id="counter_val" placeholder="0" style="width: 50px; font-weight:bold; color:var(--accent);" onchange="autoSave()" spellcheck="false" autocomplete="off">
             </div>
-            <textarea id="counter_desc" placeholder="Описание или условия..." rows="2" style="resize:none; font-size:11px;" onchange="autoSave()"></textarea>
+            <textarea id="counter_desc" placeholder="Описание или условия..." rows="2" style="resize:none; font-size:11px;" onchange="autoSave()" spellcheck="false"></textarea>
           </div>
         </div>
       </section>
@@ -534,8 +533,6 @@
 
   <!-- ВКЛАДКА 2: СНАРЯЖЕНИЕ -->
   <div id="viewInv" style="display: none;">
-    
-    <!-- ОБЩАЯ СВОДКА СНАРЯЖЕНИЯ НАВЕРХУ -->
     <div class="box" style="margin-bottom: 15px;">
       <div class="box-title">Сводка Снаряжения</div>
       <div class="box-content" style="padding-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -559,7 +556,7 @@
         <div class="inv-item-card" style="border:none; margin:0;">
           <div class="val-interactive" onclick="toggleExpand('gear_penalty_details')" style="justify-content:center;">
             <span class="interactive-text" style="font-size:15px; font-weight:bold; margin-right:10px;">ШТРАФ СКОРОСТИ</span>
-            <span id="top_penalty_display" style="font-size:20px; font-weight:bold; color:var(--accent);">0 м</span>
+            <span id="top_speed_display" style="font-size:20px; font-weight:bold; color:var(--accent);">0 м</span>
           </div>
           <div id="gear_penalty_details" class="expandable" style="background:#0e0f12; border-top:1px dashed #20232a;">
             <div class="calc-row">
@@ -614,9 +611,11 @@
           <div class="box-content">
             <div class="flex-row" style="gap: 10px; margin-bottom: 5px;">
               <div id="vest_config_view" style="flex:1; font-size:12px; color:var(--text-muted);">
+                <span id="vest_name_display" style="color:#fff; font-weight:bold; font-size:14px; margin-right:10px; text-transform:uppercase;">СТАНДАРТНАЯ РПС</span><br>
                 Слоты: <span id="vest_slots_display" style="color:#fff;">4</span> | Штраф: <span id="vest_penalty_display" style="color:var(--accent);">0</span> м
               </div>
               <div id="vest_config_edit" style="flex:1; display:none; gap:6px; align-items:center;">
+                <input type="text" id="vest_name" value="Стандартная РПС" placeholder="Название..." style="flex:1; padding:2px;" oninput="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
                 <span style="font-size:10px; color:var(--text-muted);">СЛОТЫ:</span> 
                 <input type="number" id="vest_slots" value="4" style="width:40px; padding:2px;" oninput="updateVestLimit(); fastCalc(); autoSave();">
                 <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span> 
@@ -625,7 +624,7 @@
               <button id="vest_toggle_btn" onclick="toggleVestLock()" style="padding: 2px 6px; font-size: 16px;" title="Разблокировать редактирование">🔒</button>
             </div>
             
-            <div class="flex-row" style="font-size:11px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px;">
+            <div class="flex-row" style="font-size:11px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; margin-top: 6px;">
               <span style="flex:1; letter-spacing:1px;">ПОДСУМКИ (МАКС 1КГ)</span>
               <span>ВЕС: <span id="vest_status" class="accent-bold" style="font-size:14px; margin-left:4px;">0</span> кг</span>
             </div>
@@ -641,18 +640,20 @@
           <div class="box-content">
             <div class="flex-row" style="gap: 10px; margin-bottom: 4px;">
               <div id="bag_config_view" style="flex:1; font-size:12px; color:var(--text-muted);">
+                <span id="bag_name_display" style="color:#fff; font-weight:bold; font-size:14px; margin-right:10px; text-transform:uppercase;">РЮКЗАК ОДНОЛЯМКА</span><br>
                 Лимит: <span id="bag_limit_display" style="color:#fff;">5</span> кг | Штраф: <span id="bag_penalty_display" style="color:var(--accent);">0</span> м
               </div>
               <div id="bag_config_edit" style="flex:1; display:none; gap:6px; align-items:center;">
+                <input type="text" id="bag_name" value="Рюкзак однолямка" placeholder="Название..." style="flex:1; padding:2px;" oninput="fastCalc(); autoSave();" autocomplete="off" spellcheck="false">
                 <span style="font-size:10px; color:var(--text-muted);">ЛИМИТ(КГ):</span> 
-                <input type="number" id="bag_limit" value="5" style="width:45px; padding:2px;" oninput="fastCalc(); autoSave();">
+                <input type="number" id="bag_limit" value="5" style="width:40px; padding:2px;" oninput="fastCalc(); autoSave();">
                 <span style="font-size:10px; color:var(--text-muted);">ШТРАФ:</span> 
                 <input type="number" id="bag_penalty" value="0" style="width:40px; padding:2px;" oninput="fastCalc(); autoSave();">
               </div>
               <button id="inv_toggle_btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size: 16px;" title="Разблокировать редактирование">🔒</button>
             </div>
             
-            <div class="flex-row" style="font-size:11px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px;">
+            <div class="flex-row" style="font-size:11px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; margin-top: 6px;">
               <span style="flex:1; letter-spacing:1px; margin-left:25px;">ПРЕДМЕТЫ</span>
               <span style="width: 45px; text-align:center;">КОЛ-ВО</span>
               <span style="width: 55px; text-align:center;">ВЕС 1ШТ</span>
@@ -660,7 +661,7 @@
               <span style="width: 20px;"></span>
             </div>
 
-            <!-- Список вещей (Drag Target) -->
+            <!-- Список вещей -->
             <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
           </div>
         </div>
@@ -677,7 +678,6 @@
           <button onclick="loadAdminRoster()">[ ОБНОВИТЬ СПИСОК ]</button>
         </div>
         
-        <!-- Контейнер для сгруппированных таблиц -->
         <div id="adminTableContainer">
             <div style="text-align:center; padding: 20px; color: var(--text-muted);">Загрузка данных штаба...</div>
         </div>
@@ -696,7 +696,6 @@
   const SUPABASE_URL = 'https://gpblfglgvxlfqhoavzlr.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_LDTJVEcaBH1m4a47pOTJZQ_qy3fk76C';
   
-  // Для прямого FETCH запроса из старого TTS браузера
   const HEADERS = {
     'apikey': SUPABASE_ANON_KEY,
     'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -717,7 +716,7 @@
   // Простой кэш DOM
   const DOM = {};
   function initDOM() {
-    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle'];
+    const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'vest_name', 'vest_name_display', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'bag_name', 'bag_name_display', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle'];
     ids.forEach(id => { DOM[id] = document.getElementById(id); });
   }
   document.addEventListener("DOMContentLoaded", initDOM);
@@ -743,7 +742,7 @@
 
   function openDeleteModal(type, id, name) {
     delType = type; delId = id; delName = name;
-    document.getElementById('deleteModalText').innerText = type === 'user' ? `Вы точно хотите удалить учетную запись и все её листы?` : `Вы точно хотите удалить этот профиль?`;
+    document.getElementById('deleteModalText').innerText = type === 'user' ? `Вы точно хотите удалить учетную запись и все её листы?` : `Вы точно хотите удалить персонажа?`;
     document.getElementById('deleteModalTargetName').innerText = name;
     document.getElementById('deleteConfirmInput').value = '';
     document.getElementById('deleteConfirmBtn').disabled = true;
@@ -956,7 +955,6 @@
     refreshCharacterList(); 
     switchTab('sheet');
     
-    // Визуальный отклик успешной загрузки
     if(DOM.mainHeaderTitle) {
       const originalColor = DOM.mainHeaderTitle.style.color;
       DOM.mainHeaderTitle.innerText = 'ПРОФИЛЬ УСПЕШНО ЗАГРУЖЕН';
@@ -1013,8 +1011,8 @@
         else if (inp.id === 'bag_limit') inp.value = 5;
         else inp.value = 10;
       } else {
-        if (inp.id === 'vest_slots') inp.value = 4;
-        else if (inp.id === 'bag_limit') inp.value = 5;
+        if (inp.id === 'vest_name') inp.value = 'Стандартная РПС';
+        else if (inp.id === 'bag_name') inp.value = 'Рюкзак однолямка';
         else inp.value = '';
       }
     });
@@ -1025,7 +1023,9 @@
 
   async function loadAdminRoster() {
     const container = document.getElementById('adminTableContainer');
-    container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос базы данных (REST API)...</div>';
+    if (!container.innerHTML.includes('admin-account-group')) {
+        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос базы данных (REST API)...</div>';
+    }
     
     try {
         const uRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?select=username`, { headers: HEADERS });
@@ -1039,24 +1039,29 @@
         const grouped = {};
         
         if (usersData) {
-            usersData.forEach(u => { grouped[u.username.toUpperCase()] = []; });
+            usersData.forEach(u => { grouped[u.username] = []; });
         }
         
         if (sheetsData) {
             sheetsData.forEach(row => {
-                const owner = (row.owner && row.owner.trim() !== '') ? row.owner.toUpperCase() : 'НЕИЗВЕСТНО';
-                if (!grouped[owner]) grouped[owner] = [];
-                grouped[owner].push(row);
+                const owner = (row.owner && row.owner.trim() !== '') ? row.owner : 'Неизвестно';
+                let foundKey = Object.keys(grouped).find(k => k.toLowerCase() === owner.toLowerCase());
+                if (!foundKey) {
+                    foundKey = owner;
+                    grouped[foundKey] = [];
+                }
+                grouped[foundKey].push(row);
             });
         }
 
         let html = '';
         for (const [owner, rows] of Object.entries(grouped)) {
+            const safeOwner = owner.replace(/'/g, "\\'");
             html += `
             <div class="admin-account-group">
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px dashed #3a3f4b; padding-bottom: 8px; margin-bottom: 12px;">
                   <h3 style="margin:0; border:none; padding:0;">УЧЕТНАЯ ЗАПИСЬ: ${owner}</h3>
-                  <button class="btn-danger" style="font-size:10px; padding: 2px 6px;" onclick="openDeleteModal('user', '${owner}', '${owner}')">УДАЛИТЬ УЧЕТКУ</button>
+                  <button class="btn-danger" style="font-size:10px; padding: 2px 6px;" onclick="openDeleteModal('user', '${safeOwner}', '${safeOwner}')">УДАЛИТЬ УЧЕТКУ</button>
                 </div>
                 <table class="admin-table">
                   <thead>
@@ -1087,7 +1092,7 @@
                             <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
                             <td>
                               <div style="display:flex; gap:4px; justify-content:center;">
-                                <button onclick="inspectCharacter('${r.id}', '${r.owner}')">ОТКРЫТЬ</button>
+                                <button onclick="inspectCharacter('${r.id}', '${safeOwner}')">ОТКРЫТЬ</button>
                                 <button class="btn-danger" onclick="openDeleteModal('sheet', '${r.id}', '${safeName}')">✕</button>
                               </div>
                             </td>
@@ -1118,7 +1123,7 @@
   }
 
   function fastCalc() {
-    if (!DOM.str_base) initDOM(); // Защита на случай вызова до DOMContentLoaded
+    if (!DOM.str_base) initDOM();
 
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
@@ -1175,7 +1180,6 @@
     else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
     else document.getElementById('w_light').classList.add('wound-active');
 
-    // Скорость и Вес
     const carryBase = vals.str + vals.con;
     const carryMisc = parseInt(DOM.carry_misc.value) || 0;
     const carryTotal = carryBase + carryMisc;
@@ -1190,7 +1194,8 @@
     const vestPenalty = parseInt(DOM.vest_penalty.value) || 0;
     const bagPenalty = parseInt(DOM.bag_penalty.value) || 0;
 
-    // Обновляем отображение конфигов
+    if (DOM.vest_name_display) DOM.vest_name_display.innerText = DOM.vest_name.value || 'РПС';
+    if (DOM.bag_name_display) DOM.bag_name_display.innerText = DOM.bag_name.value || 'РЮКЗАК';
     if (DOM.vest_slots_display) DOM.vest_slots_display.innerText = DOM.vest_slots.value;
     if (DOM.vest_penalty_display) DOM.vest_penalty_display.innerText = vestPenalty;
     if (DOM.bag_limit_display) DOM.bag_limit_display.innerText = DOM.bag_limit.value;
@@ -1202,7 +1207,6 @@
     DOM.penalty_bag.value = bagPenalty;
     DOM.penalty_total.value = totalGearPenalty; 
 
-    // Суммируем весь вес
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
@@ -1213,7 +1217,6 @@
     let totalWeight = bagWeight + vestWeight + mag1Wt + mag2Wt + mag3Wt;
     let finalSpeed = spdBase + totalGearPenalty + spdMisc;
     
-    // Перегруз (Общий вес)
     if (totalWeight > carryTotal) {
       finalSpeed = 2; 
       if(DOM.overencumber_alert) DOM.overencumber_alert.style.display = 'block';
@@ -1238,7 +1241,15 @@
     autoSave();
   }
 
-  // --- ИНВЕНТАРЬ ---
+  function calc() { fastCalc(); }
+
+  function ablate(id) {
+    const el = document.getElementById(id);
+    const val = parseInt(el.value) || 0;
+    if (val > 0) el.value = val - 1;
+    fastCalc();
+  }
+
   function toggleInvLock() {
     invLocked = !invLocked;
     const btn = document.getElementById('inv_toggle_btn');
@@ -1317,7 +1328,6 @@
     fastCalc();
   }
 
-  // --- Drag and Drop ---
   function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
   document.addEventListener('dragleave', function(ev) {
     if(ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area'))) {
@@ -1396,7 +1406,6 @@
     const grid = document.getElementById('vest_grid');
     let gridHTML = '';
 
-    // Подгоняем массив под лимит слотов
     while (vestItemsArray.length < limit) vestItemsArray.push(null);
 
     let totalVestWt = 0;
@@ -1589,14 +1598,12 @@
     if (data.vest_items_json) { try { vestItemsArray = JSON.parse(data.vest_items_json); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; } } 
     else { vestItemsArray = [null,null,null,null,null,null,null,null]; }
     
-    // Скрываем конфиги, если они были заблокированы (по умолчанию закрыты)
     if(DOM.vest_config_view) DOM.vest_config_view.style.display = vestLocked ? 'block' : 'none';
     if(DOM.vest_config_edit) DOM.vest_config_edit.style.display = vestLocked ? 'none' : 'flex';
     if(DOM.bag_config_view) DOM.bag_config_view.style.display = invLocked ? 'block' : 'none';
     if(DOM.bag_config_edit) DOM.bag_config_edit.style.display = invLocked ? 'none' : 'flex';
   }
 
-  // Рекурсивный поллинг (опрос базы) для замены зависших setInterval
   function startPolling() {
     setTimeout(async () => {
       if (invLocked && vestLocked && !isRemoteUpdating && currentSheetId) {
