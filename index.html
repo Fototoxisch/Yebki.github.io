@@ -367,6 +367,7 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -435,6 +436,7 @@
         </div>
       </section>
 
+      <!-- КОЛОНКА 2: ЗДОРОВЬЕ, НАПРЯЖЕНИЕ -->
       <section class="col">
         <div class="box">
           <div class="box-title">Целостность Каркаса</div>
@@ -489,6 +491,7 @@
         </div>
       </section>
 
+      <!-- КОЛОНКА 3: НАВЫКИ, ПАНИКА -->
       <section class="col">
         <div class="box">
           <div class="box-title">Базовые Навыки</div>
@@ -533,6 +536,8 @@
 
   <!-- ВКЛАДКА 2: СНАРЯЖЕНИЕ -->
   <div id="viewInv" style="display: none;">
+    
+    <!-- ОБЩАЯ СВОДКА СНАРЯЖЕНИЯ НАВЕРХУ -->
     <div class="box" style="margin-bottom: 15px;">
       <div class="box-title">Сводка Снаряжения</div>
       <div class="box-content" style="padding-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -556,7 +561,7 @@
         <div class="inv-item-card" style="border:none; margin:0;">
           <div class="val-interactive" onclick="toggleExpand('gear_penalty_details')" style="justify-content:center;">
             <span class="interactive-text" style="font-size:15px; font-weight:bold; margin-right:10px;">ШТРАФ СКОРОСТИ</span>
-            <span id="top_speed_display" style="font-size:20px; font-weight:bold; color:var(--accent);">0 м</span>
+            <span id="top_penalty_display" style="font-size:20px; font-weight:bold; color:var(--accent);">0 м</span>
           </div>
           <div id="gear_penalty_details" class="expandable" style="background:#0e0f12; border-top:1px dashed #20232a;">
             <div class="calc-row">
@@ -661,7 +666,7 @@
               <span style="width: 20px;"></span>
             </div>
 
-            <!-- Список вещей -->
+            <!-- Список вещей (Drag Target) -->
             <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
           </div>
         </div>
@@ -678,6 +683,7 @@
           <button onclick="loadAdminRoster()">[ ОБНОВИТЬ СПИСОК ]</button>
         </div>
         
+        <!-- Контейнер для сгруппированных таблиц -->
         <div id="adminTableContainer">
             <div style="text-align:center; padding: 20px; color: var(--text-muted);">Загрузка данных штаба...</div>
         </div>
@@ -687,7 +693,6 @@
 </div>
 
 <script>
-  // Безопасная работа с локальным хранилищем (защита для TTS CEF)
   let memoryStorage = {};
   function safeSetItem(k, v) { try { localStorage.setItem(k, v); } catch(e) { memoryStorage[k] = v; } }
   function safeGetItem(k) { try { return localStorage.getItem(k) || memoryStorage[k]; } catch(e) { return memoryStorage[k]; } }
@@ -711,9 +716,7 @@
   let vestItemsArray = [null, null, null, null, null, null, null, null]; 
   let invLocked = true;
   let vestLocked = true;
-  let isPolling = false;
 
-  // Простой кэш DOM
   const DOM = {};
   function initDOM() {
     const ids = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'str_base', 'str_bonus', 'dex_base', 'dex_bonus', 'con_base', 'con_bonus', 'int_base', 'int_bonus', 'wis_base', 'wis_bonus', 'cha_base', 'cha_bonus', 'str_m', 'dex_m', 'con_m', 'int_m', 'wis_m', 'cha_m', 'str_display', 'dex_display', 'con_display', 'int_display', 'wis_display', 'cha_display', 'sv_phys', 'sv_eva', 'sv_men', 'sv_phys_mod', 'sv_eva_mod', 'sv_men_mod', 'sv_phys_misc', 'sv_eva_misc', 'sv_men_misc', 'sv_phys_display', 'sv_eva_display', 'sv_men_display', 'hp_max', 'hp_cur', 'st_perm', 'st_temp', 'strain_limit', 'strain_alert', 'spd_base', 'spd_gear', 'spd_misc', 'spd_total', 'spd_main_display', 'carry_base', 'carry_misc', 'carry_total', 'spd_base_top', 'penalty_vest', 'penalty_bag', 'penalty_total', 'top_speed_display', 'top_weight_display', 'vest_slots', 'vest_penalty', 'vest_slots_display', 'vest_penalty_display', 'vest_config_view', 'vest_config_edit', 'vest_name', 'vest_name_display', 'bag_limit', 'bag_penalty', 'bag_limit_display', 'bag_penalty_display', 'bag_config_view', 'bag_config_edit', 'bag_name', 'bag_name_display', 'mag_1_wt', 'mag_2_wt', 'mag_3_wt', 'overencumber_alert', 'mainHeaderTitle'];
@@ -912,21 +915,36 @@
         }));
       }
 
+      const isInspectingForeign = (currentSheetOwner && currentSheetOwner !== currentUser.username);
+
       if (list.length === 0) {
         const defaultId = Date.now().toString(36);
         list.push({ id: defaultId, name: 'Новый Боец', owner: currentUser.username });
-        if (!currentSheetId) { currentSheetId = defaultId; currentSheetOwner = currentUser.username; }
-      } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
-        currentSheetId = list[0].id; currentSheetOwner = list[0].owner;
-      } else {
-        const activeObj = list.find(x => x.id === currentSheetId);
-        if (activeObj) currentSheetOwner = activeObj.owner;
+        if (!currentSheetId && !isInspectingForeign) { 
+            currentSheetId = defaultId; 
+            currentSheetOwner = currentUser.username; 
+        }
+      } else if (!currentSheetId || (!list.some(x => x.id === currentSheetId) && !isInspectingForeign)) {
+        currentSheetId = list[0].id; 
+        currentSheetOwner = list[0].owner;
       }
 
       const panelList = document.getElementById('sidePanelList');
       let gridHTML = '';
+
+      if (isInspectingForeign) {
+          const safeOwner = currentSheetOwner.replace(/'/g, "\\'");
+          const inspectedName = document.getElementById('charName').value || 'Чужой профиль';
+          gridHTML += `
+            <div class="char-card active" style="border-color:#38bdf8; box-shadow: inset 0 0 10px rgba(56,189,248,0.1);">
+              <div style="font-size:10px; color:#38bdf8; margin-bottom:2px; font-weight:bold;">ИНСПЕКТИРОВАНИЕ: ${safeOwner}</div>
+              <div class="char-name" title="${inspectedName}">${inspectedName}</div>
+            </div>
+          `;
+      }
+
       list.forEach(c => {
-        const isActive = c.id === currentSheetId ? 'active' : '';
+        const isActive = (c.id === currentSheetId && !isInspectingForeign) ? 'active' : '';
         const safeName = c.name.replace(/'/g, "\\'");
         gridHTML += `
           <div class="char-card ${isActive}">
@@ -941,8 +959,9 @@
       panelList.innerHTML = gridHTML;
 
       safeSetItem('vineta_active_id', currentSheetId);
-      if (currentUser.role === 'admin' && currentSheetOwner) {
-        document.getElementById('sheetOwner').value = currentSheetOwner || '';
+      if (currentUser.role === 'admin') {
+        const ownerInput = document.getElementById('sheetOwner');
+        if (ownerInput) ownerInput.value = currentSheetOwner || '';
       }
     } catch(e) { console.warn("Сбой сайдбара", e); }
   }
@@ -1023,9 +1042,6 @@
 
   async function loadAdminRoster() {
     const container = document.getElementById('adminTableContainer');
-    if (!container.innerHTML.includes('admin-account-group')) {
-        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос базы данных (REST API)...</div>';
-    }
     
     try {
         const uRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?select=username`, { headers: HEADERS });
@@ -1107,15 +1123,6 @@
     } catch(e) {
         container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба: ${e.message}</div>`;
     }
-  }
-
-  async function inspectCharacter(id, owner) {
-    currentSheetId = id;
-    currentSheetOwner = owner;
-    safeSetItem('vineta_active_id', id);
-    await loadData();
-    switchTab('sheet');
-    refreshCharacterList(); 
   }
 
   function getMod(val) {
@@ -1239,15 +1246,6 @@
     }
 
     autoSave();
-  }
-
-  function calc() { fastCalc(); }
-
-  function ablate(id) {
-    const el = document.getElementById(id);
-    const val = parseInt(el.value) || 0;
-    if (val > 0) el.value = val - 1;
-    fastCalc();
   }
 
   function toggleInvLock() {
@@ -1407,6 +1405,7 @@
     let gridHTML = '';
 
     while (vestItemsArray.length < limit) vestItemsArray.push(null);
+    if (vestItemsArray.length > limit) vestItemsArray.length = limit;
 
     let totalVestWt = 0;
 
@@ -1604,10 +1603,13 @@
     if(DOM.bag_config_edit) DOM.bag_config_edit.style.display = invLocked ? 'none' : 'flex';
   }
 
+  let fetchInProgress = false;
   function startPolling() {
     setTimeout(async () => {
-      if (invLocked && vestLocked && !isRemoteUpdating && currentSheetId) {
+      if (invLocked && vestLocked && !isRemoteUpdating && currentSheetId && !fetchInProgress && document.getElementById('viewSheet').style.display !== 'none') {
+        fetchInProgress = true;
         await loadData(false);
+        fetchInProgress = false;
       }
       startPolling(); 
     }, 10000);
