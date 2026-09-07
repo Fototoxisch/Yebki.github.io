@@ -713,7 +713,7 @@
   let currentSheetOwner = null; 
   
   let bagItemsArray = []; 
-  let vestItemsArray = []; 
+  let vestItemsArray = [null, null, null, null, null, null, null, null]; 
   let invLocked = true;
   let vestLocked = true;
 
@@ -725,8 +725,6 @@
   }
   function setVal(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
   function setText(id, txt) { const el = document.getElementById(id); if (el) el.innerText = txt; }
-
-  function initDOM() {}
 
   function toggleExpand(id) {
     const el = document.getElementById(id);
@@ -744,6 +742,7 @@
     document.getElementById('sidePanel').classList.toggle('open');
   }
 
+  // --- СИСТЕМА БРОСКОВ d20 ---
   function getMod(val) {
     if (val <= 3) return -2;
     if (val <= 7) return -1;
@@ -796,6 +795,7 @@
     setTimeout(() => { window.location.hash = ""; }, 250);
   }
 
+  // --- МОДАЛКА УДАЛЕНИЯ ---
   let delType = '', delId = '', delName = '';
   function openDeleteModal(type, id, name) {
     delType = type; delId = id; delName = name;
@@ -830,6 +830,7 @@
     } catch(e) { alert("Ошибка сети при удалении."); }
   }
 
+  // --- АВТОРИЗАЦИЯ И СЕССИИ (ВОССТАНОВЛЕНА СТАРАЯ ЖЕЛЕЗОБЕТОННАЯ ЛОГИКА) ---
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
@@ -861,7 +862,7 @@
         body: JSON.stringify({ username: u, password: p, role: assignedRole })
       });
       if (!res.ok) { errEl.innerText = 'Позывной уже занят.'; return; }
-      setSessionUser({ username: u, password: p, role: assignedRole });
+      setSessionUser({ username: u, role: assignedRole });
     } catch(e) { errEl.innerText = 'Сбой сети.'; }
   }
 
@@ -888,31 +889,12 @@
     location.reload();
   }
 
-  async function checkSession() {
+  function checkSession() {
     const saved = safeGetItem('vineta_user');
     if (saved) {
-      try {
-        const user = JSON.parse(saved);
-        if(!user.password || !user.username) throw new Error("Bad cache");
-        
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?username=eq.${encodeURIComponent(user.username)}&password=eq.${encodeURIComponent(user.password)}&select=*`, { headers: HEADERS });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.length > 0) { 
-            setSessionUser(data[0]); 
-            return; 
-          }
-          throw new Error("User not found");
-        }
-        throw new Error("Network");
-      } catch (e) {
-        if(e.message === "User not found" || e.message === "Bad cache") {
-          logout();
-          return;
-        }
-        const user = JSON.parse(saved);
-        setSessionUser(user);
-      }
+      const user = JSON.parse(saved);
+      if (user.username.toLowerCase() === 'lemming') user.role = 'admin';
+      setSessionUser(user);
     } else {
       document.getElementById('authModal').style.display = 'flex';
     }
@@ -939,18 +921,6 @@
 
   function formatIDToName(id) { return id.replace(/^unit_|^char_/, 'ID: '); }
 
-  async function forceCreateEmptySheet(id, owner) {
-    try {
-        const payload = getFormData();
-        payload.charName = 'Новый Боец';
-        await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets`, {
-            method: 'POST',
-            headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
-            body: JSON.stringify({ id: id, owner: owner, data: payload, updated_at: new Date().toISOString() })
-        });
-    } catch(e) {}
-  }
-
   async function refreshCharacterList() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?owner=eq.${encodeURIComponent(currentUser.username)}&select=id,data,owner`, { headers: HEADERS });
@@ -965,69 +935,50 @@
         }));
       }
 
-      const isInspectingForeign = (currentSheetOwner && currentSheetOwner !== currentUser.username);
-
       if (list.length === 0) {
         const defaultId = Date.now().toString(36);
         list.push({ id: defaultId, name: 'Новый Боец', owner: currentUser.username });
-        if (!currentSheetId && !isInspectingForeign) { 
+        if (!currentSheetId) { 
           currentSheetId = defaultId; 
           currentSheetOwner = currentUser.username; 
-          await forceCreateEmptySheet(currentSheetId, currentSheetOwner);
         }
-      } else if (!currentSheetId || (!list.some(x => x.id === currentSheetId) && !isInspectingForeign)) {
+      } else if (!currentSheetId || !list.some(x => x.id === currentSheetId)) {
         currentSheetId = list[0].id; 
         currentSheetOwner = list[0].owner;
+      } else {
+        const activeObj = list.find(x => x.id === currentSheetId);
+        if (activeObj) currentSheetOwner = activeObj.owner;
       }
 
       const panelList = document.getElementById('sidePanelList');
-      let gridHTML = '';
-
-      if (isInspectingForeign) {
-        const safeOwner = currentSheetOwner.replace(/'/g, "\\'");
-        const inspectedName = document.getElementById('charName').value || 'Чужой профиль';
-        gridHTML += `
-          <div class="char-card active" style="border-color:#38bdf8; box-shadow: inset 0 0 10px rgba(56,189,248,0.1);">
-            <div style="font-size:10px; color:#38bdf8; font-weight:bold;">ИНСПЕКТИРОВАНИЕ: ${safeOwner}</div>
-            <div class="char-name" title="${inspectedName}">${inspectedName}</div>
-          </div>
-        `;
-      }
-
+      panelList.innerHTML = '';
       list.forEach(c => {
-        const isActive = (c.id === currentSheetId && !isInspectingForeign) ? 'active' : '';
+        const isActive = c.id === currentSheetId ? 'active' : '';
         const safeName = c.name.replace(/'/g, "\\'");
-        gridHTML += `
+        panelList.innerHTML += `
           <div class="char-card ${isActive}">
             <div class="char-name" title="${c.name}">${c.name}</div>
             <div class="char-actions">
               <button style="flex:1;" onclick="switchCharacter('${c.id}')">${isActive ? 'ВЫБРАН' : 'ВЫБРАТЬ'}</button>
-              <button class="btn-danger" title="Удалить" onclick="openDeleteModal('sheet', '${c.id}', '${safeName}')">✕</button>
+              <button class="btn-danger" title="Удалить" onclick="deleteCharacterById('${c.id}', '${safeName}')">✕</button>
             </div>
           </div>
         `;
       });
-      panelList.innerHTML = gridHTML;
+
       safeSetItem('vineta_active_id', currentSheetId);
-      if (currentUser.role === 'admin') setVal('sheetOwner', currentSheetOwner || '');
+      if (currentUser.role === 'admin' && currentSheetOwner) {
+        document.getElementById('sheetOwner').value = currentSheetOwner || '';
+      }
     } catch(e) {}
   }
 
   async function switchCharacter(id) {
     currentSheetId = id;
-    currentSheetOwner = currentUser.username;
     safeSetItem('vineta_active_id', currentSheetId);
     toggleSidePanel();
-    await loadData(true);
+    await loadData();
     refreshCharacterList(); 
-    switchTab('sheet');
-    
-    setText('mainHeaderTitle', 'ПРОФИЛЬ УСПЕШНО ЗАГРУЖЕН');
-    document.getElementById('mainHeaderTitle').style.color = '#4ade80';
-    setTimeout(() => {
-      setText('mainHeaderTitle', 'AEON // ТЕРМИНАЛ');
-      document.getElementById('mainHeaderTitle').style.color = 'var(--border-color)';
-    }, 1800);
   }
 
   async function createNewCharacter() {
@@ -1036,15 +987,29 @@
     currentSheetId = Date.now().toString(36);
     currentSheetOwner = currentUser.username;
     safeSetItem('vineta_active_id', currentSheetId);
+    
     resetForm();
-    setVal('charName', name);
+    document.getElementById('charName').value = name;
+    if (currentUser.role === 'admin') document.getElementById('sheetOwner').value = currentSheetOwner;
+    
     await saveData(false);
     await refreshCharacterList();
   }
 
+  async function deleteCharacterById(id, name) {
+    if (!confirm(`Точно удалить профиль [ ${name} ]? Это действие необратимо.`)) return;
+    const verify = prompt(`Защита от случайного удаления.\nВведите ваш никнейм (${currentUser.username}), чтобы подтвердить:`);
+    if (verify !== currentUser.username) { alert('Удаление отменено: никнейм введен неверно.'); return; }
+
+    await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
+    if (currentSheetId === id) currentSheetId = null;
+    await refreshCharacterList();
+    await loadData();
+  }
+
   function onNameChange() {
     autoSave();
-    setTimeout(refreshCharacterList, 1200); 
+    setTimeout(refreshCharacterList, 1500); 
   }
 
   function changeOwner() {
@@ -1056,22 +1021,19 @@
 
   function resetForm() {
     bagItemsArray = [];
-    vestItemsArray = [];
+    vestItemsArray = [null, null, null, null, null, null, null, null];
     
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
-      if (inp.id === 'sheetOwner' || inp.id.startsWith('login') || inp.id === 'deleteConfirmInput') return; 
+      if (inp.id === 'sheetOwner') return; 
       if (inp.type === 'number') {
         if (inp.id.includes('hp')) inp.value = 20;
-        else if (inp.id.includes('sp_') || inp.id === 'spd_base') inp.value = 10;
-        else if (inp.id === 'vest_slots') inp.value = 4;
-        else if (inp.id === 'bag_limit') inp.value = 5;
-        else if (inp.id.includes('penalty') || inp.id.includes('misc') || inp.id.includes('_wt')) inp.value = 0;
+        else if (inp.id.includes('sp_') || inp.id === 'spd_base' || inp.id === 'spd_base_top') inp.value = 10;
+        else if (inp.id.includes('st_') || inp.id.includes('sk_') || inp.id === 'stress' || inp.id.includes('_misc') || inp.id.includes('_wt')) inp.value = 0;
         else if (inp.id.includes('_base')) inp.value = 10;
-        else inp.value = 0;
+        else if (inp.id.includes('_bonus')) inp.value = 0;
+        else inp.value = 10;
       } else {
-        if (inp.id === 'vest_name') inp.value = 'Стандартная РПС';
-        else if (inp.id === 'bag_name') inp.value = 'Рюкзак однолямка';
-        else inp.value = '';
+        inp.value = '';
       }
     });
     updateVestLimit();
@@ -1081,177 +1043,237 @@
 
   async function loadAdminRoster() {
     const container = document.getElementById('adminTableContainer');
+    container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Опрос базы данных (REST API)...</div>';
+    
     try {
-      const uRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?select=username`, { headers: HEADERS });
-      const sRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?select=*&order=owner.asc`, { headers: HEADERS });
-      const usersData = await uRes.json();
-      const sheetsData = await sRes.json();
+        const uRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_users?select=username`, { headers: HEADERS });
+        const sRes = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?select=*&order=owner.asc`, { headers: HEADERS });
 
-      const grouped = {};
-      if (usersData) usersData.forEach(u => { grouped[u.username] = []; });
-      if (sheetsData) {
-        sheetsData.forEach(row => {
-          const owner = (row.owner && row.owner.trim() !== '') ? row.owner : 'Неизвестно';
-          let foundKey = Object.keys(grouped).find(k => k.toLowerCase() === owner.toLowerCase());
-          if (!foundKey) { foundKey = owner; grouped[foundKey] = []; }
-          grouped[foundKey].push(row);
-        });
-      }
+        if (!uRes.ok || !sRes.ok) throw new Error("Сетевая ошибка REST API");
 
-      let html = '';
-      for (const [owner, rows] of Object.entries(grouped)) {
-        const safeOwner = owner.replace(/'/g, "\\'");
-        html += `
-          <div class="admin-account-group">
-            <h3>УЧЕТНАЯ ЗАПИСЬ: ${owner} <button class="btn-danger" style="font-size:9px;" onclick="openDeleteModal('user', '${safeOwner}', '${safeOwner}')">УДАЛИТЬ УЧЕТКУ</button></h3>
-            <table class="admin-table">
-              <thead><tr><th>ПОЗЫВНОЙ</th><th>МОДЕЛЬ</th><th>HP</th><th>СТРЕСС</th><th>SP (Г/Т/К)</th><th>ДЕЙСТВИЯ</th></tr></thead>
-              <tbody>`;
-        if (rows.length === 0) {
-          html += `<tr><td colspan="6" style="color:var(--text-muted);">Нет листов</td></tr>`;
-        } else {
-          rows.forEach(r => {
-            const d = r.data || {};
-            const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
-            const safeName = cName.replace(/'/g, "\\'");
-            const safeOwnerRow = (r.owner || '').replace(/'/g, "\\'");
-            html += `
-              <tr>
-                <td style="font-weight:bold; color:#fff;">${cName}</td>
-                <td>${d.charModel || '—'}</td>
-                <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
-                <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
-                <td>${d.sp_head || 0}/${d.sp_torso || 0}/${d.sp_limb || 0}</td>
-                <td>
-                  <button onclick="inspectCharacter('${r.id}', '${safeOwnerRow}')">ОТКРЫТЬ</button>
-                  <button class="btn-danger" onclick="openDeleteModal('sheet', '${r.id}', '${safeName}')">✕</button>
-                </td>
-              </tr>`;
-          });
+        const usersData = await uRes.json();
+        const sheetsData = await sRes.json();
+
+        const grouped = {};
+        if (usersData) { usersData.forEach(u => { grouped[u.username.toUpperCase()] = []; }); }
+        
+        if (sheetsData) {
+            sheetsData.forEach(row => {
+                const owner = (row.owner && row.owner.trim() !== '') ? row.owner.toUpperCase() : 'НЕИЗВЕСТНО';
+                if (!grouped[owner]) grouped[owner] = [];
+                grouped[owner].push(row);
+            });
         }
-        html += `</tbody></table></div>`;
-      }
-      container.innerHTML = html || '<div style="text-align:center; color:var(--text-muted);">База пуста.</div>';
+
+        let html = '';
+        for (const [owner, rows] of Object.entries(grouped)) {
+            html += `
+            <div class="admin-account-group">
+                <h3>УЧЕТНАЯ ЗАПИСЬ: ${owner}</h3>
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 25%;">ПОЗЫВНОЙ</th>
+                      <th style="width: 15%;">МОДЕЛЬ</th>
+                      <th style="width: 15%;">HP</th>
+                      <th style="width: 15%;">СТРЕСС</th>
+                      <th style="width: 15%;">SP (Г/Т/К)</th>
+                      <th style="width: 15%;">ДЕЙСТВИЯ</th>
+                    </tr>
+                  </thead>
+                  <tbody>`;
+            
+            if (rows.length === 0) {
+                html += `<tr><td colspan="6" style="color:var(--text-muted);">Нет зарегистрированных листов</td></tr>`;
+            } else {
+                rows.forEach(r => {
+                    const d = r.data || {};
+                    const cName = (d.charName && d.charName.trim() !== '') ? d.charName : formatIDToName(r.id);
+                    html += `
+                        <tr>
+                            <td style="font-weight:bold; color:#fff;">${cName}</td>
+                            <td>${d.charModel || '—'}</td>
+                            <td style="color:${(d.hp_cur <= 5)? 'var(--accent)': 'inherit'}">${d.hp_cur || 0} / ${d.hp_max || 0}</td>
+                            <td style="color:${(d.stress >= 6)? 'var(--accent)': 'inherit'}">${d.stress || 0} / 10</td>
+                            <td>${d.sp_head || 0} / ${d.sp_torso || 0} / ${d.sp_limb || 0}</td>
+                            <td><button onclick="inspectCharacter('${r.id}', '${r.owner}')">ОТКРЫТЬ</button></td>
+                        </tr>`;
+                });
+            }
+            html += `</tbody></table></div>`;
+        }
+        
+        if (html === '') html = '<div style="text-align:center; color: var(--text-muted);">База данных пуста.</div>';
+        container.innerHTML = html;
     } catch(e) {
-      container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба.</div>`;
+        container.innerHTML = `<div style="color:var(--accent); text-align:center;">Ошибка загрузки штаба (TTS): ${e.message}</div>`;
     }
   }
 
-  // --- МАТЕМАТИКА ---
+  async function inspectCharacter(id, owner) {
+    currentSheetId = id;
+    currentSheetOwner = owner;
+    safeSetItem('vineta_active_id', id);
+    await loadData();
+    switchTab('sheet');
+    refreshCharacterList(); 
+  }
+
+  // --- МАТЕМАТИКА И РАСЧЕТЫ (СОХРАНЕН ЧЕСТНЫЙ 0 ДЛЯ РПС) ---
   function fastCalc() {
-    const stats = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
-    
-    stats.forEach(s => {
-      const base = getVal(s + '_base', 10);
-      const bonus = getVal(s + '_bonus', 0);
-      const tot = base + bonus;
-      vals[s] = tot;
-      setText(s + '_display', tot);
-      const m = getMod(tot);
-      setText(s + '_m', (m >= 0 ? '+' : '') + m);
+    statIds.forEach(id => {
+      const base = parseInt(document.getElementById(id + '_base').value) || 0;
+      const bonus = parseInt(document.getElementById(id + '_bonus').value) || 0;
+      const total = base + bonus;
+      
+      const tEl = document.getElementById(id + '_total');
+      if(tEl) tEl.value = total;
+      
+      const dEl = document.getElementById(id + '_display');
+      if(dEl) dEl.innerText = total;
+      
+      vals[id] = total;
+      const mod = getMod(total);
+      
+      const mEl = document.getElementById(id + '_m');
+      if(mEl) mEl.innerText = (mod >= 0 ? '+' : '') + mod;
     });
 
     const physMod = Math.max(getMod(vals.str), getMod(vals.con));
     const evaMod  = Math.max(getMod(vals.dex), getMod(vals.int));
     const menMod  = Math.max(getMod(vals.wis), getMod(vals.cha));
 
-    setVal('sv_phys_mod', physMod);
-    setVal('sv_eva_mod', evaMod);
-    setVal('sv_men_mod', menMod);
+    document.getElementById('sv_phys_mod').value = physMod;
+    document.getElementById('sv_eva_mod').value = evaMod;
+    document.getElementById('sv_men_mod').value = menMod;
 
-    const svPhys = 15 - physMod + getVal('sv_phys_misc', 0);
-    const svEva  = 15 - evaMod + getVal('sv_eva_misc', 0);
-    const svMen  = 15 - menMod + getVal('sv_men_misc', 0);
+    const physMisc = parseInt(document.getElementById('sv_phys_misc').value) || 0;
+    const evaMisc  = parseInt(document.getElementById('sv_eva_misc').value) || 0;
+    const menMisc  = parseInt(document.getElementById('sv_men_misc').value) || 0;
 
-    setVal('sv_phys', svPhys); setText('sv_phys_display', svPhys);
-    setVal('sv_eva', svEva); setText('sv_eva_display', svEva);
-    setVal('sv_men', svMen); setText('sv_men_display', svMen);
+    const finalPhys = 15 - physMod + physMisc;
+    const finalEva = 15 - evaMod + evaMisc;
+    const finalMen = 15 - menMod + menMisc;
 
-    setText('strain_limit', vals.con);
-    const perm = getVal('st_perm', 0);
-    const temp = getVal('st_temp', 0);
-    const strAlert = document.getElementById('strain_alert');
-    if (strAlert) strAlert.style.display = (perm + temp >= vals.con) ? 'block' : 'none';
+    document.getElementById('sv_phys').value = finalPhys;
+    document.getElementById('sv_eva').value  = finalEva;
+    document.getElementById('sv_men').value  = finalMen;
 
-    const maxHp = getVal('hp_max', 20);
-    const curHp = getVal('hp_cur', 20);
+    document.getElementById('sv_phys_display').innerText = finalPhys;
+    document.getElementById('sv_eva_display').innerText = finalEva;
+    document.getElementById('sv_men_display').innerText = finalMen;
+
+    document.getElementById('strain_limit').innerText = vals.con;
+    const perm = parseInt(document.getElementById('st_perm').value) || 0;
+    const temp = parseInt(document.getElementById('st_temp').value) || 0;
+    document.getElementById('strain_alert').style.display = (perm + temp >= vals.con) ? 'block' : 'none';
+
+    const maxHp = parseInt(document.getElementById('hp_max').value) || 20;
+    const curHp = parseInt(document.getElementById('hp_cur').value) || 0;
     const ratio = curHp / maxHp;
 
     document.querySelectorAll('.wound-track div').forEach(el => el.classList.remove('wound-active'));
-    if (curHp <= 0) document.getElementById('w_dead')?.classList.add('wound-active');
-    else if (ratio <= 0.25) document.getElementById('w_mortal')?.classList.add('wound-active');
-    else if (ratio <= 0.50) document.getElementById('w_critical')?.classList.add('wound-active');
-    else if (ratio <= 0.75) document.getElementById('w_serious')?.classList.add('wound-active');
-    else document.getElementById('w_light')?.classList.add('wound-active');
+    if (curHp <= 0) document.getElementById('w_dead').classList.add('wound-active');
+    else if (ratio <= 0.25) document.getElementById('w_mortal').classList.add('wound-active');
+    else if (ratio <= 0.50) document.getElementById('w_critical').classList.add('wound-active');
+    else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
+    else document.getElementById('w_light').classList.add('wound-active');
 
     const carryBase = vals.str + vals.con;
-    const carryTotal = carryBase + getVal('carry_misc', 0);
-    setVal('carry_base', carryBase);
-    setVal('carry_total', carryTotal);
-
-    const vestPenalty = Math.abs(getVal('vest_penalty', 0));
-    const bagPenalty = Math.abs(getVal('bag_penalty', 0));
-    const armorPenalty = Math.abs(getVal('armor_penalty', 0));
-    const totalGearPenalty = vestPenalty + bagPenalty + armorPenalty;
-
-    setVal('penalty_vest', vestPenalty);
-    setVal('penalty_bag', bagPenalty);
-    setVal('armor_penalty', armorPenalty);
-    setVal('penalty_total', totalGearPenalty);
-    setVal('spd_gear', totalGearPenalty);
+    const carryMisc = parseInt(document.getElementById('carry_misc').value) || 0;
+    const carryTotal = carryBase + carryMisc;
     
-    setText('top_speed_display', totalGearPenalty + ' м');
-    
-    const vestSlotsStr = document.getElementById('vest_slots')?.value;
-    const vestSlots = vestSlotsStr === '' ? 0 : Math.max(0, parseInt(vestSlotsStr) || 0);
-    setText('vest_slots_display', vestSlots);
-    setText('vest_penalty_display', vestPenalty);
+    document.getElementById('carry_base').value = carryBase;
+    document.getElementById('carry_total').value = carryTotal;
 
-    const bagLimitStr = document.getElementById('bag_limit')?.value;
-    const bagLimit = bagLimitStr === '' ? 0 : Math.max(0, parseInt(bagLimitStr) || 0);
-    setText('bag_limit_display', bagLimit);
-    setText('bag_penalty_display', bagPenalty);
+    const spdBase = parseInt(document.getElementById('spd_base').value) || 10;
+    document.getElementById('spd_base_top').value = spdBase;
+    const spdMisc = parseInt(document.getElementById('spd_misc').value) || 0;
+    document.getElementById('penalty_misc').value = spdMisc;
+    
+    const vestType = document.getElementById('vest_type').value;
+    const vestPenalty = (vestType === 'heavy') ? -1 : 0;
+
+    const bagType = document.getElementById('bag_type').value;
+    let bagPenalty = 0;
+    if (bagType === 'bag') { bagPenalty = -1; }
+    else if (bagType === 'assault') { bagPenalty = -2; }
+
+    const totalGearPenalty = vestPenalty + bagPenalty;
+    document.getElementById('spd_gear').value = totalGearPenalty;
+    document.getElementById('penalty_vest').value = vestPenalty;
+    document.getElementById('penalty_bag').value = bagPenalty;
+    document.getElementById('penalty_total').value = totalGearPenalty;
 
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = 0;
     vestItemsArray.forEach(i => { if (i) vestWeight += i.unitWeight; });
-    const magWt = getVal('mag_1_wt', 0) + getVal('mag_2_wt', 0) + getVal('mag_3_wt', 0);
-    const totalWeight = bagWeight + vestWeight + magWt;
-
-    const bagAlert = document.getElementById('bag_overload_alert');
-    if (bagAlert) bagAlert.style.display = (bagWeight > bagLimit) ? 'block' : 'none';
-
-    const spdBase = getVal('spd_base', 10);
-    const spdMisc = Math.abs(getVal('spd_misc', 0));
-    let finalSpeed = spdBase - totalGearPenalty - spdMisc;
-
+    const mag1Wt = parseFloat(document.getElementById('mag_1_wt').value) || 0;
+    const mag2Wt = parseFloat(document.getElementById('mag_2_wt').value) || 0;
+    const mag3Wt = parseFloat(document.getElementById('mag_3_wt').value) || 0;
+    
+    let totalWeight = bagWeight + vestWeight + mag1Wt + mag2Wt + mag3Wt;
+    let finalSpeed = spdBase + totalGearPenalty + spdMisc;
+    
     const overAlert = document.getElementById('overencumber_alert');
     if (totalWeight > carryTotal) {
-      finalSpeed = 2;
-      if (overAlert) overAlert.style.display = 'block';
+      finalSpeed = 2; 
+      if(overAlert) overAlert.style.display = 'block';
     } else {
-      if (overAlert) overAlert.style.display = 'none';
+      if(overAlert) overAlert.style.display = 'none';
     }
 
-    setVal('spd_total', Math.max(0, finalSpeed));
-    setText('spd_main_display', Math.max(0, finalSpeed) + ' м');
+    document.getElementById('spd_total').value = finalSpeed;
+    document.getElementById('spd_main_display').innerText = finalSpeed + ' м';
+    
+    const penaltyDisplay = document.getElementById('top_penalty_display');
+    if(penaltyDisplay) {
+        penaltyDisplay.innerText = totalGearPenalty + ' м';
+        penaltyDisplay.style.color = (totalGearPenalty < 0) ? 'var(--accent)' : '#fff';
+    }
     
     const displayWt = Math.round(totalWeight * 10) / 10;
-    setText('top_weight_display', `${displayWt} / ${carryTotal} кг`);
+    const topWtDisplay = document.getElementById('top_weight_display');
+    topWtDisplay.innerText = `${displayWt} / ${carryTotal} кг`;
+    topWtDisplay.style.color = (totalWeight > carryTotal) ? 'var(--accent)' : '#fff';
+
+    autoSave();
+  }
+
+  function calc() { fastCalc(); }
+
+  function ablate(id) {
+    const el = document.getElementById(id);
+    const val = parseInt(el.value) || 0;
+    if (val > 0) el.value = val - 1;
+    fastCalc();
   }
 
   function toggleInvLock() {
     invLocked = !invLocked;
-    document.getElementById('bag_config_view').style.display = invLocked ? 'flex' : 'none';
-    document.getElementById('bag_config_edit').style.display = invLocked ? 'none' : 'flex';
+    const btn = document.getElementById('inv_toggle_btn');
+    if (invLocked) {
+      btn.innerHTML = '🔒';
+      btn.title = 'Разблокировать редактирование';
+    } else {
+      btn.innerHTML = '🔓';
+      btn.title = 'Заблокировать меню';
+    }
     renderInventory();
   }
 
   function toggleVestLock() {
     vestLocked = !vestLocked;
-    document.getElementById('vest_config_view').style.display = vestLocked ? 'flex' : 'none';
-    document.getElementById('vest_config_edit').style.display = vestLocked ? 'none' : 'flex';
+    const btn = document.getElementById('vest_toggle_btn');
+    if (vestLocked) {
+      btn.innerHTML = '🔒';
+      btn.title = 'Разблокировать редактирование';
+    } else {
+      btn.innerHTML = '🔓';
+      btn.title = 'Заблокировать меню';
+    }
     renderVest();
   }
 
@@ -1265,6 +1287,11 @@
     const item = bagItemsArray.find(i => i.id === id);
     if (item) {
       item[field] = (field === 'unitWeight' || field === 'qty') ? (parseFloat(value) || 0) : value;
+      if (field === 'unitWeight' || field === 'qty') {
+        const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
+        const totalEl = document.getElementById('bag_total_' + id);
+        if (totalEl) totalEl.innerText = totalWt;
+      }
       fastCalc();
     }
   }
@@ -1274,9 +1301,9 @@
     if (item) {
       item[field] = (field === 'unitWeight') ? (parseFloat(value) || 0) : value;
       if (field === 'unitWeight' && item.unitWeight > 1) {
-        alert('Подсумок вмещает макс. 1 кг!');
+        alert('Подсумок вмещает максимум 1 кг!');
         item.unitWeight = 1;
-        setVal('vest_wt_' + index, 1);
+        document.getElementById('vest_wt_' + index).value = 1;
       }
       fastCalc();
     }
@@ -1286,20 +1313,22 @@
     bagItemsArray = bagItemsArray.filter(i => i.id !== id);
     renderInventory();
     fastCalc();
-    autoSave();
   }
 
   function removeVestItem(index) {
     vestItemsArray[index] = null;
     renderVest();
     fastCalc();
-    autoSave();
   }
 
-  function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
+  function allowDrop(ev) {
+    ev.preventDefault();
+    ev.currentTarget.classList.add('drag-over');
+  }
+
   document.addEventListener('dragleave', function(ev) {
-    if (ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area'))) {
-      ev.target.classList.remove('drag-over');
+    if(ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area'))) {
+        ev.target.classList.remove('drag-over');
     }
   });
 
@@ -1313,6 +1342,7 @@
     ev.preventDefault();
     const targetSlotElement = ev.target.closest('.vest-slot');
     document.querySelectorAll('.vest-slot').forEach(el => el.classList.remove('drag-over'));
+    
     if (!targetSlotElement) return;
     
     const targetIndex = parseInt(targetSlotElement.getAttribute('data-index'));
@@ -1323,8 +1353,14 @@
       const itemIndex = bagItemsArray.findIndex(i => i.id === sourceId);
       if (itemIndex > -1) {
         const item = bagItemsArray[itemIndex];
-        if (item.unitWeight > 1) { alert('Предмет тяжелее 1 кг не лезет в подсумок!'); return; }
-        if (vestItemsArray[targetIndex] !== null) { alert('Подсумок уже занят!'); return; }
+        if (item.unitWeight > 1) {
+          alert('Слишком большой предмет! Подсумок РПС вмещает предметы не более 1 кг.');
+          return;
+        }
+        if (vestItemsArray[targetIndex] !== null) {
+          alert('Этот подсумок уже занят!');
+          return;
+        }
         
         vestItemsArray[targetIndex] = { id: Date.now(), name: item.name, unitWeight: item.unitWeight, desc: item.desc };
         item.qty -= 1;
@@ -1333,7 +1369,6 @@
         renderVest();
         renderInventory();
         fastCalc();
-        autoSave();
       }
     } else if (source === 'vest') {
       const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
@@ -1341,27 +1376,28 @@
       vestItemsArray[targetIndex] = vestItemsArray[sourceIndex];
       vestItemsArray[sourceIndex] = temp;
       renderVest();
-      autoSave();
     }
   }
 
   function dropToBag(ev) {
     ev.preventDefault();
-    document.getElementById('dynamic_pack_grid')?.classList.remove('drag-over');
-    const source = ev.dataTransfer.getData("source");
+    document.getElementById('dynamic_pack_grid').classList.remove('drag-over');
     
+    const source = ev.dataTransfer.getData("source");
     if (source === 'vest') {
       const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
       const item = vestItemsArray[sourceIndex];
       if (item) {
-        const existing = bagItemsArray.find(i => i.name === item.name && i.unitWeight === item.unitWeight && i.desc === item.desc);
-        if (existing) { existing.qty += 1; } 
-        else { bagItemsArray.push({ id: Date.now(), name: item.name, unitWeight: item.unitWeight, qty: 1, desc: item.desc }); }
+        const existingIndex = bagItemsArray.findIndex(i => i.name === item.name && i.unitWeight === item.unitWeight && i.desc === item.desc);
+        if (existingIndex > -1) {
+          bagItemsArray[existingIndex].qty += 1;
+        } else {
+          bagItemsArray.push({ id: Date.now(), name: item.name, unitWeight: item.unitWeight, qty: 1, desc: item.desc });
+        }
         vestItemsArray[sourceIndex] = null;
         renderVest();
         renderInventory();
         fastCalc();
-        autoSave();
       }
     }
   }
@@ -1373,101 +1409,131 @@
   }
 
   function renderVest() {
-    const vestSlotsStr = document.getElementById('vest_slots')?.value;
-    const slots = vestSlotsStr === '' ? 0 : Math.max(0, parseInt(vestSlotsStr) || 0);
-    
+    const vestType = document.getElementById('vest_type').value;
+    const limit = vestType === 'basic' ? 4 : 8;
     const grid = document.getElementById('vest_grid');
-    if (!grid) return;
-    let gridHTML = '';
-
-    while (vestItemsArray.length < slots) vestItemsArray.push(null);
-    if (vestItemsArray.length > slots) vestItemsArray = vestItemsArray.slice(0, slots);
+    grid.innerHTML = '';
 
     let totalVestWt = 0;
-    for (let i = 0; i < slots; i++) {
+
+    for (let i = 0; i < limit; i++) {
       const item = vestItemsArray[i];
+      let html = '';
+      
       if (!item) {
         if (vestLocked) {
-          gridHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)"><div style="text-align:center; color:#3a3f4b; font-size:11px; padding:6px;">[ Пустой слот ]</div></div>`;
+          html = `
+            <div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
+              <div style="text-align:center; color:#3a3f4b; font-size:12px;">[ Пустой слот ]</div>
+            </div>`;
         } else {
-          gridHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="border: 1px dashed #3a3f4b;"><button onclick="addVestItemDirectly(${i})" style="width:100%; background:transparent; border:none; color:var(--text-muted); font-size:11px; padding:6px; cursor:pointer;">⊕ ДОБАВИТЬ В СЛОТ</button></div>`;
+          html = `
+            <div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="border: 1px dashed #3a3f4b;">
+              <button onclick="addVestItemDirectly(${i})" style="width:100%; background:transparent; border:none; color:var(--text-muted); font-size:12px; padding:8px; cursor:pointer;">
+                ⊕ ДОБАВИТЬ В СЛОТ
+              </button>
+            </div>`;
         }
       } else {
         totalVestWt += item.unitWeight;
         if (vestLocked) {
-          gridHTML += `
-            <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
-              <div class="inv-view-row val-interactive" onclick="toggleExpand('desc_vest_${item.id}')">
-                <span style="color:var(--text-muted); font-size:12px;">👁</span>
+          html = `
+            <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding:0;">
+              <div class="val-interactive" onclick="toggleExpand('desc_vest_${item.id}')" style="padding:6px 8px;">
+                <span style="color:var(--text-muted); font-size:14px; margin-right:6px;">👁</span>
                 <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный'}</span>
-                <span style="font-size:11px; color:var(--text-muted); font-weight:bold;">${item.unitWeight} кг</span>
+                <span style="font-size:12px; color:var(--text-muted); font-weight:bold;">${item.unitWeight} кг</span>
               </div>
-              <div id="desc_vest_${item.id}" class="expandable inv-view-desc">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
+              <div id="desc_vest_${item.id}" class="expandable">
+                <div style="padding:4px 8px 8px 30px; font-size:10px; color:#aaa;">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
+              </div>
             </div>`;
         } else {
-          gridHTML += `
-            <div class="inv-item-card vest-slot inv-edit-row" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)">
-              <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')">⚙️</button>
-              <input type="text" value="${item.name}" placeholder="Имя..." style="flex:1; padding:2px;" oninput="handleVestItemInput(${i}, 'name', this.value); autoSave();">
-              <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:36px; padding:2px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value); autoSave();">
-              <button class="item-del" onclick="removeVestItem(${i})">✕</button>
-              <div id="desc_vest_edit_${item.id}" class="expandable inv-edit-desc" style="width:100%;">
-                 <textarea placeholder="Описание..." oninput="handleVestItemInput(${i}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
+          html = `
+            <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding: 6px; background:#161719;">
+              <div style="display:flex; gap:4px; align-items:center;">
+                <button class="settings-btn" onclick="toggleExpand('desc_vest_edit_${item.id}')" title="Описание">⚙️</button>
+                <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; padding:4px;" oninput="handleVestItemInput(${i}, 'name', this.value)">
+                <input type="number" id="vest_wt_${i}" value="${item.unitWeight}" step="0.5" style="width:50px; padding:4px;" oninput="handleVestItemInput(${i}, 'unitWeight', this.value)">
+                <button class="item-del" onclick="removeVestItem(${i})">✕</button>
+              </div>
+              <div id="desc_vest_edit_${item.id}" class="expandable" style="width:100%;">
+                 <textarea placeholder="Описание..." rows="2" style="width:100%; font-size:11px; padding:4px; margin-top:4px; resize:vertical;" oninput="handleVestItemInput(${i}, 'desc', this.value)">${item.desc || ''}</textarea>
               </div>
             </div>`;
         }
       }
+      grid.innerHTML += html;
     }
-    grid.innerHTML = gridHTML;
-    setText('vest_status', Math.round(totalVestWt * 10) / 10);
+    
+    const vestStatus = document.getElementById('vest_status');
+    if (vestStatus) vestStatus.innerText = Math.round(totalVestWt * 10) / 10;
+    
+    document.getElementById('vest_items_json').value = JSON.stringify(vestItemsArray);
   }
 
   function renderInventory() {
     const grid = document.getElementById('dynamic_pack_grid');
-    if (!grid) return;
-    let gridHTML = '';
+    grid.innerHTML = '';
 
     bagItemsArray.forEach(item => {
       const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
+      
       if (invLocked) {
-        gridHTML += `
-          <div class="inv-item-card" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
-            <div class="inv-view-row val-interactive" onclick="toggleExpand('desc_view_${item.id}')">
-              <span style="color:var(--text-muted); font-size:12px;">👁</span>
+        grid.innerHTML += `
+          <div class="inv-item-card" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)" style="margin-bottom:4px; padding:0;">
+            <div class="val-interactive" style="display:flex; gap:6px; align-items:center; padding:8px;" onclick="toggleExpand('desc_view_${item.id}')">
+              <span style="color:var(--text-muted); font-size:14px;">👁</span>
               <span class="item-name interactive-text" style="flex:1;">${item.name || 'Безымянный предмет'}</span>
-              <span style="width: 35px; text-align:center; font-weight:bold;">${item.qty}</span>
-              <span style="font-size:11px; color:var(--text-muted); width: 35px; text-align:center;">${item.unitWeight}</span>
-              <span style="font-size:12px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${totalWt}</span>
-              <span style="width: 8px;"></span>
+              <span style="width: 45px; text-align:center; font-weight:bold; font-size:14px;">${item.qty}</span>
+              <span style="font-size:12px; color:var(--text-muted); width: 55px; text-align:center;">${item.unitWeight}</span>
+              <span style="font-size:14px; font-weight:bold; color:var(--text-muted); width: 55px; text-align:right;">${totalWt}</span>
+              <span style="width: 10px;"></span>
             </div>
-            <div id="desc_view_${item.id}" class="expandable inv-view-desc">${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}</div>
-          </div>`;
+            <div id="desc_view_${item.id}" class="expandable">
+              <div style="padding:6px 8px 10px 30px; font-size:11px; color:#aaa;">
+                ${item.desc ? item.desc.replace(/\n/g, '<br>') : 'Нет описания.'}
+              </div>
+            </div>
+          </div>
+        `;
       } else {
-        gridHTML += `
-          <div class="inv-item-card inv-edit-row" id="bag_row_${item.id}" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)">
-            <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')">⚙️</button>
-            <input type="text" value="${item.name}" placeholder="Имя..." style="flex:1; text-align:left; padding:2px;" oninput="handleBagItemInput(${item.id}, 'name', this.value); autoSave();">
-            <input type="number" value="${item.qty}" min="1" style="width:32px; padding:2px;" oninput="handleBagItemInput(${item.id}, 'qty', this.value); autoSave();">
-            <input type="number" value="${item.unitWeight}" step="0.5" style="width:36px; padding:2px;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value); autoSave();">
-            <span style="width:35px; text-align:center; font-weight:bold; color:var(--text-muted); font-size:11px;">${totalWt}</span>
-            <button class="item-del" onclick="removeBagItem(${item.id})">✕</button>
-            <div id="desc_edit_${item.id}" class="expandable inv-edit-desc" style="width:100%;">
-              <textarea placeholder="Описание..." oninput="handleBagItemInput(${item.id}, 'desc', this.value); autoSave();">${item.desc || ''}</textarea>
+        grid.innerHTML += `
+          <div class="inv-item-card" id="bag_row_${item.id}" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)" style="padding:8px 6px; background:#161719;">
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button class="settings-btn" onclick="toggleExpand('desc_edit_${item.id}')" title="Настройки">⚙️</button>
+              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1; text-align:left; padding-left:8px;" oninput="handleBagItemInput(${item.id}, 'name', this.value)">
+              <div style="width:45px;"><input type="number" value="${item.qty}" min="1" title="Количество" style="width:100%;" oninput="handleBagItemInput(${item.id}, 'qty', this.value)"></div>
+              <div style="width:55px;"><input type="number" value="${item.unitWeight}" step="0.5" title="Вес 1 шт." style="width:100%;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)"></div>
+              <div style="width:55px; text-align:center; padding-top:4px;">
+                <span id="bag_total_${item.id}" style="color:var(--text-muted); font-size:14px; font-weight:bold;">${totalWt}</span>
+              </div>
+              <button class="item-del" onclick="removeBagItem(${item.id})" title="Удалить">✕</button>
             </div>
-          </div>`;
+            <div id="desc_edit_${item.id}" class="expandable" style="width:100%;">
+              <div style="display:flex; gap:6px; margin-top:6px; padding-left:26px;">
+                <textarea placeholder="Описание или свойства предмета..." rows="2" style="flex:1; resize:vertical; font-size:11px;" oninput="handleBagItemInput(${item.id}, 'desc', this.value)">${item.desc || ''}</textarea>
+              </div>
+            </div>
+          </div>
+        `;
       }
     });
 
     if (!invLocked) {
-      gridHTML += `<button onclick="addBagItem()" style="margin-top: 6px; width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 8px; font-size:12px; cursor:pointer;">⊕ ДОБАВИТЬ ПРЕДМЕТ</button>`;
+      grid.innerHTML += `
+        <button onclick="addBagItem()" style="margin-top: 8px; width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 10px; font-size:14px; cursor:pointer;">
+          ⊕ ДОБАВИТЬ ПРЕДМЕТ
+        </button>
+      `;
     }
-    grid.innerHTML = gridHTML;
+    document.getElementById('bag_items_json').value = JSON.stringify(bagItemsArray);
   }
 
   function getFormData() {
     const data = {};
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
-      if (inp.id === 'sheetOwner' || inp.id.startsWith('login') || inp.id === 'deleteConfirmInput') return; 
+      if (inp.id === 'sheetOwner' || inp.id.startsWith('bag_total_') || inp.id.startsWith('login')) return; 
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
     return data;
@@ -1477,59 +1543,23 @@
   let saveTimeout = null;
   function autoSave() {
     if (isRemoteUpdating) return;
-    setText('sync_status', '[ СОХРАНЕНИЕ... ]');
-    document.getElementById('sync_status').style.color = '#f59e0b';
+    setSyncStatus('СОХРАНЕНИЕ...', '#f59e0b');
     clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => { saveData(false); }, 1000);
+    saveTimeout = setTimeout(() => { saveData(false); }, 1200);
   }
 
-  async function loadData(manual = false) {
-    if (!currentSheetId) return;
-    if (manual) {
-      setText('sync_status', '[ ЗАГРУЗКА... ]');
-      document.getElementById('sync_status').style.color = '#f59e0b';
-    }
-
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${currentSheetId}&select=data,owner`, { headers: HEADERS });
-      if (!res.ok) throw new Error();
-      const rows = await res.json();
-      
-      if (rows && rows.length > 0) {
-        const data = rows[0];
-        currentSheetOwner = data.owner;
-        if (currentUser.role === 'admin') setVal('sheetOwner', currentSheetOwner || '');
-
-        if (data.data) {
-          isRemoteUpdating = true;
-          applyData(data.data);
-          isRemoteUpdating = false;
-          setText('sync_status', '[ СИНХРОНИЗИРОВАНО ]');
-          document.getElementById('sync_status').style.color = '#4ade80';
-        }
-      } else {
-        isRemoteUpdating = true; 
-        resetForm(); 
-        if (document.getElementById('charName').value.trim() === '') setVal('charName', 'Новый Боец');
-        isRemoteUpdating = false;
-        setText('sync_status', '[ НОВЫЙ ЛИСТ ]');
-      }
-    } catch (err) {
-      setText('sync_status', '[ ОШИБКА СЕТИ ]');
-      document.getElementById('sync_status').style.color = '#ff4d4d';
-    }
-    
-    try {
-      updateVestLimit();
-      fastCalc();
-    } catch(calcErr) { console.error(calcErr); }
+  function setSyncStatus(text, color) {
+    const tag = document.getElementById('sync_status');
+    if (tag) { tag.innerText = `[ ${text} ]`; tag.style.color = color; tag.style.borderColor = color; }
   }
 
   async function saveData(manual = false) {
     if (!currentSheetId || !currentUser || isRemoteUpdating) return;
+    
+    document.getElementById('bag_items_json').value = JSON.stringify(bagItemsArray);
+    document.getElementById('vest_items_json').value = JSON.stringify(vestItemsArray);
+    
     const payload = getFormData();
-    payload.bag_items_json = JSON.stringify(bagItemsArray);
-    payload.vest_items_json = JSON.stringify(vestItemsArray);
 
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets`, {
@@ -1543,56 +1573,75 @@
         })
       });
 
-      if (!res.ok) throw new Error();
-      setText('sync_status', '[ СИНХРОНИЗИРОВАНО ]');
-      document.getElementById('sync_status').style.color = '#4ade80';
+      if (!res.ok) throw new Error(await res.text());
+      setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
       if (manual) alert('Данные сохранены в базе.');
     } catch (err) {
-      setText('sync_status', '[ ОШИБКА СЕТИ ]');
-      document.getElementById('sync_status').style.color = '#ff4d4d';
+      setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
     }
+  }
+
+  async function loadData(force = false) {
+    if (!currentSheetId) return;
+    setSyncStatus('ЗАГРУЗКА...', '#f59e0b');
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?id=eq.${currentSheetId}&select=data,owner`, { headers: HEADERS });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const rows = await res.json();
+      
+      if (rows && rows.length > 0) {
+        const data = rows[0];
+        currentSheetOwner = data.owner;
+        if (currentUser.role === 'admin') document.getElementById('sheetOwner').value = currentSheetOwner || '';
+
+        if (data.data) {
+          isRemoteUpdating = true;
+          applyData(data.data);
+          isRemoteUpdating = false;
+          setSyncStatus('СИНХРОНИЗИРОВАНО', '#4ade80');
+        }
+      } else {
+        isRemoteUpdating = true; 
+        resetForm(); 
+        isRemoteUpdating = false;
+        setSyncStatus('НОВЫЙ ЛИСТ', '#7b8390');
+      }
+    } catch (err) {
+      setSyncStatus('ОШИБКА СЕТИ', '#ff4d4d');
+    }
+    updateVestLimit();
+    fastCalc();
+    renderInventory();
   }
 
   function applyData(data) {
-    const activeEl = document.activeElement;
     for (let key in data) {
       const el = document.getElementById(key);
-      if (el && key !== 'sheetOwner' && el !== activeEl) {
+      if (el && key !== 'sheetOwner' && !key.startsWith('bag_total_')) {
         el.value = data[key];
       }
     }
+    if (data.bag_items_json) {
+      try { bagItemsArray = JSON.parse(data.bag_items_json); } catch(e) { bagItemsArray = []; }
+    } else { bagItemsArray = []; }
     
-    const isInvFocused = activeEl && (activeEl.closest('#dynamic_pack_grid') || activeEl.closest('#vest_grid'));
-    if (!isInvFocused) {
-      try { bagItemsArray = JSON.parse(data.bag_items_json || '[]'); } catch(e) { bagItemsArray = []; }
-      try { vestItemsArray = JSON.parse(data.vest_items_json || '[]'); } catch(e) { vestItemsArray = []; }
-      renderInventory();
-      renderVest();
-    }
+    if (data.vest_items_json) {
+      try { vestItemsArray = JSON.parse(data.vest_items_json); } catch(e) { vestItemsArray = [null,null,null,null,null,null,null,null]; }
+    } else { vestItemsArray = [null,null,null,null,null,null,null,null]; }
   }
 
-  let fetchInProgress = false;
-  let pollTimer = null;
-  
-  function startPolling() {
-    clearTimeout(pollTimer);
-    pollTimer = setTimeout(async () => {
-      const vs = document.getElementById('viewSheet');
-      if (currentSheetId && !fetchInProgress && vs && vs.style.display !== 'none') {
-        fetchInProgress = true;
-        try { await loadData(false); } catch(e) {}
-        fetchInProgress = false;
-      }
-      startPolling(); 
-    }, 5000); // Сокращено до 5 секунд
-  }
+  // Восстановлен чистый старый интервал без лишних усложнений
+  setInterval(() => {
+    if (!invLocked || !vestLocked || isRemoteUpdating || !currentSheetId) return;
+    loadData(false);
+  }, 10000);
 
   async function initApp() {
     const savedId = safeGetItem('vineta_active_id');
     if (savedId) currentSheetId = savedId;
     await refreshCharacterList();
-    await loadData(true);
-    startPolling();
+    await loadData();
   }
 
   window.onload = checkSession;
