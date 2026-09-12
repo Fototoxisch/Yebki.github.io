@@ -533,21 +533,21 @@
 
   // --- COMPENDIUM DATA ---
   const COMPENDIUM = [
-    { id: 'c1', cat: 'pistol', type: 'weapon', name: 'P-33 "Platzen"', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '9', wt: 1, recoil: 4, fireRate: 3, desc: 'Легкий 8мм пистолет. Король CQB: нет штрафов в клинче.' },
-    { id: 'c2', cat: 'pistol', type: 'weapon', name: 'Type-75 "Protector"', dmg: '1d8', ap: '0%', range: '15 / 30 кл', cap: '10', wt: 1.5, recoil: 0, fireRate: 1, desc: 'Тяжелый 10мм пистолет. Уверенный урон на средней дистанции.' },
-    { id: 'c3', cat: 'pistol', type: 'weapon', name: 'Автопистолет (Прототип)', dmg: '1d6', ap: '0%', range: '6 / 12 кл', cap: '14', wt: 1.5, recoil: 3, fireRate: 4, desc: 'Инструмент противодействия милишникам. Нет штрафа в клинче.' },
-    { id: 'c4', cat: 'pistol', type: 'weapon', name: 'Револьвер "Einhorn"', dmg: '1d12+2', ap: '0%', range: '15 / 30 кл', cap: '6', wt: 2, recoil: 0, fireRate: 1, desc: 'Огромный 12мм урон. Штрафов в клинче нет.' },
-    { id: 'c5', cat: 'smg', type: 'weapon', name: 'ПП Type 84 "Drache"', dmg: '1d6', ap: '0%', range: '15 / 30 кл', cap: '15', wt: 4, recoil: 2, fireRate: 3, desc: 'Штраф -2 в клинче. Тактическая рулетка отдачи.' },
-    { id: 'c8', cat: 'smg', type: 'weapon', name: 'ПП P-65 "Nadelwerfer"', dmg: '1d6', ap: '0%', range: '10 / 25 кл', cap: '20', wt: 5, recoil: 3, fireRate: 5, desc: 'Свинцеплюй на очень близкую дистанцию. Разгрызает броню.' },
-    { id: 'c9', cat: 'smg', type: 'weapon', name: 'ПП Type 93 "Auskund"', dmg: '1d8', ap: '0%', range: '20 / 40 кл', cap: '20', wt: 4.5, recoil: 3, fireRate: 4, desc: 'Самая стабильная ПП. 10x20мм. Отличный урон и низкая отдача.' },
-    { id: 'c6', cat: 'shotgun', type: 'weapon', name: 'Помпа Ein-12', dmg: '1d12', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 5, recoil: 0, fireRate: 1, desc: '18.5мм. Бьет кучно. Дальше 15 клеток урон исчезает.' },
-    { id: 'c7', cat: 'rifle', type: 'weapon', name: 'BW-5 "Nitro express"', dmg: '1d20', ap: '0%', range: '25 / 50 кл', cap: '2', wt: 8, recoil: 7, fireRate: 2, desc: 'После двойного выстрела игроку наносится 1d10 урона. Запрет стрельбы в упор.' },
-    { id: 'm1', cat: 'melee', type: 'weapon', name: 'Боевой нож', dmg: '1d8 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 0.5, recoil: 0, fireRate: 0, desc: 'Базовое лезвие. Разрушение брони: -1 SP за удар.' },
-    { id: 'm2', cat: 'melee', type: 'weapon', name: 'Мачете', dmg: '1d12 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Смертоносно против целей без брони. Износ: -1 SP.' },
-    { id: 'm3', cat: 'melee', type: 'weapon', name: 'Тактическая дубинка', dmg: '1d10 + СИЛ', ap: '40%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Ускоренно крошит броню (-2 SP за удар).' },
-    { id: 'm4', cat: 'melee', type: 'weapon', name: 'Монтировка', dmg: '1d10 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 2, recoil: 0, fireRate: 0, desc: 'Максимальный игнор брони для своего тира. Износ: -2 SP.' },
-    { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Гибрид урона и пробития. Износ: -1 SP.' },
-    { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 8, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелое дробящее оружие для вскрытия плит. Износ: -2 SP.' }
+    { id: 'c1', cat: 'pistol', type: 'weapon', name: 'P-33 "Platzen"', img: 'P33Platzen.webp', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '9', wt: 1, recoil: 4, fireRate: 3, desc: 'Наверное, самый распространенный огнестрел на фронте. Способен вести огонь очередями, но контролировать отдачу из-за компактных размеров крайне сложно. Скромная ёмкость магазина не даст сильно разогнаться. Калибр: 8x22 мм.' },
+    { id: 'c3', cat: 'pistol', type: 'weapon', name: 'Автопистолет (Прототип)', img: 'АвтопистолетПрототип.webp', dmg: '1d6', ap: '0%', range: '6 / 12 кл', cap: '14', wt: 1.5, recoil: 3, fireRate: 4, desc: 'Экспериментальная и довольно спорная конструкция. Бешеная скорострельность позволяет мгновенно дать прикурить врагу, подобравшемуся слишком близко, однако пули быстро теряют убойную силу, а совладать с подбросом ствола в силах не каждый. Стреляет патронами 8x22 мм.' },
+    { id: 'c2', cat: 'pistol', type: 'weapon', name: 'Type-75 "Protector"', img: 'Type75Protector.webp', dmg: '1d8', ap: '0%', range: '15 / 30 кл', cap: '10', wt: 1.5, recoil: 0, fireRate: 1, desc: 'Табельный полуавтоматический пистолет. Проверенная временем классика: прост, надежен и безотказен в любых условиях. Стреляет патронами 10x20 мм.' },
+    { id: 'c4', cat: 'pistol', type: 'weapon', name: 'Револьвер "Einhorn"', img: 'РевольверEinhorn.webp', dmg: '1d12+2', ap: '0%', range: '15 / 30 кл', cap: '6', wt: 2, recoil: 0, fireRate: 1, desc: 'Крупнокалиберный самовзводный револьвер на 6 патронов 12х45 мм, заслуживший прозвище «ручная мортира». Чудовищная останавливающая сила. Тяжелые синяки на ладони — самое легкое, чем отделается стрелок. Если держите его в руках, вы либо палач, либо в шаге от собственной гибели.' },
+    { id: 'c5', cat: 'smg', type: 'weapon', name: 'ПП Type 84 "Drache"', img: 'ППType84Drache.webp', dmg: '1d6', ap: '0%', range: '15 / 30 кл', cap: '15', wt: 4, recoil: 2, fireRate: 3, desc: 'Один из самых массовых пистолетов-пулеметов. Оснащен складным прикладом. Стреляет фиксированными очередями по три компактных патрона 8х22 мм, автоматический режим отсутствует. Отдача слабая, оружие предельно просто в освоении.' },
+    { id: 'c8', cat: 'smg', type: 'weapon', name: 'ПП P-65 "Nadelwerfer"', img: 'ППP65Nadelwerfer.webp', dmg: '1d6', ap: '0%', range: '10 / 25 кл', cap: '20', wt: 5, recoil: 3, fireRate: 5, desc: 'Увесистый пистолет-пулемет ближнего боя. Несмотря на малые габариты и скромный калибр 8x22 мм, способен моментально залить цель свинцом и буквально сгрызть броню. Обратная сторона — бешеная отдача, с которой сладит только опытный стрелок, прожорливость к боезапасу и крошечная эффективная дистанция.' },
+    { id: 'c9', cat: 'smg', type: 'weapon', name: 'ПП Type 93 "Auskund"', img: 'ППType93Auskund.webp', dmg: '1d8', ap: '0%', range: '20 / 40 кл', cap: '20', wt: 4.5, recoil: 3, fireRate: 4, desc: 'Пожалуй, самый сбалансированный пистолет-пулемет: высокий темп стрельбы, серьезный патрон 10x20 мм и вполне комфортная отдача. Однако из-за массы и габаритов носить его в качестве запасного ствола уже не получится.' },
+    { id: 'c6', cat: 'shotgun', type: 'weapon', name: 'Помпа Ein-12', img: 'ПомпаEin12.webp', dmg: '1d12', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 5, recoil: 0, fireRate: 1, desc: 'Боевой помповый дробовик со складным прикладом под патроны 18,5 мм. Внутренний трубчатый магазин рассчитан на 5 зарядов. После выстрела не забудь передернуть цевье. Только не чужое.' },
+    { id: 'c7', cat: 'rifle', type: 'weapon', name: 'BW-5 "Nitro express"', img: 'BW5NitroExpress.webp', dmg: '1d20', ap: '0%', range: '25 / 50 кл', cap: '2', wt: 8, recoil: 7, fireRate: 2, desc: 'Крупнокалиберное двуствольное ружье под патроны «Nitro Express» 16x15,7 мм. Оглушительная отдача сбивает дыхание: каждый выстрел требует траты Основного и Дополнительного действий. Доступен режим залпа дуплетом, но ты ведь не настолько поехал крышей?.. *(При стрельбе дуплетом стрелок получает 1d12 урона)*.' },
+    { id: 'm1', cat: 'melee', type: 'weapon', name: 'Боевой нож', img: 'БоевойНож.webp', dmg: '1d8 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 0.5, recoil: 0, fireRate: 0, desc: 'Одноручное. Полевой армейский нож. В фронтовых реалиях понятие «выживание» всегда подразумевает ликвидацию врага, и в умелых руках этот клинок справляется со своей задачей на отлично.' },
+    { id: 'm2', cat: 'melee', type: 'weapon', name: 'Мачете', img: 'Мачете.webp', dmg: '1d12 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Клинок латинского типа. Легкий, прекрасно лежит в руке и без труда перерубает ветви, технические шланги и чужие конечности.' },
+    { id: 'm3', cat: 'melee', type: 'weapon', name: 'Тактическая дубинка', img: 'ТактическаяДубинка.webp', dmg: '1d10 + СИЛ', ap: '40%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Спецсредство Службы Безопасности. Когда-то поддерживало правопорядок на улицах, теперь проламывает черепа. Простая, прочная, с идеальным балансом. Износ брони: -2 SP за удар.' },
+    { id: 'm4', cat: 'melee', type: 'weapon', name: 'Монтировка', img: 'Монтировка.webp', dmg: '1d10 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 2, recoil: 0, fireRate: 0, desc: 'Одноручное. Универсальный фомка-инструмент: помогает срывать петли, вскрывать заклинившие переборки и крошить лицевые пластины противников. Износ брони: -2 SP за удар.' },
+    { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', img: 'ПожарныйТопор.webp', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый аварийный топор. Кажется, когда-то он был создан для спасения жизней из огня. Теперь он только отнимает их.' },
+    { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', img: 'Кувалда.webp', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 8, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый промышленный молот для разрушения бронеплит. Износ брони: -3 SP за удар. ПАТРОНЫ КОНЧИЛИСЬ — ДА И ХУЙ С НИМИ!' }
   ];
 
   let memoryStorage = {};
@@ -978,7 +978,7 @@
       list.innerHTML += `
         <div class="comp-item">
           <div class="comp-img">
-            <img src="https://via.placeholder.com/150x200.webp?text=IMG" alt="${item.name}" loading="lazy">
+            <img src="Cards/${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x200.webp?text=IMG'">
           </div>
           <div class="comp-details">
             <div>
@@ -986,7 +986,7 @@
                 <div class="comp-stats-grid">
                   <div class="comp-stat"><span>УРОН:</span> ${item.dmg}</div>
                   <div class="comp-stat"><span>ПРОБИТИЕ:</span> ${item.ap}</div>
-                  <div class="comp-stat"><span>ОТДАЧА:</span> ${item.recoil} | <span>ТЕМП:</span> ${item.fireRate}</div>
+                  <div class="comp-stat"><span>ОТДАЧА:</span> ${item.recoil} | <span>СКОРОСТРЕЛ:</span> ${item.fireRate}</div>
                   <div class="comp-stat"><span>Дальность:</span> ${item.range}</div>
                   <div class="comp-stat"><span>ВЕС:</span> ${item.wt} кг | <span>ЕМКОСТЬ:</span> ${item.cap}</div>
                 </div>
