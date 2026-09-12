@@ -160,6 +160,14 @@
   </div>
 </div>
 
+<div id="customAlertModal" class="modal-overlay" style="display: none; z-index: 10000;">
+  <div class="auth-card" style="border-color: #404652; width: 350px;">
+    <div class="box-title" style="background: #404652; color: #fff;">УВЕДОМЛЕНИЕ СИСТЕМЫ</div>
+    <div id="customAlertText" style="font-size: 13px; color: #fff; text-align: center; margin: 15px 0;"></div>
+    <button onclick="document.getElementById('customAlertModal').style.display='none'" style="width: 100%; border-color: #404652; color: #fff;">ОК</button>
+  </div>
+</div>
+
 <div class="container">
   <nav class="tabs-bar">
     <button class="tab-btn active" id="tabSheetBtn" onclick="switchTab('sheet')">Лист персонажа</button>
@@ -518,21 +526,28 @@
 </div>
 
 <script>
+  function customAlert(msg) {
+    document.getElementById('customAlertText').innerHTML = msg;
+    document.getElementById('customAlertModal').style.display = 'flex';
+  }
+
   // --- COMPENDIUM DATA ---
   const COMPENDIUM = [
-    { id: 'c1', cat: 'pistol', type: 'weapon', name: 'Базовый пистолет', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '15', wt: 1, desc: 'Легкий 8мм пистолет. Король CQB: нет штрафов в клинче.' },
-    { id: 'c2', cat: 'pistol', type: 'weapon', name: 'Type-75 "Protector"', dmg: '1d8', ap: '0%', range: '15 / 30 кл', cap: '10', wt: 1.5, desc: 'Тяжелый 10мм пистолет. Уверенный урон на средней дистанции.' },
-    { id: 'c3', cat: 'smg', type: 'weapon', name: 'Автопистолет P-33 "Platzen"', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '15', wt: 1.5, desc: 'Высокая скорострельность, ломает броню очередями.' },
-    { id: 'c4', cat: 'pistol', type: 'weapon', name: 'Револьвер "Einhorn"', dmg: '1d12', ap: '0%', range: '15 / 30 кл', cap: '5', wt: 2, desc: 'Огромный 12мм урон. Штрафов в клинче нет.' },
-    { id: 'c5', cat: 'smg', type: 'weapon', name: 'ПП Type 84 "Drache"', dmg: '1d6', ap: '0%', range: '15 / 30 кл', cap: '15', wt: 2.5, desc: 'Штраф -2 в клинче. Тактическая рулетка отдачи.' },
-    { id: 'c6', cat: 'shotgun', type: 'weapon', name: 'Помпа Ein-12', dmg: '1d12', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 3, desc: '18.5мм. Бьет кучно. Дальше 15 клеток урон исчезает.' },
-    { id: 'c7', cat: 'rifle', type: 'weapon', name: 'BW-5 "Nitro express"', dmg: '1d20', ap: '0%', range: '25 / 50 кл', cap: '2', wt: 4.5, desc: 'Крупнокалиберная переломка 16мм. Запрет стрельбы в упор.' },
-    { id: 'm1', cat: 'melee', type: 'weapon', name: 'Боевой нож', dmg: '1d8 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 0.5, desc: 'Базовое лезвие. Разрушение брони: -1 SP за удар.' },
-    { id: 'm2', cat: 'melee', type: 'weapon', name: 'Мачете', dmg: '1d12 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 1, desc: 'Смертоносно против целей без брони. Износ: -1 SP.' },
-    { id: 'm3', cat: 'melee', type: 'weapon', name: 'Тактическая дубинка', dmg: '1d10 + СИЛ', ap: '40%', range: 'Ближний бой', cap: '-', wt: 1, desc: 'Ускоренно крошит броню (-2 SP за удар).' },
-    { id: 'm4', cat: 'melee', type: 'weapon', name: 'Монтировка', dmg: '1d10 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 1.5, desc: 'Максимальный игнор брони для своего тира. Износ: -2 SP.' },
-    { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 2.5, desc: 'Двуручное. Гибрид урона и пробития. Износ: -1 SP.' },
-    { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 4, desc: 'Двуручное. Тяжелое дробящее оружие для вскрытия плит. Износ: -2 SP.' }
+    { id: 'c1', cat: 'pistol', type: 'weapon', name: 'P-33 "Platzen"', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '9', wt: 1, recoil: 4, fireRate: 3, desc: 'Легкий 8мм пистолет. Король CQB: нет штрафов в клинче.' },
+    { id: 'c2', cat: 'pistol', type: 'weapon', name: 'Type-75 "Protector"', dmg: '1d8', ap: '0%', range: '15 / 30 кл', cap: '10', wt: 1.5, recoil: 0, fireRate: 1, desc: 'Тяжелый 10мм пистолет. Уверенный урон на средней дистанции.' },
+    { id: 'c3', cat: 'pistol', type: 'weapon', name: 'Автопистолет (Прототип)', dmg: '1d6', ap: '0%', range: '6 / 12 кл', cap: '14', wt: 1.5, recoil: 3, fireRate: 4, desc: 'Инструмент противодействия милишникам. Нет штрафа в клинче.' },
+    { id: 'c4', cat: 'pistol', type: 'weapon', name: 'Револьвер "Einhorn"', dmg: '1d12+2', ap: '0%', range: '15 / 30 кл', cap: '6', wt: 2, recoil: 0, fireRate: 1, desc: 'Огромный 12мм урон. Штрафов в клинче нет.' },
+    { id: 'c5', cat: 'smg', type: 'weapon', name: 'ПП Type 84 "Drache"', dmg: '1d6', ap: '0%', range: '15 / 30 кл', cap: '15', wt: 4, recoil: 2, fireRate: 3, desc: 'Штраф -2 в клинче. Тактическая рулетка отдачи.' },
+    { id: 'c8', cat: 'smg', type: 'weapon', name: 'ПП P-65 "Nadelwerfer"', dmg: '1d6', ap: '0%', range: '10 / 25 кл', cap: '20', wt: 5, recoil: 3, fireRate: 5, desc: 'Свинцеплюй на очень близкую дистанцию. Разгрызает броню.' },
+    { id: 'c9', cat: 'smg', type: 'weapon', name: 'ПП Type 93 "Auskund"', dmg: '1d8', ap: '0%', range: '20 / 40 кл', cap: '20', wt: 4.5, recoil: 3, fireRate: 4, desc: 'Самая стабильная ПП. 10x20мм. Отличный урон и низкая отдача.' },
+    { id: 'c6', cat: 'shotgun', type: 'weapon', name: 'Помпа Ein-12', dmg: '1d12', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 5, recoil: 0, fireRate: 1, desc: '18.5мм. Бьет кучно. Дальше 15 клеток урон исчезает.' },
+    { id: 'c7', cat: 'rifle', type: 'weapon', name: 'BW-5 "Nitro express"', dmg: '1d20', ap: '0%', range: '25 / 50 кл', cap: '2', wt: 8, recoil: 7, fireRate: 2, desc: 'После двойного выстрела игроку наносится 1d10 урона. Запрет стрельбы в упор.' },
+    { id: 'm1', cat: 'melee', type: 'weapon', name: 'Боевой нож', dmg: '1d8 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 0.5, recoil: 0, fireRate: 0, desc: 'Базовое лезвие. Разрушение брони: -1 SP за удар.' },
+    { id: 'm2', cat: 'melee', type: 'weapon', name: 'Мачете', dmg: '1d12 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Смертоносно против целей без брони. Износ: -1 SP.' },
+    { id: 'm3', cat: 'melee', type: 'weapon', name: 'Тактическая дубинка', dmg: '1d10 + СИЛ', ap: '40%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Ускоренно крошит броню (-2 SP за удар).' },
+    { id: 'm4', cat: 'melee', type: 'weapon', name: 'Монтировка', dmg: '1d10 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 2, recoil: 0, fireRate: 0, desc: 'Максимальный игнор брони для своего тира. Износ: -2 SP.' },
+    { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Гибрид урона и пробития. Износ: -1 SP.' },
+    { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 8, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелое дробящее оружие для вскрытия плит. Износ: -2 SP.' }
   ];
 
   let memoryStorage = {};
@@ -770,7 +785,6 @@
 
   function drag(ev, source, id, index) { ev.dataTransfer.setData("source", source); ev.dataTransfer.setData("id", id); ev.dataTransfer.setData("index", index); }
 
-  // Свап и перетаскивание
   function dropToActiveSlot(ev) {
     ev.preventDefault();
     const targetSlotElement = ev.target.closest('.active-slot');
@@ -801,7 +815,6 @@
 
     if (movingItem) {
       if (activeSlotsArray[targetIndex] !== null) {
-          // Возврат в рюкзак при свапе
           bagItemsArray.push(activeSlotsArray[targetIndex]);
       }
       activeSlotsArray[targetIndex] = movingItem;
@@ -824,15 +837,15 @@
       const sourceId = parseInt(ev.dataTransfer.getData("id"));
       const itemIndex = bagItemsArray.findIndex(i => i.id === sourceId);
       if (itemIndex > -1) {
-        if (bagItemsArray[itemIndex].unitWeight > 1) { alert('Подсумок вмещает максимум 1 кг!'); return; }
-        if (vestItemsArray[targetIndex] !== null) { alert('Слот занят!'); return; }
+        if (bagItemsArray[itemIndex].unitWeight > 1) { customAlert('Подсумок вмещает максимум 1 кг!'); return; }
+        if (vestItemsArray[targetIndex] !== null) { customAlert('Этот подсумок уже занят!'); return; }
         let fullItem = bagItemsArray[itemIndex];
         movingItem = JSON.parse(JSON.stringify(fullItem)); movingItem.qty = 1;
         fullItem.qty -= 1; if (fullItem.qty <= 0) bagItemsArray.splice(itemIndex, 1);
       }
     } else if (source === 'active') {
        const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
-       if (activeSlotsArray[sourceIndex].unitWeight > 1) { alert('Тяжело для РПС!'); return; }
+       if (activeSlotsArray[sourceIndex].unitWeight > 1) { customAlert('Слишком большой предмет для РПС!'); return; }
        movingItem = activeSlotsArray[sourceIndex]; activeSlotsArray[sourceIndex] = null;
     }
     
@@ -915,11 +928,10 @@
             <span style="font-size:13px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${totalWt}</span>
           </div>`;
       } else {
-        // Edit Mode
         let extraFields = '';
         if (item.type === 'weapon') {
           extraFields = `<div style="display:flex; gap:4px; margin-top:4px; font-size:10px;">
-                            <input type="text" placeholder="Урон (1d8)" value="${item.dmg || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'dmg', this.value)">
+                            <input type="text" placeholder="Урон" value="${item.dmg || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'dmg', this.value)">
                             <input type="text" placeholder="Пробитие" value="${item.ap || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'ap', this.value)">
                             <input type="text" placeholder="Дальность" value="${item.range || ''}" style="flex:1;" oninput="handleBagItemInput(${item.id}, 'range', this.value)">
                          </div>`;
@@ -963,7 +975,6 @@
     const filtered = (category === 'all') ? COMPENDIUM : COMPENDIUM.filter(i => i.cat === category);
     
     filtered.forEach(item => {
-      // Lazy load placeholder for image (using a generic geometric placeholder based on logo context)
       list.innerHTML += `
         <div class="comp-item">
           <div class="comp-img">
@@ -975,9 +986,9 @@
                 <div class="comp-stats-grid">
                   <div class="comp-stat"><span>УРОН:</span> ${item.dmg}</div>
                   <div class="comp-stat"><span>ПРОБИТИЕ:</span> ${item.ap}</div>
-                  <div class="comp-stat"><span>Емкость:</span> ${item.cap}</div>
+                  <div class="comp-stat"><span>ОТДАЧА:</span> ${item.recoil} | <span>ТЕМП:</span> ${item.fireRate}</div>
                   <div class="comp-stat"><span>Дальность:</span> ${item.range}</div>
-                  <div class="comp-stat"><span>ВЕС:</span> ${item.wt} кг</div>
+                  <div class="comp-stat"><span>ВЕС:</span> ${item.wt} кг | <span>ЕМКОСТЬ:</span> ${item.cap}</div>
                 </div>
                 <div class="comp-desc">${item.desc}</div>
             </div>
@@ -991,7 +1002,6 @@
     const cItem = COMPENDIUM.find(i => i.id === id);
     if (!cItem) return;
     
-    // Ищем, есть ли уже такой предмет
     const existingIndex = bagItemsArray.findIndex(i => i.name === cItem.name && i.type === cItem.type);
     if (existingIndex > -1) {
         bagItemsArray[existingIndex].qty += 1;
@@ -1005,14 +1015,16 @@
             desc: cItem.desc,
             dmg: cItem.dmg,
             ap: cItem.ap,
-            range: cItem.range
+            range: cItem.range,
+            recoil: cItem.recoil,
+            fireRate: cItem.fireRate
         });
     }
     fastCalc();
-    alert(`[ ${cItem.name} ] добавлен в Рюкзак`);
+    customAlert(`[ ${cItem.name} ] добавлен в Рюкзак`);
   }
 
-  // --- SAVE / LOAD (СИНХРОНИЗАЦИЯ) ---
+  // --- SAVE / LOAD ---
   let isRemoteUpdating = false; 
   let saveTimeout = null;
   function autoSave() {
