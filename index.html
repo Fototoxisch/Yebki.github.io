@@ -481,7 +481,7 @@
             
             <div class="flex-row" style="font-size:10px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
               <span style="flex:1; letter-spacing:1px; margin-left:22px;">ПРЕДМЕТЫ</span>
-              <span style="width: 30px; text-align:center;">ЕМК</span>
+              <span style="width: 45px; text-align:center;">ЕМК</span>
               <span style="width: 35px; text-align:center;">КОЛ</span>
               <span style="width: 35px; text-align:center;">ВЕС</span>
               <span style="width: 40px; text-align:center;">ИТОГ</span>
@@ -574,7 +574,7 @@
     { id: 'c9', cat: 'smg', type: 'weapon', name: 'ПП Type 93 "Auskund"', img: 'ППType93Auskund.webp', dmg: '1d8', ap: '0%', range: '20 / 40 кл', cap: '20', wt: 4.5, recoil: 3, fireRate: 4, desc: 'Пожалуй, самый сбалансированный пистолет-пулемет: высокий темп стрельбы, серьезный патрон 10x20 мм и вполне комфортная отдача. Однако из-за массы и габаритов носить его в качестве запасного ствола уже не получится.' },
     // ДРОБОВИКИ & ВИНТОВКИ
     { id: 'c6', cat: 'shotgun', type: 'weapon', name: 'Помпа Ein-12', img: 'ПомпаEin12.webp', dmg: '2d10', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 5, recoil: 0, fireRate: 1, desc: 'Боевой помповый дробовик со складным прикладом под патроны 18,5 мм. Внутренний трубчатый магазин на 5 зарядов. В клинче: 2d10+4. На 1-3 кл: отталкивает на 2 кл и сбивает с ног (спасбросок Стойкости). После выстрела не забудь передернуть цевье. Только не чужое.' },
-    { id: 'c7', rifle: 'weapon', type: 'weapon', name: 'BW-5 "Nitro Express"', img: 'BW5NitroExpress.webp', dmg: '1d20', ap: '20%', range: '25 / 50 кл', cap: '2', wt: 8, recoil: 7, fireRate: 2, desc: 'Крупнокалиберное двуствольное ружье под патроны «Nitro Express» 16x15,7 мм. Оглушительная отдача сбивает дыхание: каждый выстрел требует траты Основного и Дополнительного действий. Доступен режим залпа дуплетом, но ты ведь не настолько поехал крышей?.. (При стрельбе дуплетом стрелок получает 1d12 урона).' },
+    { id: 'c7', cat: 'rifle', type: 'weapon', name: 'BW-5 "Nitro Express"', img: 'BW5NitroExpress.webp', dmg: '1d20', ap: '20%', range: '25 / 50 кл', cap: '2', wt: 8, recoil: 7, fireRate: 2, desc: 'Крупнокалиберное двуствольное ружье под патроны «Nitro Express» 16x15,7 мм. Оглушительная отдача сбивает дыхание: каждый выстрел требует траты Основного и Дополнительного действий. Доступен режим залпа дуплетом, но ты ведь не настолько поехал крышей?.. (При стрельбе дуплетом стрелок получает 1d12 урона).' },
     // МИЛИШНОЕ
     { id: 'm1', cat: 'melee', type: 'weapon', name: 'Боевой нож', img: 'БоевойНож.webp', dmg: '1d8 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 0.5, recoil: 0, fireRate: 0, desc: 'Одноручное. Полевой армейский нож. В фронтовых реалиях понятие «выживание» всегда подразумевает ликвидацию врага, и в умелых руках этот клинок справляется со своей задачей на отлично.' },
     { id: 'm2', cat: 'melee', type: 'weapon', name: 'Мачете', img: 'Мачете.webp', dmg: '1d12 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Клинок латинского типа. Легкий, прекрасно лежит в руке и без труда перерубает ветви, технические шланги и чужие конечности.' },
@@ -922,7 +922,7 @@
   function handleBagItemInput(id, field, value) {
     const item = bagItemsArray.find(i => i.id === id);
     if (item) {
-      item[field] = (field === 'unitWeight' || field === 'qty') ? (parseFloat(value) || 0) : value;
+      item[field] = (field === 'unitWeight' || field === 'qty' || field === 'ammoCur') ? (parseFloat(value) || 0) : value;
       renderInventory(); fastCalc();
     }
   }
@@ -964,38 +964,31 @@
         let wLower = w.name.toLowerCase();
         let isCompatible = false;
         
-        if (ammoLower.includes('8x22') && (wLower.includes('platzen') || wLower.includes('прототип') || wLower.includes('drache') || wLower.includes('nadelwerfer') || wLower.includes('8x22'))) isCompatible = true;
-        if (ammoLower.includes('10x20') && (wLower.includes('protector') || wLower.includes('auskund') || wLower.includes('10x20'))) isCompatible = true;
-        if (ammoLower.includes('12x35') && (wLower.includes('einhorn') || wLower.includes('12x35'))) isCompatible = true;
-        if (ammoLower.includes('16x15.7') && (wLower.includes('nitro') || wLower.includes('bw-5') || wLower.includes('16x15'))) isCompatible = true;
-        if (ammoLower.includes('18.5') && (wLower.includes('ein-12') || wLower.includes('помпа') || wLower.includes('18.5'))) isCompatible = true;
+        let wCaliber = "";
+        if (wLower.includes('platzen') || wLower.includes('прототип') || wLower.includes('drache') || wLower.includes('nadelwerfer') || wLower.includes('8x22')) { wCaliber = '8x22 мм'; if (ammoLower.includes('8x22')) isCompatible = true; }
+        else if (wLower.includes('protector') || wLower.includes('auskund') || wLower.includes('10x20')) { wCaliber = '10x20 мм'; if (ammoLower.includes('10x20')) isCompatible = true; }
+        else if (wLower.includes('einhorn') || wLower.includes('12x35')) { wCaliber = '12x35 мм'; if (ammoLower.includes('12x35')) isCompatible = true; }
+        else if (wLower.includes('nitro') || wLower.includes('bw-5') || wLower.includes('16x15')) { wCaliber = '16x15.7'; if (ammoLower.includes('16x15.7') || ammoLower.includes('nitro')) isCompatible = true; }
+        else if (wLower.includes('ein-12') || wLower.includes('помпа') || wLower.includes('18.5')) { wCaliber = '18.5 мм'; if (ammoLower.includes('18.5')) isCompatible = true; }
 
         if (!isCompatible) { customAlert("Неподходящий калибр для этого оружия!"); return; }
 
-        // Калибр подошел. Если в оружии уже есть патроны - извлекаем их обратно
-        if (w.loadedAmmo) {
+        // Если в оружии уже есть патроны - извлекаем их обратно
+        if (w.ammoCur > 0 && w.loadedAmmo) {
             bagItemsArray.push({
                 id: Date.now() + Math.floor(Math.random()*1000),
                 type: 'ammo',
                 cat: 'ammo',
-                name: `Остаток: ${w.loadedAmmo} (от ${w.name})`,
+                name: `Остаток ${wCaliber} (${w.loadedAmmo})`,
                 unitWeight: 0.2, // Условный вес неполного магазина
                 qty: 1,
-                cap: w.ammoCur || 0,
+                cap: w.cap || 0,
+                ammoCur: w.ammoCur,
                 desc: `Извлеченные патроны.`
             });
         }
 
-        // Списываем новый магазин из источника
-        if (source === 'bag') {
-            let idx = bagItemsArray.findIndex(i => i.id === sourceId);
-            bagItemsArray[idx].qty -= 1;
-            if(bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
-        } else if (source === 'vest') {
-            vestItemsArray[parseInt(ev.dataTransfer.getData("index"))] = null;
-        }
-
-        // Обновляем статистику оружия
+        // Обновляем статистику оружия под новые пули
         let ammoType = 'FMJ';
         if (ammoLower.includes('бб') || ammoLower.includes('бронебойн')) ammoType = 'ББ';
         if (ammoLower.includes('hp') || ammoLower.includes('экспансив')) ammoType = 'HP';
@@ -1023,8 +1016,41 @@
         }
         
         w.loadedAmmo = ammoType;
-        // Заряжаем количество пулек равное емкости нового магазина (или лимиту пушки, если он пустой)
-        w.ammoCur = parseInt(movingItem.cap) || parseInt(w.cap) || 0;
+        
+        // Математика заряжания
+        let packageAmmo = movingItem.ammoCur !== undefined ? parseInt(movingItem.ammoCur) : (parseInt(movingItem.cap) || 0);
+        let gunMax = parseInt(w.cap) || 0;
+        let amountToLoad = gunMax > 0 ? Math.min(packageAmmo, gunMax) : packageAmmo; // Если у пушки нет капа, заряжаем все
+        
+        w.ammoCur = amountToLoad;
+        let leftover = packageAmmo - amountToLoad;
+
+        // Обработка источника (списываем или оставляем остаток пачки)
+        if (source === 'bag') {
+            let idx = bagItemsArray.findIndex(i => i.id === sourceId);
+            if (leftover > 0) {
+                if (bagItemsArray[idx].qty > 1) {
+                    bagItemsArray[idx].qty -= 1;
+                    let splitItem = JSON.parse(JSON.stringify(bagItemsArray[idx]));
+                    splitItem.id = Date.now() + Math.floor(Math.random()*1000);
+                    splitItem.qty = 1;
+                    splitItem.ammoCur = leftover;
+                    bagItemsArray.push(splitItem);
+                } else {
+                    bagItemsArray[idx].ammoCur = leftover;
+                }
+            } else {
+                bagItemsArray[idx].qty -= 1;
+                if(bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
+            }
+        } else if (source === 'vest') {
+            let vIdx = parseInt(ev.dataTransfer.getData("index"));
+            if (leftover > 0) {
+                vestItemsArray[vIdx].ammoCur = leftover;
+            } else {
+                vestItemsArray[vIdx] = null;
+            }
+        }
         
         renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
         return;
@@ -1101,10 +1127,9 @@
     if (!activeSlotsArray[slotIndex]) return;
     let w = activeSlotsArray[slotIndex];
     let current = parseInt(w.ammoCur !== undefined ? w.ammoCur : w.cap) || 0;
-    let max = parseInt(w.cap) || 0;
     let next = current + delta;
     if (next < 0) next = 0;
-    //if (next > max) next = max;  // Снимаем жесткий лок для нестандартных магазинов
+    if (w.cap && next > parseInt(w.cap)) next = parseInt(w.cap); 
     w.ammoCur = next;
     renderActiveSlots();
     autoSave();
@@ -1178,10 +1203,11 @@
     bagItemsArray.forEach(item => {
       const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
       if (invLocked) {
+        let ammoDisp = (item.type === 'weapon' || item.type === 'ammo') ? ((item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)) + '/' + (item.cap||0)) : '-';
         grid.innerHTML += `
           <div class="inv-item-card" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)" style="padding:8px; display:flex; gap:6px; align-items:center;">
             <span class="item-name" style="flex:1;">${item.name || 'Безымянный'}</span>
-            <span style="width: 30px; text-align:center; font-weight:bold; font-size:11px; color:#4ade80;">${item.cap || '-'}</span>
+            <span style="width: 45px; text-align:center; font-weight:bold; font-size:11px; color:#4ade80;">${ammoDisp}</span>
             <span style="width: 35px; text-align:center; font-weight:bold;">${item.qty}</span>
             <span style="font-size:11px; color:var(--text-muted); width: 35px; text-align:center;">${item.unitWeight}</span>
             <span style="font-size:13px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${totalWt}</span>
@@ -1198,11 +1224,19 @@
               <input type="text" value="${item.name}" placeholder="Название..." style="flex:1;" oninput="handleBagItemInput(${item.id}, 'name', this.value)">
            </div>
         `;
-        if (item.type === 'weapon' || item.type === 'ammo') {
-          extraFields += `<div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px;">
+        if (item.type === 'weapon') {
+          extraFields += `<div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px; align-items:center;">
                             <input type="text" placeholder="Урон" value="${item.dmg || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'dmg', this.value)">
                             <input type="text" placeholder="AP" value="${item.ap || ''}" style="width:50px;" oninput="handleBagItemInput(${item.id}, 'ap', this.value)">
                             <input type="text" placeholder="Дальность" value="${item.range || ''}" style="flex:1;" oninput="handleBagItemInput(${item.id}, 'range', this.value)">
+                         </div>`;
+        }
+        if (item.type === 'weapon' || item.type === 'ammo') {
+          extraFields += `<div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px; align-items:center;">
+                            <span style="color:var(--text-muted); text-transform:uppercase;">Патроны:</span>
+                            <input type="number" placeholder="Тек." value="${item.ammoCur !== undefined ? item.ammoCur : (item.cap || '')}" style="width:40px;" oninput="handleBagItemInput(${item.id}, 'ammoCur', this.value)">
+                            <span style="color:var(--text-muted);">/</span>
+                            <input type="number" placeholder="Макс" value="${item.cap || ''}" style="width:40px;" oninput="handleBagItemInput(${item.id}, 'cap', this.value)">
                          </div>`;
         }
         extraFields += `<input type="text" placeholder="Описание..." value="${item.desc || ''}" style="width:100%; text-align:left; font-size:10px;" oninput="handleBagItemInput(${item.id}, 'desc', this.value)">`;
@@ -1211,7 +1245,6 @@
           <div class="inv-item-card" style="padding:6px; background:#161719;">
              <div class="val-interactive" style="padding:2px 4px; justify-content:flex-start; gap:8px;" onclick="toggleExpand('bag_det_${item.id}')">
                 <span style="font-weight:bold; flex:1; font-size:12px; color:var(--accent); text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name || 'Новый предмет'}</span>
-                <input type="number" value="${item.cap || ''}" placeholder="Емк" style="width:35px; height:20px; font-size:10px; color:#4ade80; border-color:#4ade80;" onclick="event.stopPropagation()" oninput="handleBagItemInput(${item.id}, 'cap', this.value)">
                 <input type="number" value="${item.qty}" min="1" style="width:35px; height:20px;" onclick="event.stopPropagation()" oninput="handleBagItemInput(${item.id}, 'qty', this.value)">
                 <input type="number" value="${item.unitWeight}" step="0.5" style="width:40px; height:20px;" onclick="event.stopPropagation()" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)">
                 <button class="item-del" onclick="event.stopPropagation(); removeBagItem(${item.id})">✕</button>
@@ -1255,7 +1288,7 @@
           id: Date.now() + Math.floor(Math.random()*100),
           type: 'ammo', cat: 'ammo',
           name: finalName, unitWeight: g.wt, qty: 1,
-          desc: opt.desc, cap: g.cap, dmg: opt.dmg, ap: opt.ap
+          desc: opt.desc, cap: g.cap, ammoCur: g.cap, dmg: opt.dmg, ap: opt.ap
       });
       fastCalc(); renderInventory();
       customAlert(`[ ${finalName} ] добавлен в Рюкзак`);
@@ -1371,7 +1404,8 @@
             dmg: cItem.dmg,
             ap: cItem.ap,
             range: cItem.range,
-            cap: cItem.cap
+            cap: cItem.cap,
+            ammoCur: 0 // Новое оружие достается незаряженным
         });
     }
     fastCalc();
