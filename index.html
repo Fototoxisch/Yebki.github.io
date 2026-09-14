@@ -115,8 +115,8 @@
     
     /* COMPENDIUM SPECIFIC CSS */
     .comp-item { display: flex; background: #111215; border: 1px solid #3a3f4b; border-radius: 3px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
-    .comp-img { width: 260px; flex-shrink: 0; background: #0b0c0f; border-right: 1px solid #3a3f4b; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;}
-    .comp-img img { width: 100%; height: 100%; max-height: 150px; object-fit: contain; opacity: 0.9; }
+    .comp-img { width: 220px; flex-shrink: 0; background: #0b0c0f; border-right: 1px solid #3a3f4b; overflow: hidden; padding: 0; position: relative; display: flex; align-items: center; justify-content: center;}
+    .comp-img img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.9; }
     .comp-details { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
     .comp-title { font-size: 15px; color: var(--accent); font-weight: bold; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;}
     .comp-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 11px; margin-bottom: 6px;}
@@ -349,19 +349,19 @@
       <!-- КОЛОНКА 3: НАВЫКИ, ПАНИКА, КАЛЬКУЛЯТОР -->
       <section class="col">
         <div class="box">
-          <div class="box-title">Калькулятор Урона</div>
+          <div class="box-title">ВХОДЯЩИЙ УРОН (КАЛЬКУЛЯТОР)</div>
           <div class="box-content" style="padding-top:8px;">
             <div style="display: flex; gap: 4px; align-items: center; justify-content: space-between;">
-              <div class="calc-col"><input type="number" id="calc_dmg" placeholder="0" style="width:40px; font-weight:bold; color:var(--accent);"><span class="calc-label">УРОН</span></div>
-              <div class="math-sign">-</div>
-              <div class="calc-col"><input type="number" id="calc_sp" placeholder="0" style="width:40px;"><span class="calc-label">БРОНЯ(SP)</span></div>
+              <div class="calc-col"><input type="number" id="calc_dmg" placeholder="0" style="width:40px; font-weight:bold; color:var(--accent);"><span class="calc-label">УРОН ВРАГА</span></div>
+              <div class="math-sign">vs</div>
+              <div class="calc-col"><input type="number" id="calc_sp_display" readonly style="width:40px; background:transparent!important; border:1px dashed #4ade80!important; color:#4ade80!important;" title="Берется из вашей брони"><span class="calc-label">ВАША БРОНЯ</span></div>
               <div class="math-sign">x</div>
-              <div class="calc-col"><input type="number" id="calc_ap" placeholder="0" style="width:40px;" title="Отрицательный AP = Дум-Дум (-50)"><span class="calc-label">AP %</span></div>
-              <button onclick="runDamageCalc()" style="padding: 6px; font-weight:bold;">СЧЕТ</button>
+              <div class="calc-col"><input type="number" id="calc_ap" placeholder="0" style="width:40px;" title="Отрицательный AP = Патроны HP (-50)"><span class="calc-label">AP %</span></div>
+              <button onclick="runDamageCalc()" style="padding: 6px; font-weight:bold;">УДАР!</button>
             </div>
             <div style="margin-top: 4px; padding: 6px; border: 1px dashed #3a3f4b; text-align: center; border-radius: 2px; background: #0b0c0f;">
-              HP: <span id="calc_out_hp" class="accent-bold" style="font-size:16px;">-</span> |
-              Броня: <span id="calc_out_sp" class="accent-bold" style="font-size:16px; color:#4ade80 !important;">-</span>
+              Урон по HP: <span id="calc_out_hp" class="accent-bold" style="font-size:16px;">-</span> |
+              Износ: <span id="calc_out_sp" class="accent-bold" style="font-size:16px; color:#4ade80 !important;">-</span>
             </div>
           </div>
         </div>
@@ -424,7 +424,7 @@
         <div class="box">
           <div class="box-title">Броня (Stopping Power)</div>
           <div class="box-content">
-            <div class="flex-row"><span>Броня (SP)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_torso" value="8" style="width:40px;" oninput="autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
+            <div class="flex-row"><span>Броня (SP)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_torso" value="10" style="width:40px;" oninput="fastCalc(); autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
           </div>
         </div>
 
@@ -500,6 +500,7 @@
           <button class="tab-btn" onclick="filterComp('shotgun', this)">ДРОБОВИКИ</button>
           <button class="tab-btn" onclick="filterComp('rifle', this)">ВИНТОВКИ</button>
           <button class="tab-btn" onclick="filterComp('melee', this)">ХОЛОДНОЕ</button>
+          <button class="tab-btn" onclick="filterComp('armor', this)">БРОНЯ</button>
           <button class="tab-btn" onclick="filterComp('ammo', this)">БОЕПРИПАСЫ</button>
         </div>
         <div id="compendiumList" style="display: flex; flex-direction: column;"></div>
@@ -531,13 +532,13 @@
   // --- КАЛЬКУЛЯТОР УРОНА ---
   function runDamageCalc() {
     let dmg = parseInt(document.getElementById('calc_dmg').value) || 0;
-    let sp = parseInt(document.getElementById('calc_sp').value) || 0;
+    let sp = parseInt(document.getElementById('sp_torso').value) || 0;
     let ap = parseInt(document.getElementById('calc_ap').value) || 0;
     
     let effArmor = Math.round(sp * (1 - (ap / 100)));
     let hpDmg = Math.max(0, dmg - effArmor);
     
-    let spDmg = (ap < 0) ? 0 : 1;
+    let spDmg = (ap < 0) ? 0 : 1; 
     if(sp === 0) spDmg = 0;
     
     document.getElementById('calc_out_hp').innerText = hpDmg;
@@ -565,21 +566,23 @@
     { id: 'm4', cat: 'melee', type: 'weapon', name: 'Монтировка', img: 'Монтировка.webp', dmg: '1d10 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 2, recoil: 0, fireRate: 0, desc: 'Одноручное. Универсальный фомка-инструмент: помогает срывать петли, вскрывать заклинившие переборки и крошить лицевые пластины противников. Износ брони: -2 SP за удар.' },
     { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', img: 'ПожарныйТопор.webp', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый аварийный топор. Кажется, когда-то он был создан для спасения жизней из огня. Теперь он только отнимает их.' },
     { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', img: 'Кувалда.webp', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 8, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый промышленный молот для разрушения бронеплит. Износ брони: -3 SP за удар. ПАТРОНЫ КОНЧИЛИСЬ — ДА И ХУЙ С НИМИ!' },
+    // БРОНЯ
+    { id: 'arm1', cat: 'armor', type: 'armor', name: 'Стандартный бронежилет СБ', img: 'БронежилетСБ.webp', sp: 10, wt: 3, desc: 'Служебный бронежилет из композитных пластин. Прекрасный вариант для тестирования калькулятора урона.' },
     // БОЕПРИПАСЫ
-    { id: 'a1', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (FMJ)', img: 'Ammo8mmFMJ.webp', dmg: 'База', ap: '0%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Стандартные армейские патроны. Рабочая лошадка. Износ брони цели: -1 SP.' },
-    { id: 'a2', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (ББ)', img: 'Ammo8mmAP.webp', dmg: 'База', ap: '20%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Редкие бронебойные патроны с твердым сердечником. Пробивают легкую защиту. Износ брони: -1 SP.' },
-    { id: 'a3', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (Дум-Дум)', img: 'Ammo8mmJHP.webp', dmg: '+2 к HP', ap: '-50%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные пули. Бесполезны против брони (0 SP износа), но разрывают открытую плоть на куски.' },
-    { id: 'a4', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (FMJ)', img: 'Ammo10mmFMJ.webp', dmg: 'База', ap: '0%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
-    { id: 'a5', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (ББ)', img: 'Ammo10mmAP.webp', dmg: 'База', ap: '30%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ брони: -1 SP.' },
-    { id: 'a6', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (Дум-Дум)', img: 'Ammo10mmJHP.webp', dmg: '+4 к HP', ap: '-50%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные 10мм пули с полостью. Наносят чудовищный урон по здоровью без брони.' },
-    { id: 'a7', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (FMJ)', img: 'Ammo12mmFMJ.webp', dmg: 'База', ap: '0%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Массивные пули для револьвера Einhorn. Износ брони цели: -1 SP.' },
-    { id: 'a8', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (ББ)', img: 'Ammo12mmAP.webp', dmg: 'База', ap: '30%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
-    { id: 'a9', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (Дум-Дум)', img: 'Ammo12mmJHP.webp', dmg: '+4 к HP', ap: '-50%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у небронированной цели.' },
-    { id: 'a10', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (FMJ)', img: 'Ammo16mmFMJ.webp', dmg: 'База', ap: '20%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ брони: -1 SP.' },
-    { id: 'a11', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (ББ)', img: 'Ammo16mmAP.webp', dmg: 'База', ap: '40%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Элитные бронебойные болванки 16мм. Игнорируют почти половину любой брони. Износ брони: -1 SP.' },
-    { id: 'a12', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (Дум-Дум)', img: 'Ammo16mmJHP.webp', dmg: '+1d12 к HP', ap: '-50%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' },
-    { id: 'a13', cat: 'ammo', type: 'ammo', name: 'Пачка 18.5 мм (Картечь)', img: 'Ammo18mmBuck.webp', dmg: 'База', ap: '0%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Стандартная картечь для помпы. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
-    { id: 'a14', cat: 'ammo', type: 'ammo', name: 'Пачка 18.5 мм (Слаг)', img: 'Ammo18mmSlug.webp', dmg: '1d12', ap: '50%', range: '20 / 30 кл', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
+    { id: 'a1', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (FMJ)', img: '', dmg: 'База', ap: '0%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Стандартные армейские патроны. Рабочая лошадка. Износ брони цели: -1 SP.' },
+    { id: 'a2', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (ББ)', img: '', dmg: 'База', ap: '20%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Редкие бронебойные патроны с твердым сердечником. Пробивают легкую защиту. Износ брони: -1 SP.' },
+    { id: 'a3', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (HP)', img: '', dmg: '+2 к HP', ap: '-50%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные пули. Бесполезны против брони (0 SP износа), но разрывают открытую плоть на куски.' },
+    { id: 'a4', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (FMJ)', img: '', dmg: 'База', ap: '0%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
+    { id: 'a5', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (ББ)', img: '', dmg: 'База', ap: '30%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ брони: -1 SP.' },
+    { id: 'a6', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (HP)', img: '', dmg: '+4 к HP', ap: '-50%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные 10мм пули с полостью. Наносят чудовищный урон по здоровью без брони.' },
+    { id: 'a7', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (FMJ)', img: '', dmg: 'База', ap: '0%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
+    { id: 'a8', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (ББ)', img: '', dmg: 'База', ap: '30%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
+    { id: 'a9', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (HP)', img: '', dmg: '+4 к HP', ap: '-50%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у небронированной цели.' },
+    { id: 'a10', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (FMJ)', img: '', dmg: 'База', ap: '20%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ брони: -1 SP.' },
+    { id: 'a11', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (ББ)', img: '', dmg: 'База', ap: '40%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Элитные бронебойные болванки 16мм. Игнорируют почти половину любой брони. Износ брони: -1 SP.' },
+    { id: 'a12', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (HP)', img: '', dmg: '+1d12 к HP', ap: '-50%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' },
+    { id: 'a13', cat: 'ammo', type: 'ammo', name: 'Пачка 18.5 мм (Картечь)', img: '', dmg: 'База', ap: '0%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Стандартная картечь для помпы. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
+    { id: 'a14', cat: 'ammo', type: 'ammo', name: 'Пачка 18.5 мм (Слаг)', img: '', dmg: '1d12', ap: '50%', range: '20 / 30 кл', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
   ];
 
   let memoryStorage = {};
@@ -720,7 +723,7 @@
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
       if (inp.type === 'number') {
         if (inp.id.includes('hp')) inp.value = 25;
-        else if (inp.id.includes('sp_')) inp.value = 8;
+        else if (inp.id.includes('sp_')) inp.value = 10;
         else if (inp.id === 'spd_base') inp.value = 6;
         else if (inp.id.includes('_base')) inp.value = 10;
         else inp.value = 0;
@@ -734,30 +737,38 @@
     const statIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const vals = {};
     statIds.forEach(id => {
-      const total = (parseInt(document.getElementById(id + '_base').value) || 0) + (parseInt(document.getElementById(id + '_bonus').value) || 0);
-      document.getElementById(id + '_display').innerText = total;
+      const elBase = document.getElementById(id + '_base');
+      const elBonus = document.getElementById(id + '_bonus');
+      const total = (parseInt(elBase?.value) || 0) + (parseInt(elBonus?.value) || 0);
+      const elDisp = document.getElementById(id + '_display');
+      if(elDisp) elDisp.innerText = total;
       vals[id] = total;
       const mod = getMod(total);
-      document.getElementById(id + '_m').innerText = (mod >= 0 ? '+' : '') + mod;
+      const elM = document.getElementById(id + '_m');
+      if(elM) elM.innerText = (mod >= 0 ? '+' : '') + mod;
     });
 
-    document.getElementById('strain_limit').innerText = vals.con;
-    const maxHp = parseInt(document.getElementById('hp_max').value) || 25;
-    const curHp = parseInt(document.getElementById('hp_cur').value) || 0;
+    const elStrain = document.getElementById('strain_limit');
+    if(elStrain) elStrain.innerText = vals.con || 10;
+    
+    const maxHp = parseInt(document.getElementById('hp_max')?.value) || 25;
+    const curHp = parseInt(document.getElementById('hp_cur')?.value) || 0;
     const ratio = curHp / maxHp;
     
     document.querySelectorAll('.wound-track div').forEach(el => el.classList.remove('wound-active'));
-    if (curHp <= 0) document.getElementById('w_dead').classList.add('wound-active');
-    else if (ratio <= 0.25) document.getElementById('w_mortal').classList.add('wound-active');
-    else if (ratio <= 0.50) document.getElementById('w_critical').classList.add('wound-active');
-    else if (ratio <= 0.75) document.getElementById('w_serious').classList.add('wound-active');
-    else document.getElementById('w_light').classList.add('wound-active');
+    if (curHp <= 0) document.getElementById('w_dead')?.classList.add('wound-active');
+    else if (ratio <= 0.25) document.getElementById('w_mortal')?.classList.add('wound-active');
+    else if (ratio <= 0.50) document.getElementById('w_critical')?.classList.add('wound-active');
+    else if (ratio <= 0.75) document.getElementById('w_serious')?.classList.add('wound-active');
+    else document.getElementById('w_light')?.classList.add('wound-active');
 
-    const carryTotal = vals.str + vals.con + (parseInt(document.getElementById('carry_misc').value) || 0);
-    document.getElementById('carry_total').value = carryTotal;
+    const carryMisc = parseInt(document.getElementById('carry_misc')?.value) || 0;
+    const carryTotal = (vals.str || 0) + (vals.con || 0) + carryMisc;
+    const elCarryTotal = document.getElementById('carry_total');
+    if(elCarryTotal) elCarryTotal.value = carryTotal;
 
-    const spdBase = parseInt(document.getElementById('spd_base').value) || 6;
-    const armorPen = parseInt(document.getElementById('armor_penalty').value) || 0;
+    const spdBase = parseInt(document.getElementById('spd_base')?.value) || 6;
+    const armorPen = parseInt(document.getElementById('armor_penalty')?.value) || 0;
 
     let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
     let vestWeight = vestItemsArray.reduce((sum, item) => sum + (item ? item.unitWeight : 0), 0);
@@ -773,22 +784,41 @@
         else if (overlimit <= 15) weightPenalty = -4;
         else weightPenalty = -99;
     }
-    document.getElementById('weight_penalty').value = weightPenalty;
+    const elWtPen = document.getElementById('weight_penalty');
+    if(elWtPen) elWtPen.value = weightPenalty;
     
     const totalGearPenalty = armorPen + weightPenalty;
-    document.getElementById('spd_gear').value = totalGearPenalty;
-    document.getElementById('penalty_total').value = totalGearPenalty;
+    const elSpdGear = document.getElementById('spd_gear');
+    if(elSpdGear) elSpdGear.value = totalGearPenalty;
     
-    let finalSpeed = spdBase + totalGearPenalty + (parseInt(document.getElementById('spd_misc').value) || 0);
+    const elPenTot = document.getElementById('penalty_total');
+    if(elPenTot) elPenTot.value = totalGearPenalty;
+    
+    const spdMisc = parseInt(document.getElementById('spd_misc')?.value) || 0;
+    let finalSpeed = spdBase + totalGearPenalty + spdMisc;
     if(weightPenalty === -99) finalSpeed = 0;
 
-    document.getElementById('overencumber_alert').style.display = (weightPenalty === -99) ? 'block' : 'none';
-    document.getElementById('spd_total').value = Math.max(0, finalSpeed);
-    document.getElementById('spd_main_display').innerText = Math.max(0, finalSpeed) + ' кл';
-    document.getElementById('top_speed_display').innerText = totalGearPenalty + ' кл';
+    const elOverEnc = document.getElementById('overencumber_alert');
+    if(elOverEnc) elOverEnc.style.display = (weightPenalty === -99) ? 'block' : 'none';
+    
+    const elSpdTot = document.getElementById('spd_total');
+    if(elSpdTot) elSpdTot.value = Math.max(0, finalSpeed);
+    
+    const elSpdMain = document.getElementById('spd_main_display');
+    if(elSpdMain) elSpdMain.innerText = Math.max(0, finalSpeed) + ' кл';
+    
+    const elTopSpd = document.getElementById('top_speed_display');
+    if(elTopSpd) elTopSpd.innerText = totalGearPenalty + ' кл';
     
     const displayWt = Math.round(totalWeight * 10) / 10;
-    document.getElementById('top_weight_display').innerText = `${displayWt} / ${carryTotal} кг`;
+    const elTopWt = document.getElementById('top_weight_display');
+    if(elTopWt) elTopWt.innerText = `${displayWt} / ${carryTotal} кг`;
+    
+    // Синхронизация брони для калькулятора
+    const currentSp = document.getElementById('sp_torso')?.value || 0;
+    const elCalcSpDisp = document.getElementById('calc_sp_display');
+    if (elCalcSpDisp) elCalcSpDisp.value = currentSp;
+
     autoSave();
   }
 
@@ -962,7 +992,7 @@
     w.ammoCur = w.cap || 0;
     
     if(ammoName.includes('бб') || ammoName.includes('бронебойн')) { w.loadedAmmo = 'ББ'; }
-    else if(ammoName.includes('дум-дум') || ammoName.includes('экспансив')) { w.loadedAmmo = 'Дум-Дум'; }
+    else if(ammoName.includes('hp') || ammoName.includes('экспансив')) { w.loadedAmmo = 'HP'; }
     else if(ammoName.includes('слаг')) { w.loadedAmmo = 'Слаг'; }
     else if(ammoName.includes('картечь')) { w.loadedAmmo = 'Картечь'; }
     else { w.loadedAmmo = 'FMJ'; }
@@ -977,7 +1007,7 @@
       if(w.baseAp === '20%') w.ap = '40%';
       else if(w.baseAp === '0%' && (w.name.includes('Protector') || w.name.includes('Auskund') || w.name.includes('Einhorn'))) w.ap = '30%';
       else if(w.baseAp === '0%') w.ap = '20%';
-    } else if (w.loadedAmmo === 'Дум-Дум') {
+    } else if (w.loadedAmmo === 'HP') {
       w.ap = '-50%';
       if(w.baseDmg.includes('1d20')) w.dmg = w.baseDmg + ' + 1d12';
       else if(w.baseDmg.includes('1d8') || w.baseDmg.includes('1d12')) w.dmg = w.baseDmg + ' + 4';
@@ -1112,9 +1142,51 @@
   function renderCompendium(category) {
     const list = document.getElementById('compendiumList');
     list.innerHTML = '';
-    const filtered = (category === 'all') ? COMPENDIUM : COMPENDIUM.filter(i => i.cat === category);
     
-    const fallbackSVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='200' style='background:%230b0c0f'%3E%3Ctext x='50%25' y='50%25' fill='%233a3f4b' font-family='monospace' font-size='12' text-anchor='middle' dominant-baseline='middle'%3E%5B NO DATA %5D%3C/text%3E%3C/svg%3E";
+    // БОЕПРИПАСЫ (Отрисовка таблицей)
+    if (category === 'ammo') {
+        const filtered = COMPENDIUM.filter(i => i.cat === 'ammo');
+        let tableHtml = `
+        <table class="admin-table" style="width: 100%; text-align: left; background: #111215; border-radius: 3px; overflow: hidden; margin-top: 4px;">
+          <thead>
+            <tr>
+              <th style="padding: 8px; text-align: left; color: var(--accent);">ТИП / КАЛИБР</th>
+              <th style="padding: 8px;">СВОЙСТВА</th>
+              <th style="padding: 8px; width: 40px;">ЕМК</th>
+              <th style="padding: 8px; width: 40px;">ВЕС</th>
+              <th style="padding: 8px; width: 85px;"></th>
+            </tr>
+          </thead>
+          <tbody>`;
+          
+        filtered.forEach(item => {
+            tableHtml += `
+            <tr style="border-bottom: 1px solid #3a3f4b;">
+              <td style="padding: 8px;">
+                <b style="color: #fff;">${item.name}</b>
+                <div style="font-size: 10px; color: #aaa; margin-top: 4px; line-height: 1.3;">${item.desc}</div>
+              </td>
+              <td style="padding: 8px; text-align: center;">
+                <span style="color: #4ade80; font-weight: bold;">${item.ap}</span><br>
+                <span style="font-size:10px; color: var(--text-muted);">${item.dmg}</span>
+              </td>
+              <td style="padding: 8px; text-align: center; font-weight: bold;">${item.cap}</td>
+              <td style="padding: 8px; text-align: center;">${item.wt}</td>
+              <td style="padding: 8px; text-align: center;">
+                <button onclick="addToBagFromComp('${item.id}')" style="font-size: 10px; padding: 4px 6px; width: 100%; border-color: var(--accent); color: var(--accent);">+ РЮКЗАК</button>
+              </td>
+            </tr>`;
+        });
+        tableHtml += `</tbody></table>`;
+        list.innerHTML = tableHtml;
+        return;
+    }
+
+    // ОРУЖИЕ И БРОНЯ
+    const filtered = (category === 'all') ? COMPENDIUM.filter(i => i.cat !== 'ammo') : COMPENDIUM.filter(i => i.cat === category);
+    
+    // Надежный SVG fallback без разрыва кавычек
+    const fallbackSVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22 style=%22background:%230b0c0f; border:1px dashed %23404652;%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23c92a2a%22 font-family=%22monospace%22 font-size=%2222%22 font-weight=%22bold%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E%5B НЕТ ФОТО %5D%3C/text%3E%3C/svg%3E";
 
     filtered.forEach(item => {
       let extraStats = '';
@@ -1123,6 +1195,9 @@
           <div class="comp-stat"><span>ОТДАЧА:</span> ${item.recoil} | <span>СКОРОСТРЕЛ:</span> ${item.fireRate}</div>
           <div class="comp-stat"><span>Дальность:</span> ${item.range}</div>
         `;
+      }
+      if(item.type === 'armor') {
+         extraStats = `<div class="comp-stat"><span>БРОНЯ (SP):</span> ${item.sp}</div>`;
       }
       
       list.innerHTML += `
@@ -1134,10 +1209,10 @@
             <div>
                 <div class="comp-title">${item.name}</div>
                 <div class="comp-stats-grid">
-                  <div class="comp-stat"><span>УРОН:</span> ${item.dmg}</div>
-                  <div class="comp-stat"><span>ПРОБИТИЕ:</span> ${item.ap}</div>
+                  ${item.dmg ? `<div class="comp-stat"><span>УРОН:</span> ${item.dmg}</div>` : ''}
+                  ${item.ap ? `<div class="comp-stat"><span>ПРОБИТИЕ:</span> ${item.ap}</div>` : ''}
                   ${extraStats}
-                  <div class="comp-stat"><span>ВЕС:</span> ${item.wt} кг | <span>ЕМКОСТЬ:</span> ${item.cap}</div>
+                  <div class="comp-stat"><span>ВЕС:</span> ${item.wt} кг ${item.cap ? `| <span>ЕМКОСТЬ:</span> ${item.cap}` : ''}</div>
                 </div>
                 <div class="comp-desc">${item.desc}</div>
             </div>
