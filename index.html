@@ -115,7 +115,7 @@
     
     /* COMPENDIUM SPECIFIC CSS */
     .comp-item { display: flex; background: #111215; border: 1px solid #3a3f4b; border-radius: 3px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
-    .comp-img { width: 220px; flex-shrink: 0; background: #0b0c0f; border-right: 1px solid #3a3f4b; overflow: hidden; padding: 0; position: relative; display: flex; align-items: center; justify-content: center;}
+    .comp-img { width: 260px; flex-shrink: 0; background: #0b0c0f; border-right: 1px solid #3a3f4b; overflow: hidden; padding: 0; position: relative; display: flex; align-items: center; justify-content: center;}
     .comp-img img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.9; }
     .comp-details { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
     .comp-title { font-size: 15px; color: var(--accent); font-weight: bold; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;}
@@ -165,19 +165,6 @@
     <div class="box-title" style="background: #404652; color: #fff;">УВЕДОМЛЕНИЕ СИСТЕМЫ</div>
     <div id="customAlertText" style="font-size: 13px; color: #fff; text-align: center; margin: 15px 0;"></div>
     <button onclick="document.getElementById('customAlertModal').style.display='none'" style="width: 100%; border-color: #404652; color: #fff;">ОК</button>
-  </div>
-</div>
-
-<div id="reloadModal" class="modal-overlay" style="display: none; z-index: 10000;">
-  <div class="auth-card" style="border-color: #404652; width: 350px;">
-    <div class="box-title" style="background: #404652; color: #fff;">ПЕРЕЗАРЯДКА ОРУЖИЯ</div>
-    <div id="reloadWeaponName" style="font-size: 13px; color: var(--accent); text-align: center; margin-top: 10px; font-weight: bold;"></div>
-    <div style="font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 15px;">Выберите боеприпасы из инвентаря</div>
-    <select id="reloadAmmoSelect" style="width: 100%; margin-bottom: 15px;"></select>
-    <div style="display: flex; gap: 6px;">
-      <button onclick="confirmReload()" style="flex:1;">ЗАРЯДИТЬ</button>
-      <button onclick="closeReloadModal()" style="flex:1; border-color: #404652; color: #aaa;">ОТМЕНА</button>
-    </div>
   </div>
 </div>
 
@@ -357,7 +344,7 @@
               <div class="calc-col"><input type="number" id="calc_sp_display" readonly style="width:40px; background:transparent!important; border:1px dashed #4ade80!important; color:#4ade80!important;" title="Берется из вашей брони"><span class="calc-label">ВАША БРОНЯ</span></div>
               <div class="math-sign">x</div>
               <div class="calc-col"><input type="number" id="calc_ap" placeholder="0" style="width:40px;" title="Отрицательный AP = Патроны HP (-50)"><span class="calc-label">AP %</span></div>
-              <button onclick="runDamageCalc()" style="padding: 6px; font-weight:bold;">УДАР!</button>
+              <button onclick="runDamageCalc()" style="padding: 6px; font-weight:bold; border-color:var(--accent); color:var(--accent);">УДАР!</button>
             </div>
             <div style="margin-top: 4px; padding: 6px; border: 1px dashed #3a3f4b; text-align: center; border-radius: 2px; background: #0b0c0f;">
               Урон по HP: <span id="calc_out_hp" class="accent-bold" style="font-size:16px;">-</span> |
@@ -430,6 +417,7 @@
 
         <div class="box">
           <div class="box-title">Фиксаторы (Активные слоты)</div>
+          <div style="font-size:10px; color:var(--text-muted); text-align:center; padding: 2px 0; border-bottom: 1px dashed #3a3f4b;">Перетащите патроны в слот для перезарядки</div>
           <div class="box-content" style="gap: 4px; padding: 4px;" id="active_slots_container">
             <!-- Сюда JS отрисует 2 слота для оружия -->
           </div>
@@ -535,6 +523,8 @@
     let sp = parseInt(document.getElementById('sp_torso').value) || 0;
     let ap = parseInt(document.getElementById('calc_ap').value) || 0;
     
+    if (dmg <= 0) return;
+
     let effArmor = Math.round(sp * (1 - (ap / 100)));
     let hpDmg = Math.max(0, dmg - effArmor);
     
@@ -543,6 +533,14 @@
     
     document.getElementById('calc_out_hp').innerText = hpDmg;
     document.getElementById('calc_out_sp').innerText = (spDmg > 0 ? '-' + spDmg + ' SP' : '0 SP');
+
+    // Автоматическое применение урона
+    let curHp = parseInt(document.getElementById('hp_cur').value) || 0;
+    document.getElementById('hp_cur').value = Math.max(0, curHp - hpDmg);
+    document.getElementById('sp_torso').value = Math.max(0, sp - spDmg);
+    
+    fastCalc();
+    customAlert(`Удар нанесен!<br><br>Потеряно: <b>${hpDmg} HP</b><br>Износ брони: <b>${spDmg > 0 ? '-' + spDmg : '0'} SP</b>`);
   }
 
   // --- COMPENDIUM DATA ---
@@ -567,22 +565,35 @@
     { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', img: 'ПожарныйТопор.webp', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый аварийный топор. Кажется, когда-то он был создан для спасения жизней из огня. Теперь он только отнимает их.' },
     { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', img: 'Кувалда.webp', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 8, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый промышленный молот для разрушения бронеплит. Износ брони: -3 SP за удар. ПАТРОНЫ КОНЧИЛИСЬ — ДА И ХУЙ С НИМИ!' },
     // БРОНЯ
-    { id: 'arm1', cat: 'armor', type: 'armor', name: 'Стандартный бронежилет СБ', img: 'БронежилетСБ.webp', sp: 10, wt: 3, desc: 'Служебный бронежилет из композитных пластин. Прекрасный вариант для тестирования калькулятора урона.' },
-    // БОЕПРИПАСЫ
-    { id: 'a1', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (FMJ)', img: '', dmg: 'База', ap: '0%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Стандартные армейские патроны. Рабочая лошадка. Износ брони цели: -1 SP.' },
-    { id: 'a2', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (ББ)', img: '', dmg: 'База', ap: '20%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Редкие бронебойные патроны с твердым сердечником. Пробивают легкую защиту. Износ брони: -1 SP.' },
-    { id: 'a3', cat: 'ammo', type: 'ammo', name: 'Магазин 8x22 мм (HP)', img: '', dmg: '+2 к HP', ap: '-50%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные пули. Бесполезны против брони (0 SP износа), но разрывают открытую плоть на куски.' },
-    { id: 'a4', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (FMJ)', img: '', dmg: 'База', ap: '0%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
-    { id: 'a5', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (ББ)', img: '', dmg: 'База', ap: '30%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ брони: -1 SP.' },
-    { id: 'a6', cat: 'ammo', type: 'ammo', name: 'Магазин 10x20 мм (HP)', img: '', dmg: '+4 к HP', ap: '-50%', range: '-', cap: '15', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные 10мм пули с полостью. Наносят чудовищный урон по здоровью без брони.' },
-    { id: 'a7', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (FMJ)', img: '', dmg: 'База', ap: '0%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
-    { id: 'a8', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (ББ)', img: '', dmg: 'База', ap: '30%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
-    { id: 'a9', cat: 'ammo', type: 'ammo', name: 'Обойма 12x35 мм (HP)', img: '', dmg: '+4 к HP', ap: '-50%', range: '-', cap: '6', wt: 0.5, recoil: '-', fireRate: '-', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у небронированной цели.' },
-    { id: 'a10', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (FMJ)', img: '', dmg: 'База', ap: '20%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ брони: -1 SP.' },
-    { id: 'a11', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (ББ)', img: '', dmg: 'База', ap: '40%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Элитные бронебойные болванки 16мм. Игнорируют почти половину любой брони. Износ брони: -1 SP.' },
-    { id: 'a12', cat: 'ammo', type: 'ammo', name: 'Пачка 16x15.7 "Nitro" (HP)', img: '', dmg: '+1d12 к HP', ap: '-50%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' },
-    { id: 'a13', cat: 'ammo', type: 'ammo', name: 'Пачка 18.5 мм (Картечь)', img: '', dmg: 'База', ap: '0%', range: '-', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Стандартная картечь для помпы. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
-    { id: 'a14', cat: 'ammo', type: 'ammo', name: 'Пачка 18.5 мм (Слаг)', img: '', dmg: '1d12', ap: '50%', range: '20 / 30 кл', cap: '10', wt: 1, recoil: '-', fireRate: '-', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
+    { id: 'arm1', cat: 'armor', type: 'armor', name: 'Стандартный бронежилет СБ', img: 'БронежилетСБ.webp', sp: 10, wt: 3, desc: 'Служебный бронежилет из композитных пластин. Прекрасный вариант для тестирования калькулятора урона.' }
+  ];
+
+  // АГРЕГАТОР БОЕПРИПАСОВ (Для умной таблицы)
+  const AMMO_GROUPS = [
+    { cal: '8x22 мм', wt: 0.5, cap: 15, options: [
+      { id: 'a1', name: 'Магазин 8x22 мм (FMJ)', type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные армейские патроны. Рабочая лошадка. Износ брони цели: -1 SP.' },
+      { id: 'a2', name: 'Магазин 8x22 мм (ББ)', type: 'ББ', dmg: 'База', ap: '20%', desc: 'Редкие бронебойные патроны с твердым сердечником. Пробивают легкую защиту. Износ брони: -1 SP.' },
+      { id: 'a3', name: 'Магазин 8x22 мм (HP)', type: 'HP', dmg: '+2 к HP', ap: '-50%', desc: 'Экспансивные пули. Бесполезны против брони (0 SP износа), но разрывают открытую плоть на куски.' }
+    ]},
+    { cal: '10x20 мм', wt: 0.5, cap: 15, options: [
+      { id: 'a4', name: 'Магазин 10x20 мм (FMJ)', type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
+      { id: 'a5', name: 'Магазин 10x20 мм (ББ)', type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ брони: -1 SP.' },
+      { id: 'a6', name: 'Магазин 10x20 мм (HP)', type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 10мм пули с полостью. Наносят чудовищный урон по здоровью без брони.' }
+    ]},
+    { cal: '12x35 мм', wt: 0.5, cap: 6, options: [
+      { id: 'a7', name: 'Обойма 12x35 мм (FMJ)', type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
+      { id: 'a8', name: 'Обойма 12x35 мм (ББ)', type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
+      { id: 'a9', name: 'Обойма 12x35 мм (HP)', type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у небронированной цели.' }
+    ]},
+    { cal: '16x15.7 "Nitro"', wt: 1, cap: 10, options: [
+      { id: 'a10', name: 'Пачка 16x15.7 (FMJ)', type: 'FMJ', dmg: 'База', ap: '20%', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ брони: -1 SP.' },
+      { id: 'a11', name: 'Пачка 16x15.7 (ББ)', type: 'ББ', dmg: 'База', ap: '40%', desc: 'Элитные бронебойные болванки 16мм. Игнорируют почти половину любой брони. Износ брони: -1 SP.' },
+      { id: 'a12', name: 'Пачка 16x15.7 (HP)', type: 'HP', dmg: '+1d12 к HP', ap: '-50%', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' }
+    ]},
+    { cal: '18.5 мм', wt: 1, cap: 10, options: [
+      { id: 'a13', name: 'Пачка 18.5 мм (Картечь)', type: 'Картечь', dmg: 'База', ap: '0%', desc: 'Стандартная картечь для помпы. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
+      { id: 'a14', name: 'Пачка 18.5 мм (Слаг)', type: 'Слаг', dmg: '1d12', ap: '50%', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
+    ]}
   ];
 
   let memoryStorage = {};
@@ -814,7 +825,6 @@
     const elTopWt = document.getElementById('top_weight_display');
     if(elTopWt) elTopWt.innerText = `${displayWt} / ${carryTotal} кг`;
     
-    // Синхронизация брони для калькулятора
     const currentSp = document.getElementById('sp_torso')?.value || 0;
     const elCalcSpDisp = document.getElementById('calc_sp_display');
     if (elCalcSpDisp) elCalcSpDisp.value = currentSp;
@@ -827,7 +837,12 @@
   function toggleVestLock() { vestLocked = !vestLocked; const btn = document.getElementById('vest_toggle_btn'); btn.innerHTML = vestLocked ? '🔒' : '🔓'; renderVest(); renderActiveSlots();}
 
   // --- DRAG AND DROP & INVENTORY LOGIC ---
-  function addBagItem() { bagItemsArray.push({ id: Date.now(), type: 'item', name: '', unitWeight: 1, qty: 1, desc: '' }); renderInventory(); fastCalc(); }
+  function addBagItem() { 
+      let newId = Date.now();
+      bagItemsArray.push({ id: newId, type: 'item', name: '', unitWeight: 1, qty: 1, desc: '' }); 
+      renderInventory(); fastCalc(); 
+      setTimeout(() => toggleExpand('bag_det_' + newId), 50);
+  }
   function handleBagItemInput(id, field, value) {
     const item = bagItemsArray.find(i => i.id === id);
     if (item) {
@@ -853,22 +868,87 @@
     const targetIndex = parseInt(targetSlotElement.getAttribute('data-index'));
     const source = ev.dataTransfer.getData("source");
     
+    let sourceId = parseInt(ev.dataTransfer.getData("id"));
     let movingItem = null;
     
+    // Предпросмотр перед физическим удалением
     if (source === 'bag') {
-      const sourceId = parseInt(ev.dataTransfer.getData("id"));
-      const itemIndex = bagItemsArray.findIndex(i => i.id === sourceId);
-      if (itemIndex > -1) {
-        let fullItem = bagItemsArray[itemIndex];
-        movingItem = JSON.parse(JSON.stringify(fullItem));
-        movingItem.qty = 1; 
-        fullItem.qty -= 1;
-        if (fullItem.qty <= 0) bagItemsArray.splice(itemIndex, 1);
-      }
+      movingItem = bagItemsArray.find(i => i.id === sourceId);
     } else if (source === 'vest') {
-      const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
-      movingItem = vestItemsArray[sourceIndex];
-      vestItemsArray[sourceIndex] = null;
+      movingItem = vestItemsArray[parseInt(ev.dataTransfer.getData("index"))];
+    }
+
+    if (!movingItem) return;
+
+    // ПЕРЕЗАРЯДКА: Если тащим патроны на слот с пушкой
+    if (movingItem.type === 'ammo') {
+        let w = activeSlotsArray[targetIndex];
+        if(!w || w.type !== 'weapon') { customAlert("В этом слоте нет оружия!"); return; }
+        
+        let ammoLower = movingItem.name.toLowerCase();
+        let wLower = w.name.toLowerCase();
+        let isCompatible = false;
+        
+        if (ammoLower.includes('8x22') && (wLower.includes('platzen') || wLower.includes('прототип') || wLower.includes('drache') || wLower.includes('nadelwerfer') || wLower.includes('8x22'))) isCompatible = true;
+        if (ammoLower.includes('10x20') && (wLower.includes('protector') || wLower.includes('auskund') || wLower.includes('10x20'))) isCompatible = true;
+        if (ammoLower.includes('12x35') && (wLower.includes('einhorn') || wLower.includes('12x35'))) isCompatible = true;
+        if (ammoLower.includes('16x15.7') && (wLower.includes('nitro') || wLower.includes('bw-5') || wLower.includes('16x15'))) isCompatible = true;
+        if (ammoLower.includes('18.5') && (wLower.includes('ein-12') || wLower.includes('помпа') || wLower.includes('18.5'))) isCompatible = true;
+
+        if (!isCompatible) { customAlert("Неподходящий калибр для этого оружия!"); return; }
+
+        // Калибр подошел, списываем пачку
+        if (source === 'bag') {
+            let idx = bagItemsArray.findIndex(i => i.id === sourceId);
+            bagItemsArray[idx].qty -= 1;
+            if(bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
+        } else if (source === 'vest') {
+            vestItemsArray[parseInt(ev.dataTransfer.getData("index"))] = null;
+        }
+
+        // Обновляем статистику оружия
+        let ammoType = 'FMJ';
+        if (ammoLower.includes('бб')) ammoType = 'ББ';
+        if (ammoLower.includes('hp')) ammoType = 'HP';
+        if (ammoLower.includes('слаг')) ammoType = 'Слаг';
+        if (ammoLower.includes('картечь')) ammoType = 'Картечь';
+
+        if(!w.baseDmg) w.baseDmg = w.dmg;
+        if(!w.baseAp) w.baseAp = w.ap;
+        
+        w.dmg = w.baseDmg; w.ap = w.baseAp;
+
+        if (ammoType === 'ББ') {
+          if(w.baseAp === '20%') w.ap = '40%';
+          else if(w.baseAp === '0%' && (w.name.includes('Protector') || w.name.includes('Auskund') || w.name.includes('Einhorn'))) w.ap = '30%';
+          else if(w.baseAp === '0%') w.ap = '20%';
+        } else if (ammoType === 'HP') {
+          w.ap = '-50%';
+          if(w.baseDmg.includes('1d20')) w.dmg = w.baseDmg + ' + 1d12';
+          else if(w.baseDmg.includes('1d8') || w.baseDmg.includes('1d12')) w.dmg = w.baseDmg + ' + 4';
+          else w.dmg = w.baseDmg + ' + 2';
+        } else if (ammoType === 'Слаг') {
+          w.dmg = '1d12'; w.ap = '50%';
+        } else if (ammoType === 'Картечь') {
+          w.dmg = '2d10'; w.ap = '0%';
+        }
+        
+        w.loadedAmmo = ammoType;
+        w.ammoCur = w.cap || 0;
+        
+        renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
+        return;
+    }
+
+    // СВАП ИЛИ УСТАНОВКА ПУШКИ
+    if (source === 'bag') {
+      let idx = bagItemsArray.findIndex(i => i.id === sourceId);
+      movingItem = JSON.parse(JSON.stringify(bagItemsArray[idx]));
+      movingItem.qty = 1; 
+      bagItemsArray[idx].qty -= 1;
+      if (bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
+    } else if (source === 'vest') {
+      vestItemsArray[parseInt(ev.dataTransfer.getData("index"))] = null;
     }
 
     if (movingItem) {
@@ -927,7 +1007,6 @@
     renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
   }
 
-  // --- AMMO CONTROLS ---
   function changeAmmo(slotIndex, delta) {
     if (!activeSlotsArray[slotIndex]) return;
     let w = activeSlotsArray[slotIndex];
@@ -939,86 +1018,6 @@
     w.ammoCur = next;
     renderActiveSlots();
     autoSave();
-  }
-
-  let currentReloadSlot = -1;
-  function openReloadModal(slotIndex) {
-    currentReloadSlot = slotIndex;
-    let w = activeSlotsArray[slotIndex];
-    document.getElementById('reloadWeaponName').innerText = w.name;
-    
-    let select = document.getElementById('reloadAmmoSelect');
-    select.innerHTML = '<option value="">-- Выберите боеприпасы --</option>';
-    
-    bagItemsArray.forEach(item => {
-      if (item.type === 'ammo' || item.name.toLowerCase().includes('магазин') || item.name.toLowerCase().includes('пачка') || item.name.toLowerCase().includes('обойма')) {
-        select.innerHTML += `<option value="bag_${item.id}">${item.name} (${item.qty} шт.)</option>`;
-      }
-    });
-    
-    vestItemsArray.forEach((item, idx) => {
-      if (item && (item.type === 'ammo' || item.name.toLowerCase().includes('магазин') || item.name.toLowerCase().includes('пачка') || item.name.toLowerCase().includes('обойма'))) {
-        select.innerHTML += `<option value="vest_${idx}">${item.name} [РПС]</option>`;
-      }
-    });
-    
-    document.getElementById('reloadModal').style.display = 'flex';
-  }
-
-  function closeReloadModal() { document.getElementById('reloadModal').style.display = 'none'; currentReloadSlot = -1; }
-
-  function confirmReload() {
-    let selectVal = document.getElementById('reloadAmmoSelect').value;
-    if (!selectVal) { customAlert('Выберите боеприпасы!'); return; }
-    
-    let w = activeSlotsArray[currentReloadSlot];
-    if (!w) return;
-    
-    if (selectVal.startsWith('bag_')) {
-      let id = parseInt(selectVal.split('_')[1]);
-      let idx = bagItemsArray.findIndex(i => i.id === id);
-      if(idx > -1) {
-        bagItemsArray[idx].qty -= 1;
-        if(bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
-      }
-    } else if (selectVal.startsWith('vest_')) {
-      let idx = parseInt(selectVal.split('_')[1]);
-      vestItemsArray[idx] = null;
-    }
-    
-    let selElement = document.getElementById('reloadAmmoSelect');
-    let ammoName = selElement.options[selElement.selectedIndex].text.toLowerCase();
-    
-    w.ammoCur = w.cap || 0;
-    
-    if(ammoName.includes('бб') || ammoName.includes('бронебойн')) { w.loadedAmmo = 'ББ'; }
-    else if(ammoName.includes('hp') || ammoName.includes('экспансив')) { w.loadedAmmo = 'HP'; }
-    else if(ammoName.includes('слаг')) { w.loadedAmmo = 'Слаг'; }
-    else if(ammoName.includes('картечь')) { w.loadedAmmo = 'Картечь'; }
-    else { w.loadedAmmo = 'FMJ'; }
-
-    if(!w.baseDmg) w.baseDmg = w.dmg;
-    if(!w.baseAp) w.baseAp = w.ap;
-    
-    w.dmg = w.baseDmg;
-    w.ap = w.baseAp;
-    
-    if (w.loadedAmmo === 'ББ') {
-      if(w.baseAp === '20%') w.ap = '40%';
-      else if(w.baseAp === '0%' && (w.name.includes('Protector') || w.name.includes('Auskund') || w.name.includes('Einhorn'))) w.ap = '30%';
-      else if(w.baseAp === '0%') w.ap = '20%';
-    } else if (w.loadedAmmo === 'HP') {
-      w.ap = '-50%';
-      if(w.baseDmg.includes('1d20')) w.dmg = w.baseDmg + ' + 1d12';
-      else if(w.baseDmg.includes('1d8') || w.baseDmg.includes('1d12')) w.dmg = w.baseDmg + ' + 4';
-      else w.dmg = w.baseDmg + ' + 2';
-    } else if (w.loadedAmmo === 'Слаг') {
-      w.dmg = '1d12'; w.ap = '50%';
-    } else if (w.loadedAmmo === 'Картечь') {
-      w.dmg = '2d10'; w.ap = '0%';
-    }
-
-    closeReloadModal(); renderActiveSlots(); renderInventory(); renderVest(); fastCalc();
   }
 
   function renderActiveSlots() {
@@ -1047,7 +1046,6 @@
                         <button onclick="changeAmmo(${i}, -1)" style="padding:2px 8px; font-weight:bold; font-size:14px; border-color:var(--accent); color:var(--accent);">-1</button>
                         <span style="font-weight:bold; font-size:13px; color:#fff;">${curAm} / ${item.cap || 0}</span>
                         <button onclick="changeAmmo(${i}, 1)" style="padding:2px 8px; font-weight:bold; font-size:14px;">+1</button>
-                        <button onclick="openReloadModal(${i})" style="padding:2px 6px;">ЗАМЕНА</button>
                     </div>`;
                 }
             }
@@ -1097,18 +1095,8 @@
             <span style="font-size:13px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${totalWt}</span>
           </div>`;
       } else {
-        let extraFields = '';
-        if (item.type === 'weapon') {
-          extraFields = `<div style="display:flex; gap:4px; margin-top:4px; font-size:10px;">
-                            <input type="text" placeholder="Урон" value="${item.dmg || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'dmg', this.value)">
-                            <input type="text" placeholder="Пробитие" value="${item.ap || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'ap', this.value)">
-                            <input type="text" placeholder="Дальность" value="${item.range || ''}" style="flex:1;" oninput="handleBagItemInput(${item.id}, 'range', this.value)">
-                         </div>`;
-        }
-        
-        grid.innerHTML += `
-          <div class="inv-item-card" style="padding:6px; background:#161719;">
-            <div style="display:flex; gap:4px; align-items:center; margin-bottom:4px;">
+        let extraFields = `
+           <div style="display:flex; gap:4px; align-items:center; margin-bottom:4px;">
               <select onchange="handleBagItemInput(${item.id}, 'type', this.value)" style="width:70px; padding:2px; font-size:10px;">
                  <option value="item" ${item.type==='item'?'selected':''}>Предмет</option>
                  <option value="weapon" ${item.type==='weapon'?'selected':''}>Оружие</option>
@@ -1116,12 +1104,30 @@
                  <option value="ammo" ${item.type==='ammo'?'selected':''}>Патроны</option>
               </select>
               <input type="text" value="${item.name}" placeholder="Название..." style="flex:1;" oninput="handleBagItemInput(${item.id}, 'name', this.value)">
-              <input type="number" value="${item.qty}" min="1" style="width:35px;" oninput="handleBagItemInput(${item.id}, 'qty', this.value)">
-              <input type="number" value="${item.unitWeight}" step="0.5" style="width:40px;" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)">
-              <button class="item-del" onclick="removeBagItem(${item.id})">✕</button>
-            </div>
-            ${extraFields}
-            <input type="text" placeholder="Описание..." value="${item.desc || ''}" style="width:100%; margin-top:4px; text-align:left; font-size:10px;" oninput="handleBagItemInput(${item.id}, 'desc', this.value)">
+           </div>
+        `;
+        if (item.type === 'weapon') {
+          extraFields += `<div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px;">
+                            <input type="text" placeholder="Урон" value="${item.dmg || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'dmg', this.value)">
+                            <input type="text" placeholder="Пробитие" value="${item.ap || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'ap', this.value)">
+                            <input type="text" placeholder="Дальность" value="${item.range || ''}" style="flex:1;" oninput="handleBagItemInput(${item.id}, 'range', this.value)">
+                         </div>`;
+        }
+        extraFields += `<input type="text" placeholder="Описание..." value="${item.desc || ''}" style="width:100%; text-align:left; font-size:10px;" oninput="handleBagItemInput(${item.id}, 'desc', this.value)">`;
+        
+        grid.innerHTML += `
+          <div class="inv-item-card" style="padding:6px; background:#161719;">
+             <div class="val-interactive" style="padding:2px 4px; justify-content:flex-start; gap:8px;" onclick="toggleExpand('bag_det_${item.id}')">
+                <span style="font-weight:bold; flex:1; font-size:12px; color:var(--accent); text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name || 'Новый предмет'}</span>
+                <input type="number" value="${item.qty}" min="1" style="width:35px; height:20px;" onclick="event.stopPropagation()" oninput="handleBagItemInput(${item.id}, 'qty', this.value)">
+                <input type="number" value="${item.unitWeight}" step="0.5" style="width:40px; height:20px;" onclick="event.stopPropagation()" oninput="handleBagItemInput(${item.id}, 'unitWeight', this.value)">
+                <button class="item-del" onclick="event.stopPropagation(); removeBagItem(${item.id})">✕</button>
+             </div>
+             <div id="bag_det_${item.id}" class="expandable" style="background:#0e0f12; border-radius:3px; margin-top:4px;" onclick="event.stopPropagation()">
+                <div style="padding: 6px; border-top:1px dashed #3a3f4b;">
+                    ${extraFields}
+                </div>
+             </div>
           </div>`;
       }
     });
@@ -1139,18 +1145,38 @@
     renderCompendium(cat);
   }
 
+  window.updateAmmoInfo = function(gIdx) {
+     let sel = document.getElementById(`ammo_sel_${gIdx}`);
+     let opt = AMMO_GROUPS[gIdx].options[sel.value];
+     document.getElementById(`ammo_desc_${gIdx}`).innerHTML = `${opt.desc}<br><span style="color:#4ade80; font-weight:bold;">${opt.ap}</span> | <b>${opt.dmg}</b>`;
+  }
+  
+  window.addAmmoGroupToBag = function(gIdx) {
+     let sel = document.getElementById(`ammo_sel_${gIdx}`);
+     let opt = AMMO_GROUPS[gIdx].options[sel.value];
+     let g = AMMO_GROUPS[gIdx];
+     
+     bagItemsArray.push({
+          id: Date.now() + Math.floor(Math.random()*100),
+          type: 'ammo', cat: 'ammo',
+          name: opt.name, unitWeight: g.wt, qty: 1,
+          desc: opt.desc, cap: g.cap
+      });
+      fastCalc(); renderInventory();
+      customAlert(`[ ${opt.name} ] добавлен в Рюкзак`);
+  }
+
   function renderCompendium(category) {
     const list = document.getElementById('compendiumList');
     list.innerHTML = '';
     
-    // БОЕПРИПАСЫ (Отрисовка таблицей)
+    // БОЕПРИПАСЫ (Таблица с селектом)
     if (category === 'ammo') {
-        const filtered = COMPENDIUM.filter(i => i.cat === 'ammo');
         let tableHtml = `
         <table class="admin-table" style="width: 100%; text-align: left; background: #111215; border-radius: 3px; overflow: hidden; margin-top: 4px;">
           <thead>
             <tr>
-              <th style="padding: 8px; text-align: left; color: var(--accent);">ТИП / КАЛИБР</th>
+              <th style="padding: 8px; text-align: left; color: var(--accent);">КАЛИБР / ТИП</th>
               <th style="padding: 8px;">СВОЙСТВА</th>
               <th style="padding: 8px; width: 40px;">ЕМК</th>
               <th style="padding: 8px; width: 40px;">ВЕС</th>
@@ -1159,21 +1185,26 @@
           </thead>
           <tbody>`;
           
-        filtered.forEach(item => {
+        AMMO_GROUPS.forEach((g, gIdx) => {
+            let optionsHtml = g.options.map((o, oIdx) => `<option value="${oIdx}">${o.type}</option>`).join('');
+            let def = g.options[0];
             tableHtml += `
             <tr style="border-bottom: 1px solid #3a3f4b;">
-              <td style="padding: 8px;">
-                <b style="color: #fff;">${item.name}</b>
-                <div style="font-size: 10px; color: #aaa; margin-top: 4px; line-height: 1.3;">${item.desc}</div>
+              <td style="padding: 8px; vertical-align: top;">
+                <b style="color: #fff; font-size:13px;">${g.cal}</b>
+                <div style="margin-top: 6px;">
+                  <select id="ammo_sel_${gIdx}" style="width: 100%; text-align: left;" onchange="updateAmmoInfo(${gIdx})">
+                    ${optionsHtml}
+                  </select>
+                </div>
               </td>
-              <td style="padding: 8px; text-align: center;">
-                <span style="color: #4ade80; font-weight: bold;">${item.ap}</span><br>
-                <span style="font-size:10px; color: var(--text-muted);">${item.dmg}</span>
+              <td style="padding: 8px; font-size:10px; color:#aaa; line-height:1.4;" id="ammo_desc_${gIdx}">
+                ${def.desc}<br><span style="color: #4ade80; font-weight:bold;">${def.ap}</span> | <b>${def.dmg}</b>
               </td>
-              <td style="padding: 8px; text-align: center; font-weight: bold;">${item.cap}</td>
-              <td style="padding: 8px; text-align: center;">${item.wt}</td>
-              <td style="padding: 8px; text-align: center;">
-                <button onclick="addToBagFromComp('${item.id}')" style="font-size: 10px; padding: 4px 6px; width: 100%; border-color: var(--accent); color: var(--accent);">+ РЮКЗАК</button>
+              <td style="padding: 8px; text-align: center; font-weight: bold;">${g.cap}</td>
+              <td style="padding: 8px; text-align: center;">${g.wt}</td>
+              <td style="padding: 8px; text-align: center; vertical-align: middle;">
+                <button onclick="addAmmoGroupToBag(${gIdx})" style="font-size: 10px; padding: 6px; width: 100%; border-color: var(--accent); color: var(--accent);">+ РЮКЗАК</button>
               </td>
             </tr>`;
         });
@@ -1183,9 +1214,7 @@
     }
 
     // ОРУЖИЕ И БРОНЯ
-    const filtered = (category === 'all') ? COMPENDIUM.filter(i => i.cat !== 'ammo') : COMPENDIUM.filter(i => i.cat === category);
-    
-    // Надежный SVG fallback без разрыва кавычек
+    const filtered = (category === 'all') ? COMPENDIUM : COMPENDIUM.filter(i => i.cat === category);
     const fallbackSVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22 style=%22background:%230b0c0f; border:1px dashed %23404652;%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23c92a2a%22 font-family=%22monospace%22 font-size=%2222%22 font-weight=%22bold%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E%5B НЕТ ФОТО %5D%3C/text%3E%3C/svg%3E";
 
     filtered.forEach(item => {
