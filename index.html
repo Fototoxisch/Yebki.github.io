@@ -563,52 +563,51 @@
 
   // --- COMPENDIUM DATA ---
   const COMPENDIUM = [
-    // ПИСТОЛЕТЫ
-    { id: 'c1', cat: 'pistol', type: 'weapon', name: 'P-33 "Platzen"', img: 'P33Platzen.webp', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '9', wt: 1, recoil: 4, fireRate: 3, desc: 'Наверное, самый распространенный огнестрел на фронте. Способен вести огонь очередями, но контролировать отдачу из-за компактных размеров крайне сложно. Скромная ёмкость магазина не даст сильно разогнаться. Калибр: 8x22 мм.' },
-    { id: 'c3', cat: 'pistol', type: 'weapon', name: 'Автопистолет (Прототип)', img: 'АвтопистолетПрототип.webp', dmg: '1d6', ap: '0%', range: '6 / 12 кл', cap: '14', wt: 1.5, recoil: 3, fireRate: 4, desc: 'Экспериментальная и довольно спорная конструкция. Бешеная скорострельность позволяет мгновенно дать прикурить врагу, подобравшемуся слишком близко, однако пули быстро теряют убойную силу, а совладать с подбросом ствола в силах не каждый. Стреляет патронами 8x22 мм.' },
-    { id: 'c2', cat: 'pistol', type: 'weapon', name: 'Type-75 "Protector"', img: 'Type75Protector.webp', dmg: '1d8', ap: '0%', range: '15 / 30 кл', cap: '10', wt: 1.5, recoil: 0, fireRate: 1, desc: 'Табельный полуавтоматический пистолет. Проверенная временем классика: прост, надежен и безотказен в любых условиях. Стреляет патронами 10x20 мм.' },
-    { id: 'c4', cat: 'pistol', type: 'weapon', name: 'Револьвер "Einhorn"', img: 'РевольверEinhorn.webp', dmg: '1d12+2', ap: '0%', range: '15 / 30 кл', cap: '6', wt: 2, recoil: 0, fireRate: 1, desc: 'Крупнокалиберный самовзводный револьвер на 6 патронов 12х35 мм, заслуживший прозвище «ручная мортира». Чудовищная останавливающая сила. Тяжелые синяки на ладони — самое легкое, чем отделается стрелок. Если держите его в руках, вы либо палач, либо в шаге от собственной гибели.' },
-    // ПП
-    { id: 'c5', cat: 'smg', type: 'weapon', name: 'ПП Type 84 "Drache"', img: 'ППType84Drache.webp', dmg: '1d6', ap: '0%', range: '15 / 30 кл', cap: '15', wt: 4, recoil: 2, fireRate: 3, desc: 'Один из самых массовых пистолетов-пулеметов. Оснащен складным прикладом. Стреляет фиксированными очередями по три компактных патрона 8х22 мм, автоматический режим отсутствует. Отдача слабая, оружие предельно просто в освоении.' },
-    { id: 'c8', cat: 'smg', type: 'weapon', name: 'ПП P-65 "Nadelwerfer"', img: 'ППP65Nadelwerfer.webp', dmg: '1d6', ap: '0%', range: '10 / 25 кл', cap: '20', wt: 5, recoil: 3, fireRate: 5, desc: 'Увесистый пистолет-пулемет ближнего боя. Несмотря на малые габариты и скромный калибр 8x22 мм, способен моментально залить цель свинцом и буквально сгрызть броню. Обратная сторона — бешеная отдача, с которой сладит только опытный стрелок, прожорливость к боезапасу и крошечная эффективная дистанция.' },
-    { id: 'c9', cat: 'smg', type: 'weapon', name: 'ПП Type 93 "Auskund"', img: 'ППType93Auskund.webp', dmg: '1d8', ap: '0%', range: '20 / 40 кл', cap: '20', wt: 4.5, recoil: 3, fireRate: 4, desc: 'Пожалуй, самый сбалансированный пистолет-пулемет: высокий темп стрельбы, серьезный патрон 10x20 мм и вполне комфортная отдача. Однако из-за массы и габаритов носить его в качестве запасного ствола уже не получится.' },
-    // ДРОБОВИКИ & ВИНТОВКИ
-    { id: 'c6', cat: 'shotgun', type: 'weapon', name: 'Помпа Ein-12', img: 'ПомпаEin12.webp', dmg: '2d10', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 5, recoil: 0, fireRate: 1, desc: 'Боевой помповый дробовик со складным прикладом под патроны 18,5 мм. Внутренний трубчатый магазин на 5 зарядов. В клинче: 2d10+4. На 1-3 кл: отталкивает на 2 кл и сбивает с ног (спасбросок Стойкости). После выстрела не забудь передернуть цевье. Только не чужое.' },
-    { id: 'c7', cat: 'rifle', type: 'weapon', name: 'BW-5 "Nitro Express"', img: 'BW5NitroExpress.webp', dmg: '1d20', ap: '20%', range: '25 / 50 кл', cap: '2', wt: 8, recoil: 7, fireRate: 2, desc: 'Крупнокалиберное двуствольное ружье под патроны «Nitro Express» 16x15,7 мм. Оглушительная отдача сбивает дыхание: каждый выстрел требует траты Основного и Дополнительного действий. Доступен режим залпа дуплетом, но ты ведь не настолько поехал крышей?.. (При стрельбе дуплетом стрелок получает 1d12 урона).' },
+    // ПИСТОЛЕТЫ & ПП (Магазинное питание)
+    { id: 'c1', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'P-33 "Platzen"', img: 'P33Platzen.webp', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '9', wt: 1, recoil: 4, fireRate: 3, desc: 'Наверное, самый распространенный огнестрел на фронте. Способен вести огонь очередями, но контролировать отдачу из-за компактных размеров крайне сложно.' },
+    { id: 'c3', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'Автопистолет (Прототип)', img: 'АвтопистолетПрототип.webp', dmg: '1d6', ap: '0%', range: '6 / 12 кл', cap: '14', wt: 1.5, recoil: 3, fireRate: 4, desc: 'Экспериментальная и довольно спорная конструкция. Бешеная скорострельность.' },
+    { id: 'c2', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'Type-75 "Protector"', img: 'Type75Protector.webp', dmg: '1d8', ap: '0%', range: '15 / 30 кл', cap: '10', wt: 1.5, recoil: 0, fireRate: 1, desc: 'Табельный полуавтоматический пистолет. Проверенная временем классика: прост, надежен.' },
+    { id: 'c5', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП Type 84 "Drache"', img: 'ППType84Drache.webp', dmg: '1d6', ap: '0%', range: '15 / 30 кл', cap: '15', wt: 4, recoil: 2, fireRate: 3, desc: 'Один из самых массовых пистолетов-пулеметов. Оснащен складным прикладом. Отсечки по 3 патрона.' },
+    { id: 'c8', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП P-65 "Nadelwerfer"', img: 'ППP65Nadelwerfer.webp', dmg: '1d6', ap: '0%', range: '10 / 25 кл', cap: '20', wt: 5, recoil: 3, fireRate: 5, desc: 'Увесистый пистолет-пулемет ближнего боя. Бешеная отдача, крошечная дистанция.' },
+    { id: 'c9', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП Type 93 "Auskund"', img: 'ППType93Auskund.webp', dmg: '1d8', ap: '0%', range: '20 / 40 кл', cap: '20', wt: 4.5, recoil: 3, fireRate: 4, desc: 'Сбалансированный пистолет-пулемет: высокий темп стрельбы, серьезный патрон.' },
+    // ДРОБОВИКИ & РЕВОЛЬВЕРЫ & СЛОНОБОИ (Поштучное питание)
+    { id: 'c4', cat: 'pistol', type: 'weapon', reloadType: 'internal', name: 'Револьвер "Einhorn"', img: 'РевольверEinhorn.webp', dmg: '1d12+2', ap: '0%', range: '15 / 30 кл', cap: '6', wt: 2, recoil: 0, fireRate: 1, desc: 'Крупнокалиберный самовзводный револьвер на 6 патронов, «ручная мортира».' },
+    { id: 'c6', cat: 'shotgun', type: 'weapon', reloadType: 'internal', name: 'Помпа Ein-12', img: 'ПомпаEin12.webp', dmg: '2d10', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 5, recoil: 0, fireRate: 1, desc: 'В клинче: 2d10+4. На 1-3 кл: отталкивает на 2 кл и сбивает с ног (спасбросок Стойкости).' },
+    { id: 'c7', cat: 'rifle', type: 'weapon', reloadType: 'internal', name: 'BW-5 "Nitro Express"', img: 'BW5NitroExpress.webp', dmg: '1d20', ap: '20%', range: '25 / 50 кл', cap: '2', wt: 8, recoil: 7, fireRate: 2, desc: 'Выстрел требует траты Основного и Доп действий. При стрельбе дуплетом 1d12 урона по себе.' },
     // МИЛИШНОЕ
-    { id: 'm1', cat: 'melee', type: 'weapon', name: 'Боевой нож', img: 'БоевойНож.webp', dmg: '1d8 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 0.5, recoil: 0, fireRate: 0, desc: 'Одноручное. Полевой армейский нож. В фронтовых реалиях понятие «выживание» всегда подразумевает ликвидацию врага, и в умелых руках этот клинок справляется со своей задачей на отлично.' },
-    { id: 'm2', cat: 'melee', type: 'weapon', name: 'Мачете', img: 'Мачете.webp', dmg: '1d12 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Клинок латинского типа. Легкий, прекрасно лежит в руке и без труда перерубает ветви, технические шланги и чужие конечности.' },
-    { id: 'm3', cat: 'melee', type: 'weapon', name: 'EIG-1 riot control baton', img: 'ТактическаяДубинка.webp', dmg: '1d10 + СИЛ', ap: '40%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Спецсредство Службы Безопасности. Когда-то поддерживало правопорядок на улицах, теперь проламывает черепа. Простая, прочная, с идеальным балансом. Износ брони: -2 SP за удар.' },
-    { id: 'm4', cat: 'melee', type: 'weapon', name: 'Монтировка', img: 'Монтировка.webp', dmg: '1d10 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 2, recoil: 0, fireRate: 0, desc: 'Одноручное. Универсальный фомка-инструмент: помогает срывать петли, вскрывать заклинившие переборки и крошить лицевые пластины противников. Износ брони: -2 SP за удар.' },
-    { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', img: 'ПожарныйТопор.webp', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый аварийный топор. Кажется, когда-то он был создан для спасения жизней из огня. Теперь он только отнимает их.' },
-    { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', img: 'Кувалда.webp', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 8, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый промышленный молот для разрушения бронеплит. Износ брони: -3 SP за удар. ПАТРОНЫ КОНЧИЛИСЬ — ДА И ХУЙ С НИМИ!' },
+    { id: 'm1', cat: 'melee', type: 'weapon', name: 'Боевой нож', img: 'БоевойНож.webp', dmg: '1d8 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 0.5, recoil: 0, fireRate: 0, desc: 'Одноручное. Полевой армейский нож. Износ брони: -1 SP за удар.' },
+    { id: 'm2', cat: 'melee', type: 'weapon', name: 'Мачете', img: 'Мачете.webp', dmg: '1d12 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Клинок латинского типа. Износ брони: -1 SP за удар.' },
+    { id: 'm3', cat: 'melee', type: 'weapon', name: 'EIG-1 riot control baton', img: 'ТактическаяДубинка.webp', dmg: '1d10 + СИЛ', ap: '40%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Спецсредство СБ. Простая, прочная. Износ брони: -2 SP за удар.' },
+    { id: 'm4', cat: 'melee', type: 'weapon', name: 'Монтировка', img: 'Монтировка.webp', dmg: '1d10 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 2, recoil: 0, fireRate: 0, desc: 'Одноручное. Универсальный фомка-инструмент. Износ брони: -2 SP за удар.' },
+    { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', img: 'ПожарныйТопор.webp', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый аварийный топор. Износ брони: -1 SP за удар.' },
+    { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', img: 'Кувалда.webp', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 8, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый промышленный молот. Износ брони: -3 SP за удар.' },
     // БРОНЯ
     { id: 'arm1', cat: 'armor', type: 'armor', name: 'Стандартный бронежилет СБ', img: 'БронежилетСБ.webp', sp: 10, wt: 3, desc: 'Служебный бронежилет из композитных пластин. Прекрасный вариант для тестирования калькулятора урона.' }
   ];
 
-  // АГРЕГАТОР БОЕПРИПАСОВ (Для умной таблицы)
+  // АГРЕГАТОР БОЕПРИПАСОВ
   const AMMO_GROUPS = [
-    { cal: '8x22 мм', wt: 0.5, cap: 15, options: [
+    { cal: '8x22 мм', wt: 0.5, cap: 15, defaultKind: 'magazine', options: [
       { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Рабочая лошадка. Износ брони цели: -1 SP.' },
       { type: 'ББ', dmg: 'База', ap: '20%', desc: 'Бронебойные патроны с сердечником. Пробивают легкую защиту. Износ: -1 SP.' },
       { type: 'HP', dmg: '+2 к HP', ap: '-50%', desc: 'Экспансивные пули. Не ломают броню (0 SP износа), рвут открытую плоть.' }
     ]},
-    { cal: '10x20 мм', wt: 0.5, cap: 15, options: [
+    { cal: '10x20 мм', wt: 0.5, cap: 15, defaultKind: 'magazine', options: [
       { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
       { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ: -1 SP.' },
       { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 10мм пули. Наносят чудовищный урон по здоровью без брони.' }
     ]},
-    { cal: '12x35 мм', wt: 0.5, cap: 6, options: [
+    { cal: '12x35 мм', wt: 0.5, cap: 6, defaultKind: 'box', options: [
       { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
       { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
       { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у незащищенной цели.' }
     ]},
-    { cal: '16x15.7 "Nitro"', wt: 1, cap: 10, options: [
+    { cal: '16x15.7 "Nitro"', wt: 1, cap: 10, defaultKind: 'box', options: [
       { type: 'FMJ', dmg: 'База', ap: '20%', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ: -1 SP.' },
       { type: 'ББ', dmg: 'База', ap: '40%', desc: 'Элитные бронебойные болванки 16мм. Игнорируют половину любой брони. Износ: -1 SP.' },
       { type: 'HP', dmg: '+1d12', ap: '-50%', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' }
     ]},
-    { cal: '18.5 мм', wt: 1, cap: 10, options: [
+    { cal: '18.5 мм', wt: 1, cap: 10, defaultKind: 'box', options: [
       { type: 'Картечь', dmg: 'База', ap: '0%', desc: 'Стандартная картечь. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
       { type: 'Слаг', dmg: '1d12', ap: '50%', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
     ]}
@@ -822,7 +821,7 @@
   function adminLoadSheet(sheetId, owner) {
     currentSheetId = sheetId;
     currentSheetOwner = owner;
-    lastUpdatedAt = null; // сброс таймера при смене персонажа
+    lastUpdatedAt = null; 
     safeSetItem('vineta_active_id', currentSheetId);
     switchTab('sheet');
     loadData(true);
@@ -925,7 +924,7 @@
   // --- DRAG AND DROP & INVENTORY LOGIC ---
   function addBagItem() { 
       let newId = Date.now();
-      bagItemsArray.push({ id: newId, type: 'item', name: '', unitWeight: 1, qty: 1, cap: '', desc: '' }); 
+      bagItemsArray.push({ id: newId, type: 'item', name: '', unitWeight: 1, qty: 1, cap: '', desc: '', ammoKind: 'box' }); 
       renderInventory(); fastCalc(); 
       setTimeout(() => toggleExpand('bag_det_' + newId), 50);
   }
@@ -945,7 +944,6 @@
 
   function drag(ev, source, id, index) { ev.dataTransfer.setData("source", source); ev.dataTransfer.setData("id", id); ev.dataTransfer.setData("index", index); }
 
-  // ФУНКЦИЯ ИЗВЛЕЧЕНИЯ МАГАЗИНА / ПАЧКИ
   function unloadWeapon(slotIndex) {
       let w = activeSlotsArray[slotIndex];
       if (!w || !w.loadedAmmo || (w.ammoCur || 0) <= 0) {
@@ -953,36 +951,28 @@
            return;
       }
       
-      const wLower = w.name.toLowerCase();
-      const isMagWeapon = !(wLower.includes('einhorn') || wLower.includes('ein-12') || wLower.includes('помпа') || wLower.includes('bw-5') || wLower.includes('nitro'));
+      let wReloadType = w.reloadType || 'mag';
+      let spawnKind = wReloadType === 'mag' ? 'magazine' : 'box';
+      let ffStr = spawnKind === 'magazine' ? 'Магазин' : 'Пачка';
+      let wCaliber = w.loadedAmmoCaliber || '';
 
-      let restoredName = w.loadedAmmoName;
-      if (!restoredName || !isMagWeapon) {
-          let ff = isMagWeapon ? 'Магазин' : (wLower.includes('einhorn') ? 'Обойма' : 'Пачка');
-          let cal = w.loadedAmmoCaliber || '';
-          restoredName = `${ff} ${cal} (${w.loadedAmmo})`;
-      }
-      
-      let spawnCap = w.loadedAmmoMaxCap;
-      if (!isMagWeapon) {
-          spawnCap = (w.loadedAmmoCaliber && w.loadedAmmoCaliber.includes('12x35')) ? 6 : ((w.loadedAmmoCaliber && (w.loadedAmmoCaliber.includes('8x22') || w.loadedAmmoCaliber.includes('10x20'))) ? 15 : 10);
-      }
+      let restoredName = w.loadedAmmoName || `${ffStr} ${wCaliber} (${w.loadedAmmo})`;
       
       bagItemsArray.push({
           id: Date.now() + Math.floor(Math.random()*1000),
           type: 'ammo',
           cat: 'ammo',
+          ammoKind: spawnKind,
           name: restoredName,
-          unitWeight: w.loadedAmmoWt || (isMagWeapon ? 0.5 : 0.2),
+          unitWeight: w.loadedAmmoWt || (wReloadType === 'mag' ? 0.5 : 0.2),
           qty: 1,
-          cap: spawnCap || w.cap || w.ammoCur, 
+          cap: w.loadedAmmoMaxCap || w.cap || w.ammoCur, 
           ammoCur: w.ammoCur,
           desc: `Извлечено из оружия.`
       });
       
       w.loadedAmmo = null;
       w.loadedAmmoName = null;
-      w.loadedAmmoFF = null;
       w.loadedAmmoCaliber = null;
       w.loadedAmmoWt = null;
       w.loadedAmmoMaxCap = null;
@@ -1014,11 +1004,22 @@
 
     if (!movingItem) return;
 
-    // ПЕРЕЗАРЯДКА ОРУЖИЯ
     if (movingItem.type === 'ammo') {
         let w = activeSlotsArray[targetIndex];
         if(!w || w.type !== 'weapon') { customAlert("В этом слоте нет оружия!"); return; }
         
+        let wReloadType = w.reloadType || 'mag';
+        let itemAmmoKind = movingItem.ammoKind || 'magazine';
+
+        if (wReloadType === 'mag' && itemAmmoKind !== 'magazine') {
+            customAlert("Это оружие заряжается только магазинами целиком!");
+            return;
+        }
+        if (wReloadType === 'internal' && itemAmmoKind !== 'box') {
+            customAlert("Это оружие заряжается поштучно из пачки!");
+            return;
+        }
+
         let ammoLower = movingItem.name.toLowerCase();
         let wLower = w.name.toLowerCase();
         let isCompatible = false;
@@ -1038,30 +1039,21 @@
         if (ammoLower.includes('слаг')) ammoType = 'Слаг';
         if (ammoLower.includes('картечь')) ammoType = 'Картечь';
 
-        let isMagItem = ammoLower.includes('магазин');
-        let isMagWeapon = !(wLower.includes('einhorn') || wLower.includes('ein-12') || wLower.includes('помпа') || wLower.includes('bw-5') || wLower.includes('nitro'));
-        let availableAmmo = movingItem.ammoCur !== undefined ? parseInt(movingItem.ammoCur) : parseInt(movingItem.cap || 0);
-
         if(!w.baseDmg) w.baseDmg = w.dmg;
         if(!w.baseAp) w.baseAp = w.ap;
         if(!w.baseCap) w.baseCap = w.cap;
 
-        // Валидация типа питания
-        if (isMagWeapon && !isMagItem) {
-            customAlert("Это оружие заряжается только целыми магазинами!");
-            return;
-        }
-        if (!isMagWeapon && isMagItem) {
-            customAlert("Это оружие заряжается поштучно (из пачки или обоймы)!");
-            return;
-        }
+        let availableAmmo = movingItem.ammoCur !== undefined ? parseInt(movingItem.ammoCur) : parseInt(movingItem.cap || 0);
 
-        // ЛОГИКА ДЛЯ МАГАЗИНОВ
-        if (isMagWeapon) {
+        // МАГАЗИННАЯ ЗАРЯДКА
+        if (wReloadType === 'mag') {
             if ((w.ammoCur || 0) > 0) {
                 customAlert("Извлеките текущий магазин перед зарядкой нового! [Кнопка РАЗРЯДИТЬ]");
                 return;
             }
+            
+            w.cap = movingItem.cap || availableAmmo;
+            w.ammoCur = availableAmmo;
             
             if (source === 'bag') {
                 let idx = bagItemsArray.findIndex(i => i.id === sourceId);
@@ -1070,18 +1062,14 @@
             } else if (source === 'vest') {
                 vestItemsArray[parseInt(ev.dataTransfer.getData("index"))] = null;
             }
-
-            w.cap = movingItem.cap || availableAmmo;
-            w.ammoCur = availableAmmo;
         } 
-        // ЛОГИКА ДЛЯ ПАЧЕК (Поштучная зарядка)
+        // ВНУТРЕННЯЯ ЗАРЯДКА (Поштучная из пачки)
         else {
-            if ((w.ammoCur || 0) > 0 && w.loadedAmmo !== ammoType) {
-                // Если тип другой - извлекаем все старые пули обратно в инвентарь автоматически
+            if ((w.ammoCur || 0) > 0 && w.loadedAmmo && w.loadedAmmo !== ammoType) {
                 bagItemsArray.push({
                     id: Date.now() + Math.floor(Math.random()*1000),
-                    type: 'ammo', cat: 'ammo',
-                    name: w.loadedAmmoName || `Боеприпасы (${w.loadedAmmo})`,
+                    type: 'ammo', cat: 'ammo', ammoKind: 'box',
+                    name: w.loadedAmmoName || `Пачка ${wCaliber} (${w.loadedAmmo})`,
                     unitWeight: 0.2,
                     qty: 1,
                     cap: w.baseCap,
@@ -1091,7 +1079,7 @@
                 w.ammoCur = 0; 
             }
             
-            let maxSpace = parseInt(w.baseCap);
+            let maxSpace = parseInt(w.baseCap) || parseInt(w.cap) || 0;
             let currentAmmo = parseInt(w.ammoCur) || 0;
             let space = maxSpace - currentAmmo;
             
@@ -1102,7 +1090,7 @@
             
             let amountToLoad = Math.min(space, availableAmmo);
             w.ammoCur = currentAmmo + amountToLoad;
-            w.cap = w.baseCap; // Оставляем родной лимит ствола (никаких пачек на 10 в слонобое)
+            w.cap = maxSpace; // Защищаем жесткий лимит
             
             let leftover = availableAmmo - amountToLoad;
             
@@ -1133,7 +1121,6 @@
             }
         }
 
-        // Применяем модификаторы к статам пушки
         w.dmg = w.baseDmg; w.ap = w.baseAp;
 
         if (ammoType === 'ББ') {
@@ -1153,7 +1140,6 @@
         
         w.loadedAmmo = ammoType;
         w.loadedAmmoName = movingItem.name;
-        w.loadedAmmoFF = isMagItem ? 'Магазин' : 'Пачка';
         w.loadedAmmoCaliber = wCaliber;
         w.loadedAmmoWt = movingItem.unitWeight;
         w.loadedAmmoMaxCap = movingItem.cap || w.cap;
@@ -1162,7 +1148,6 @@
         return;
     }
 
-    // СВАП ИЛИ УСТАНОВКА ПУШКИ В СЛОТ
     if (source === 'bag') {
       let idx = bagItemsArray.findIndex(i => i.id === sourceId);
       movingItem = JSON.parse(JSON.stringify(bagItemsArray[idx]));
@@ -1177,7 +1162,6 @@
       if (activeSlotsArray[targetIndex] !== null) { bagItemsArray.push(activeSlotsArray[targetIndex]); }
       if (!movingItem.baseDmg && movingItem.dmg) movingItem.baseDmg = movingItem.dmg;
       if (!movingItem.baseAp && movingItem.ap) movingItem.baseAp = movingItem.ap;
-      // Сохраняем родной кап при экипировке
       if (!movingItem.baseCap && movingItem.cap) movingItem.baseCap = movingItem.cap;
       activeSlotsArray[targetIndex] = movingItem;
     }
@@ -1316,7 +1300,10 @@
       if (invLocked) {
         let ammoDisp = '-';
         if (item.type === 'weapon') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
-        else if (item.type === 'ammo') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
+        else if (item.type === 'ammo') {
+             if (item.ammoKind === 'box') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}`;
+             else ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
+        }
         
         grid.innerHTML += `
           <div class="inv-item-card" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)" style="padding:8px; display:flex; gap:6px; align-items:center;">
@@ -1351,11 +1338,24 @@
                             <input type="number" placeholder="Макс" value="${item.cap || ''}" style="width:40px;" oninput="handleBagItemInput(${item.id}, 'cap', this.value)">
                          </div>`;
         } else if (item.type === 'ammo') {
+            let kindSel = `<select style="width:80px; padding:2px; font-size:10px;" onchange="handleBagItemInput(${item.id}, 'ammoKind', this.value)">
+                <option value="magazine" ${item.ammoKind!=='box'?'selected':''}>Магазин</option>
+                <option value="box" ${item.ammoKind==='box'?'selected':''}>Пачка</option>
+            </select>`;
+            
+            let ammoFields = '';
+            if (item.ammoKind !== 'box') {
+                ammoFields = `<span style="color:var(--text-muted); text-transform:uppercase;">Емк:</span>
+                              <input type="number" placeholder="Тек" value="${item.ammoCur !== undefined ? item.ammoCur : (item.cap || '')}" style="width:40px;" oninput="handleBagItemInput(${item.id}, 'ammoCur', this.value)">
+                              <span style="color:var(--text-muted);">/</span>
+                              <input type="number" placeholder="Макс" value="${item.cap || ''}" style="width:40px;" oninput="handleBagItemInput(${item.id}, 'cap', this.value)">`;
+            } else {
+                ammoFields = `<span style="color:var(--text-muted); text-transform:uppercase;">Остаток:</span>
+                              <input type="number" placeholder="Шт" value="${item.ammoCur !== undefined ? item.ammoCur : (item.cap || '')}" style="width:50px;" oninput="handleBagItemInput(${item.id}, 'ammoCur', this.value)">`;
+            }
+
             extraFields += `<div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px; align-items:center;">
-                            <span style="color:var(--text-muted); text-transform:uppercase;">Емкость:</span>
-                            <input type="number" placeholder="Тек." value="${item.ammoCur !== undefined ? item.ammoCur : (item.cap || '')}" style="width:50px;" oninput="handleBagItemInput(${item.id}, 'ammoCur', this.value)">
-                            <span style="color:var(--text-muted);">/</span>
-                            <input type="number" placeholder="Макс" value="${item.cap || ''}" style="width:50px;" oninput="handleBagItemInput(${item.id}, 'cap', this.value)">
+                            ${kindSel} ${ammoFields}
                          </div>`;
         }
         extraFields += `<input type="text" placeholder="Описание..." value="${item.desc || ''}" style="width:100%; text-align:left; font-size:10px;" oninput="handleBagItemInput(${item.id}, 'desc', this.value)">`;
@@ -1401,11 +1401,13 @@
      let ffSel = document.getElementById(`ammo_ff_${gIdx}`).value;
      let opt = AMMO_GROUPS[gIdx].options[typeSel];
      let g = AMMO_GROUPS[gIdx];
+     
+     let kind = (ffSel === 'Магазин') ? 'magazine' : 'box';
      let finalName = `${ffSel} ${g.cal} (${opt.type})`;
      
      bagItemsArray.push({
           id: Date.now() + Math.floor(Math.random()*100),
-          type: 'ammo', cat: 'ammo',
+          type: 'ammo', cat: 'ammo', ammoKind: kind,
           name: finalName, unitWeight: g.wt, qty: 1,
           desc: opt.desc, cap: g.cap, ammoCur: g.cap, dmg: opt.dmg, ap: opt.ap
       });
@@ -1417,7 +1419,6 @@
     const list = document.getElementById('compendiumList');
     list.innerHTML = '';
     
-    // БОЕПРИПАСЫ (Таблица с селектом Форм-Фактора и Типа)
     if (category === 'ammo') {
         let tableHtml = `
         <table class="admin-table" style="width: 100%; text-align: left; background: #111215; border-radius: 3px; overflow: hidden; margin-top: 4px;">
@@ -1434,7 +1435,10 @@
           
         AMMO_GROUPS.forEach((g, gIdx) => {
             let optionsHtml = g.options.map((o, oIdx) => `<option value="${oIdx}">${o.type}</option>`).join('');
-            let ffHtml = `<option value="Магазин">Магазин</option><option value="Пачка">Пачка</option>`;
+            let ffHtml = '';
+            if (g.defaultKind === 'magazine') ffHtml = `<option value="Магазин">Магазин</option><option value="Пачка">Пачка</option>`;
+            else ffHtml = `<option value="Пачка">Пачка</option><option value="Магазин">Магазин</option>`;
+            
             let def = g.options[0];
             tableHtml += `
             <tr style="border-bottom: 1px solid #3a3f4b;">
@@ -1466,8 +1470,6 @@
 
     // ОРУЖИЕ И БРОНЯ
     const filtered = (category === 'all') ? COMPENDIUM.filter(i => i.cat !== 'ammo') : COMPENDIUM.filter(i => i.cat === category);
-    
-    // Надежный SVG fallback без разрыва кавычек
     const fallbackSVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22 style=%22background:%230b0c0f; border:1px dashed %23404652;%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23c92a2a%22 font-family=%22monospace%22 font-size=%2222%22 font-weight=%22bold%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E%5B НЕТ ФОТО %5D%3C/text%3E%3C/svg%3E";
 
     filtered.forEach(item => {
@@ -1516,6 +1518,7 @@
             id: Date.now() + Math.floor(Math.random()*100),
             type: cItem.type,
             cat: cItem.cat,
+            reloadType: cItem.reloadType,
             name: cItem.name,
             unitWeight: cItem.wt,
             qty: 1,
@@ -1524,8 +1527,8 @@
             ap: cItem.ap,
             range: cItem.range,
             cap: cItem.cap,
-            ammoCur: 0,
-            baseCap: cItem.cap // Сохраняем родной лимит оружия при выдаче
+            baseCap: cItem.cap,
+            ammoCur: 0 // Новое оружие достается незаряженным
         });
     }
     fastCalc();
@@ -1533,10 +1536,8 @@
   }
 
   // --- SAVE / LOAD ---
-  let lastUpdatedAt = null;
   let isRemoteUpdating = false; 
   let saveTimeout = null;
-  
   function autoSave() {
     if (isRemoteUpdating) return;
     document.getElementById('sync_status').innerText = `[ СОХРАНЕНИЕ ]`;
@@ -1587,7 +1588,6 @@
       if (rows && rows.length > 0) {
         const dbUpdatedAt = rows[0].updated_at;
         
-        // Умная синхронизация: не перерисовываем, если ничего не менялось
         if (!force && lastUpdatedAt && dbUpdatedAt && new Date(dbUpdatedAt) <= new Date(lastUpdatedAt)) {
             return; 
         }
