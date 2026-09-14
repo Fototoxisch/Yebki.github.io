@@ -935,6 +935,35 @@
 
   function drag(ev, source, id, index) { ev.dataTransfer.setData("source", source); ev.dataTransfer.setData("id", id); ev.dataTransfer.setData("index", index); }
 
+  function unloadWeapon(slotIndex) {
+      let w = activeSlotsArray[slotIndex];
+      if (!w || !w.loadedAmmo) return;
+      
+      let ejectedName = w.loadedAmmoName || `Боеприпасы (${w.loadedAmmo})`;
+      let ejectedWt = w.loadedAmmoWt || 0.5;
+      
+      bagItemsArray.push({
+          id: Date.now() + Math.floor(Math.random()*1000),
+          type: 'ammo', cat: 'ammo',
+          name: ejectedName,
+          unitWeight: ejectedWt,
+          qty: 1,
+          cap: w.cap || 0,
+          ammoCur: w.ammoCur || 0,
+          desc: `Извлечены из ${w.name}.`
+      });
+      
+      // Возвращаем пушку в базовое состояние
+      w.loadedAmmo = null;
+      w.loadedAmmoName = null;
+      w.ammoCur = 0;
+      w.cap = w.baseCap || 0;
+      w.dmg = w.baseDmg || w.dmg;
+      w.ap = w.baseAp || w.ap;
+      
+      renderActiveSlots(); renderInventory(); fastCalc();
+  }
+
   function dropToActiveSlot(ev) {
     ev.preventDefault();
     const targetSlotElement = ev.target.closest('.active-slot');
@@ -964,40 +993,50 @@
         let wLower = w.name.toLowerCase();
         let isCompatible = false;
         
-        let wCaliber = "";
-        if (wLower.includes('platzen') || wLower.includes('прототип') || wLower.includes('drache') || wLower.includes('nadelwerfer') || wLower.includes('8x22')) { wCaliber = '8x22 мм'; if (ammoLower.includes('8x22')) isCompatible = true; }
-        else if (wLower.includes('protector') || wLower.includes('auskund') || wLower.includes('10x20')) { wCaliber = '10x20 мм'; if (ammoLower.includes('10x20')) isCompatible = true; }
-        else if (wLower.includes('einhorn') || wLower.includes('12x35')) { wCaliber = '12x35 мм'; if (ammoLower.includes('12x35')) isCompatible = true; }
-        else if (wLower.includes('nitro') || wLower.includes('bw-5') || wLower.includes('16x15')) { wCaliber = '16x15.7'; if (ammoLower.includes('16x15.7') || ammoLower.includes('nitro')) isCompatible = true; }
-        else if (wLower.includes('ein-12') || wLower.includes('помпа') || wLower.includes('18.5')) { wCaliber = '18.5 мм'; if (ammoLower.includes('18.5')) isCompatible = true; }
+        if (ammoLower.includes('8x22') && (wLower.includes('platzen') || wLower.includes('прототип') || wLower.includes('drache') || wLower.includes('nadelwerfer') || wLower.includes('8x22'))) isCompatible = true;
+        if (ammoLower.includes('10x20') && (wLower.includes('protector') || wLower.includes('auskund') || wLower.includes('10x20'))) isCompatible = true;
+        if (ammoLower.includes('12x35') && (wLower.includes('einhorn') || wLower.includes('12x35'))) isCompatible = true;
+        if (ammoLower.includes('16x15.7') && (wLower.includes('nitro') || wLower.includes('bw-5') || wLower.includes('16x15'))) isCompatible = true;
+        if (ammoLower.includes('18.5') && (wLower.includes('ein-12') || wLower.includes('помпа') || wLower.includes('18.5'))) isCompatible = true;
 
         if (!isCompatible) { customAlert("Неподходящий калибр для этого оружия!"); return; }
 
-        // Если в оружии уже есть патроны - извлекаем их обратно
-        if (w.ammoCur > 0 && w.loadedAmmo) {
+        // Если в оружии уже есть патроны - извлекаем их обратно (через функцию разрядки)
+        if (w.loadedAmmo) {
             bagItemsArray.push({
                 id: Date.now() + Math.floor(Math.random()*1000),
                 type: 'ammo',
                 cat: 'ammo',
-                name: `Остаток ${wCaliber} (${w.loadedAmmo})`,
-                unitWeight: 0.2, // Условный вес неполного магазина
+                name: w.loadedAmmoName || `Боеприпасы (${w.loadedAmmo})`,
+                unitWeight: w.loadedAmmoWt || 0.5,
                 qty: 1,
                 cap: w.cap || 0,
-                ammoCur: w.ammoCur,
-                desc: `Извлеченные патроны.`
+                ammoCur: w.ammoCur || 0,
+                desc: `Извлечены из ${w.name}.`
             });
         }
 
-        // Обновляем статистику оружия под новые пули
+        // Сохраняем базовые статы пушки перед перезаписью
+        if(!w.baseDmg) w.baseDmg = w.dmg;
+        if(!w.baseAp) w.baseAp = w.ap;
+        if(!w.baseCap) w.baseCap = w.cap;
+
+        // Списываем новый магазин из источника
+        if (source === 'bag') {
+            let idx = bagItemsArray.findIndex(i => i.id === sourceId);
+            bagItemsArray[idx].qty -= 1;
+            if(bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
+        } else if (source === 'vest') {
+            vestItemsArray[parseInt(ev.dataTransfer.getData("index"))] = null;
+        }
+
+        // Обновляем статистику оружия
         let ammoType = 'FMJ';
         if (ammoLower.includes('бб') || ammoLower.includes('бронебойн')) ammoType = 'ББ';
         if (ammoLower.includes('hp') || ammoLower.includes('экспансив')) ammoType = 'HP';
         if (ammoLower.includes('слаг')) ammoType = 'Слаг';
         if (ammoLower.includes('картечь')) ammoType = 'Картечь';
 
-        if(!w.baseDmg) w.baseDmg = w.dmg;
-        if(!w.baseAp) w.baseAp = w.ap;
-        
         w.dmg = w.baseDmg; w.ap = w.baseAp;
 
         if (ammoType === 'ББ') {
@@ -1016,41 +1055,12 @@
         }
         
         w.loadedAmmo = ammoType;
+        w.loadedAmmoName = movingItem.name;
+        w.loadedAmmoWt = movingItem.unitWeight;
         
-        // Математика заряжания
-        let packageAmmo = movingItem.ammoCur !== undefined ? parseInt(movingItem.ammoCur) : (parseInt(movingItem.cap) || 0);
-        let gunMax = parseInt(w.cap) || 0;
-        let amountToLoad = gunMax > 0 ? Math.min(packageAmmo, gunMax) : packageAmmo; // Если у пушки нет капа, заряжаем все
-        
-        w.ammoCur = amountToLoad;
-        let leftover = packageAmmo - amountToLoad;
-
-        // Обработка источника (списываем или оставляем остаток пачки)
-        if (source === 'bag') {
-            let idx = bagItemsArray.findIndex(i => i.id === sourceId);
-            if (leftover > 0) {
-                if (bagItemsArray[idx].qty > 1) {
-                    bagItemsArray[idx].qty -= 1;
-                    let splitItem = JSON.parse(JSON.stringify(bagItemsArray[idx]));
-                    splitItem.id = Date.now() + Math.floor(Math.random()*1000);
-                    splitItem.qty = 1;
-                    splitItem.ammoCur = leftover;
-                    bagItemsArray.push(splitItem);
-                } else {
-                    bagItemsArray[idx].ammoCur = leftover;
-                }
-            } else {
-                bagItemsArray[idx].qty -= 1;
-                if(bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
-            }
-        } else if (source === 'vest') {
-            let vIdx = parseInt(ev.dataTransfer.getData("index"));
-            if (leftover > 0) {
-                vestItemsArray[vIdx].ammoCur = leftover;
-            } else {
-                vestItemsArray[vIdx] = null;
-            }
-        }
+        // Берем емкость из пачки патронов
+        w.cap = movingItem.cap || w.baseCap || 0;
+        w.ammoCur = movingItem.ammoCur !== undefined ? parseInt(movingItem.ammoCur) : parseInt(w.cap);
         
         renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
         return;
@@ -1126,10 +1136,12 @@
   function changeAmmo(slotIndex, delta) {
     if (!activeSlotsArray[slotIndex]) return;
     let w = activeSlotsArray[slotIndex];
-    let current = parseInt(w.ammoCur !== undefined ? w.ammoCur : w.cap) || 0;
+    if (!w.loadedAmmo) return;
+    let current = parseInt(w.ammoCur) || 0;
+    let max = parseInt(w.cap) || 0;
     let next = current + delta;
     if (next < 0) next = 0;
-    if (w.cap && next > parseInt(w.cap)) next = parseInt(w.cap); 
+    if (next > max) next = max;
     w.ammoCur = next;
     renderActiveSlots();
     autoSave();
@@ -1156,12 +1168,13 @@
                     stats += ` ${loadedText}`;
                     
                     let curAm = item.ammoCur !== undefined ? item.ammoCur : 0;
-                    let maxAm = item.cap || '-';
+                    let maxAm = item.cap || 0;
                     ammoControls = `
                     <div style="display:flex; justify-content:space-between; width:100%; align-items:center; margin-top:6px; background:#0b0c0f; padding:4px; border-radius:2px; border:1px solid #3a3f4b;">
-                        <button onclick="changeAmmo(${i}, -1)" style="padding:2px 8px; font-weight:bold; font-size:14px; border-color:var(--accent); color:var(--accent);">-1</button>
+                        <button onclick="changeAmmo(${i}, -1)" style="padding:2px 8px; font-weight:bold; font-size:14px; border-color:var(--accent); color:var(--accent);" ${!item.loadedAmmo ? 'disabled' : ''}>-1</button>
                         <span style="font-weight:bold; font-size:13px; color:#fff;">${curAm} / ${maxAm}</span>
-                        <button onclick="changeAmmo(${i}, 1)" style="padding:2px 8px; font-weight:bold; font-size:14px;">+1</button>
+                        <button onclick="changeAmmo(${i}, 1)" style="padding:2px 8px; font-weight:bold; font-size:14px;" ${!item.loadedAmmo ? 'disabled' : ''}>+1</button>
+                        <button onclick="unloadWeapon(${i})" style="padding:2px 6px;" ${!item.loadedAmmo ? 'disabled' : ''}>РАЗРЯДИТЬ</button>
                     </div>`;
                 }
             }
