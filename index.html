@@ -301,6 +301,24 @@
             </div>
           </div>
         </div>
+
+        <div class="box">
+          <div class="box-title">Спасброски</div>
+          <div class="box-content stats-grid" style="padding: 6px;">
+            <div class="stat-container val-interactive" style="justify-content: space-between;" onclick="rollUniversal('con', 'con_display', event)">
+               <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">СТОЙКОСТЬ (ТЕЛ)</span>
+               <span class="roll-btn">🎲</span>
+            </div>
+            <div class="stat-container val-interactive" style="justify-content: space-between;" onclick="rollUniversal('dex', 'dex_display', event)">
+               <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">РЕФЛЕКСЫ (ЛОВ)</span>
+               <span class="roll-btn">🎲</span>
+            </div>
+            <div class="stat-container val-interactive" style="justify-content: space-between; grid-column: span 2;" onclick="rollUniversal('wis', 'wis_display', event)">
+               <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">ВОЛЯ (МУД)</span>
+               <span class="roll-btn">🎲</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- КОЛОНКА 2: ЗДОРОВЬЕ, НАПРЯЖЕНИЕ -->
@@ -540,7 +558,7 @@
     document.getElementById('sp_torso').value = Math.max(0, sp - spDmg);
     
     fastCalc();
-    customAlert(`Удар нанесен!<br><br>Потеряно: <b>${hpDmg} HP</b><br>Износ брони: <b>${spDmg > 0 ? '-' + spDmg : '0'} SP</b>`);
+    customAlert(`УДАР НАНЕСЕН!<br><br>Потеряно здоровья: <b style="color:var(--accent); font-size:16px;">${hpDmg} HP</b><br>Износ брони: <b style="color:#4ade80;">${spDmg > 0 ? '-' + spDmg : '0'} SP</b>`);
   }
 
   // --- COMPENDIUM DATA ---
@@ -571,28 +589,28 @@
   // АГРЕГАТОР БОЕПРИПАСОВ (Для умной таблицы)
   const AMMO_GROUPS = [
     { cal: '8x22 мм', wt: 0.5, cap: 15, options: [
-      { id: 'a1', name: 'Магазин 8x22 мм (FMJ)', type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные армейские патроны. Рабочая лошадка. Износ брони цели: -1 SP.' },
-      { id: 'a2', name: 'Магазин 8x22 мм (ББ)', type: 'ББ', dmg: 'База', ap: '20%', desc: 'Редкие бронебойные патроны с твердым сердечником. Пробивают легкую защиту. Износ брони: -1 SP.' },
-      { id: 'a3', name: 'Магазин 8x22 мм (HP)', type: 'HP', dmg: '+2 к HP', ap: '-50%', desc: 'Экспансивные пули. Бесполезны против брони (0 SP износа), но разрывают открытую плоть на куски.' }
+      { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Рабочая лошадка. Износ брони цели: -1 SP.' },
+      { type: 'ББ', dmg: 'База', ap: '20%', desc: 'Бронебойные патроны с сердечником. Пробивают легкую защиту. Износ: -1 SP.' },
+      { type: 'HP', dmg: '+2 к HP', ap: '-50%', desc: 'Экспансивные пули. Не ломают броню (0 SP износа), рвут открытую плоть.' }
     ]},
     { cal: '10x20 мм', wt: 0.5, cap: 15, options: [
-      { id: 'a4', name: 'Магазин 10x20 мм (FMJ)', type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
-      { id: 'a5', name: 'Магазин 10x20 мм (ББ)', type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ брони: -1 SP.' },
-      { id: 'a6', name: 'Магазин 10x20 мм (HP)', type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 10мм пули с полостью. Наносят чудовищный урон по здоровью без брони.' }
+      { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
+      { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ: -1 SP.' },
+      { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 10мм пули. Наносят чудовищный урон по здоровью без брони.' }
     ]},
     { cal: '12x35 мм', wt: 0.5, cap: 6, options: [
-      { id: 'a7', name: 'Обойма 12x35 мм (FMJ)', type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
-      { id: 'a8', name: 'Обойма 12x35 мм (ББ)', type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
-      { id: 'a9', name: 'Обойма 12x35 мм (HP)', type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у небронированной цели.' }
+      { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
+      { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
+      { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у незащищенной цели.' }
     ]},
     { cal: '16x15.7 "Nitro"', wt: 1, cap: 10, options: [
-      { id: 'a10', name: 'Пачка 16x15.7 (FMJ)', type: 'FMJ', dmg: 'База', ap: '20%', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ брони: -1 SP.' },
-      { id: 'a11', name: 'Пачка 16x15.7 (ББ)', type: 'ББ', dmg: 'База', ap: '40%', desc: 'Элитные бронебойные болванки 16мм. Игнорируют почти половину любой брони. Износ брони: -1 SP.' },
-      { id: 'a12', name: 'Пачка 16x15.7 (HP)', type: 'HP', dmg: '+1d12 к HP', ap: '-50%', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' }
+      { type: 'FMJ', dmg: 'База', ap: '20%', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ: -1 SP.' },
+      { type: 'ББ', dmg: 'База', ap: '40%', desc: 'Элитные бронебойные болванки 16мм. Игнорируют половину любой брони. Износ: -1 SP.' },
+      { type: 'HP', dmg: '+1d12', ap: '-50%', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' }
     ]},
     { cal: '18.5 мм', wt: 1, cap: 10, options: [
-      { id: 'a13', name: 'Пачка 18.5 мм (Картечь)', type: 'Картечь', dmg: 'База', ap: '0%', desc: 'Стандартная картечь для помпы. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
-      { id: 'a14', name: 'Пачка 18.5 мм (Слаг)', type: 'Слаг', dmg: '1d12', ap: '50%', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
+      { type: 'Картечь', dmg: 'База', ap: '0%', desc: 'Стандартная картечь. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
+      { type: 'Слаг', dmg: '1d12', ap: '50%', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
     ]}
   ];
 
@@ -908,8 +926,8 @@
 
         // Обновляем статистику оружия
         let ammoType = 'FMJ';
-        if (ammoLower.includes('бб')) ammoType = 'ББ';
-        if (ammoLower.includes('hp')) ammoType = 'HP';
+        if (ammoLower.includes('бб') || ammoLower.includes('бронебойн')) ammoType = 'ББ';
+        if (ammoLower.includes('hp') || ammoLower.includes('экспансив')) ammoType = 'HP';
         if (ammoLower.includes('слаг')) ammoType = 'Слаг';
         if (ammoLower.includes('картечь')) ammoType = 'Картечь';
 
@@ -934,7 +952,7 @@
         }
         
         w.loadedAmmo = ammoType;
-        w.ammoCur = w.cap || 0;
+        w.ammoCur = w.cap || 0; // Полная зарядка
         
         renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
         return;
@@ -1109,7 +1127,8 @@
         if (item.type === 'weapon') {
           extraFields += `<div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px;">
                             <input type="text" placeholder="Урон" value="${item.dmg || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'dmg', this.value)">
-                            <input type="text" placeholder="Пробитие" value="${item.ap || ''}" style="width:60px;" oninput="handleBagItemInput(${item.id}, 'ap', this.value)">
+                            <input type="text" placeholder="AP" value="${item.ap || ''}" style="width:50px;" oninput="handleBagItemInput(${item.id}, 'ap', this.value)">
+                            <input type="number" placeholder="Емк." value="${item.cap || ''}" style="width:45px;" oninput="handleBagItemInput(${item.id}, 'cap', this.value)">
                             <input type="text" placeholder="Дальность" value="${item.range || ''}" style="flex:1;" oninput="handleBagItemInput(${item.id}, 'range', this.value)">
                          </div>`;
         }
@@ -1146,37 +1165,39 @@
   }
 
   window.updateAmmoInfo = function(gIdx) {
-     let sel = document.getElementById(`ammo_sel_${gIdx}`);
+     let sel = document.getElementById(`ammo_type_${gIdx}`);
      let opt = AMMO_GROUPS[gIdx].options[sel.value];
-     document.getElementById(`ammo_desc_${gIdx}`).innerHTML = `${opt.desc}<br><span style="color:#4ade80; font-weight:bold;">${opt.ap}</span> | <b>${opt.dmg}</b>`;
+     document.getElementById(`ammo_desc_${gIdx}`).innerHTML = `${opt.desc}<br><span style="color:#4ade80; font-weight:bold; font-size:13px;">${opt.ap}</span> | <b style="font-size:13px;">${opt.dmg}</b>`;
   }
   
   window.addAmmoGroupToBag = function(gIdx) {
-     let sel = document.getElementById(`ammo_sel_${gIdx}`);
-     let opt = AMMO_GROUPS[gIdx].options[sel.value];
+     let typeSel = document.getElementById(`ammo_type_${gIdx}`).value;
+     let ffSel = document.getElementById(`ammo_ff_${gIdx}`).value;
+     let opt = AMMO_GROUPS[gIdx].options[typeSel];
      let g = AMMO_GROUPS[gIdx];
+     let finalName = `${ffSel} ${g.cal} (${opt.type})`;
      
      bagItemsArray.push({
           id: Date.now() + Math.floor(Math.random()*100),
           type: 'ammo', cat: 'ammo',
-          name: opt.name, unitWeight: g.wt, qty: 1,
+          name: finalName, unitWeight: g.wt, qty: 1,
           desc: opt.desc, cap: g.cap
       });
       fastCalc(); renderInventory();
-      customAlert(`[ ${opt.name} ] добавлен в Рюкзак`);
+      customAlert(`[ ${finalName} ] добавлен в Рюкзак`);
   }
 
   function renderCompendium(category) {
     const list = document.getElementById('compendiumList');
     list.innerHTML = '';
     
-    // БОЕПРИПАСЫ (Таблица с селектом)
+    // БОЕПРИПАСЫ (Таблица с селектом Форм-Фактора и Типа)
     if (category === 'ammo') {
         let tableHtml = `
         <table class="admin-table" style="width: 100%; text-align: left; background: #111215; border-radius: 3px; overflow: hidden; margin-top: 4px;">
           <thead>
             <tr>
-              <th style="padding: 8px; text-align: left; color: var(--accent);">КАЛИБР / ТИП</th>
+              <th style="padding: 8px; text-align: left; color: var(--accent); width: 140px;">КАЛИБР / ТИП</th>
               <th style="padding: 8px;">СВОЙСТВА</th>
               <th style="padding: 8px; width: 40px;">ЕМК</th>
               <th style="padding: 8px; width: 40px;">ВЕС</th>
@@ -1187,24 +1208,28 @@
           
         AMMO_GROUPS.forEach((g, gIdx) => {
             let optionsHtml = g.options.map((o, oIdx) => `<option value="${oIdx}">${o.type}</option>`).join('');
+            let ffHtml = `<option value="Магазин">Магазин</option><option value="Пачка">Пачка</option>`;
             let def = g.options[0];
             tableHtml += `
             <tr style="border-bottom: 1px solid #3a3f4b;">
-              <td style="padding: 8px; vertical-align: top;">
-                <b style="color: #fff; font-size:13px;">${g.cal}</b>
-                <div style="margin-top: 6px;">
-                  <select id="ammo_sel_${gIdx}" style="width: 100%; text-align: left;" onchange="updateAmmoInfo(${gIdx})">
+              <td style="padding: 10px 8px; vertical-align: top;">
+                <b style="color: #fff; font-size:14px; display:inline-block; margin-bottom:6px;">${g.cal}</b>
+                <div>
+                  <select id="ammo_ff_${gIdx}" style="width: 100%; margin-bottom: 4px; text-align: left; background:#181a1f;">
+                    ${ffHtml}
+                  </select>
+                  <select id="ammo_type_${gIdx}" style="width: 100%; text-align: left; background:#181a1f; color:var(--accent);" onchange="updateAmmoInfo(${gIdx})">
                     ${optionsHtml}
                   </select>
                 </div>
               </td>
-              <td style="padding: 8px; font-size:10px; color:#aaa; line-height:1.4;" id="ammo_desc_${gIdx}">
-                ${def.desc}<br><span style="color: #4ade80; font-weight:bold;">${def.ap}</span> | <b>${def.dmg}</b>
+              <td style="padding: 10px 8px; font-size:11px; color:#ccc; line-height:1.4;" id="ammo_desc_${gIdx}">
+                ${def.desc}<br><span style="color: #4ade80; font-weight:bold; font-size:13px;">${def.ap}</span> | <b style="font-size:13px;">${def.dmg}</b>
               </td>
-              <td style="padding: 8px; text-align: center; font-weight: bold;">${g.cap}</td>
-              <td style="padding: 8px; text-align: center;">${g.wt}</td>
-              <td style="padding: 8px; text-align: center; vertical-align: middle;">
-                <button onclick="addAmmoGroupToBag(${gIdx})" style="font-size: 10px; padding: 6px; width: 100%; border-color: var(--accent); color: var(--accent);">+ РЮКЗАК</button>
+              <td style="padding: 10px 8px; text-align: center; font-weight: bold; font-size:14px;">${g.cap}</td>
+              <td style="padding: 10px 8px; text-align: center; font-size:14px;">${g.wt}</td>
+              <td style="padding: 10px 8px; text-align: center; vertical-align: middle;">
+                <button onclick="addAmmoGroupToBag(${gIdx})" style="font-size: 11px; padding: 6px; width: 100%; border-color: var(--accent); color: var(--accent);">+ РЮКЗАК</button>
               </td>
             </tr>`;
         });
@@ -1214,7 +1239,9 @@
     }
 
     // ОРУЖИЕ И БРОНЯ
-    const filtered = (category === 'all') ? COMPENDIUM : COMPENDIUM.filter(i => i.cat === category);
+    const filtered = (category === 'all') ? COMPENDIUM.filter(i => i.cat !== 'ammo') : COMPENDIUM.filter(i => i.cat === category);
+    
+    // Надежный SVG fallback без разрыва кавычек
     const fallbackSVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22 style=%22background:%230b0c0f; border:1px dashed %23404652;%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23c92a2a%22 font-family=%22monospace%22 font-size=%2222%22 font-weight=%22bold%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E%5B НЕТ ФОТО %5D%3C/text%3E%3C/svg%3E";
 
     filtered.forEach(item => {
