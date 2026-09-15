@@ -4,14 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AEON TERMINAL // VINETA</title>
-  
   <link rel="icon" type="image/jpeg" href="logo1.jpg?v=2">
   <link rel="shortcut icon" type="image/jpeg" href="logo1.jpg?v=2">
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  
   <script>if (typeof globalThis === 'undefined') { window.globalThis = window; }</script>
 
   <style>
@@ -44,8 +41,6 @@
     button { background: var(--input-bg-edit); border: 1px solid var(--border-color); color: var(--border-color); cursor: pointer; padding: 3px 6px; text-transform: uppercase; transition: 0.15s; border-radius: 2px; }
     button:hover { background: var(--border-color); color: #000; }
     button:disabled { border-color: #3a3f4b !important; color: #3a3f4b !important; cursor: not-allowed; background: transparent !important; }
-    .btn-danger { border-color: var(--accent); color: var(--accent); }
-    .btn-danger:hover:not(:disabled) { background: var(--accent); color: #fff; }
     .input-float { position: relative; width: 100%; display: flex; align-items: center; }
     .input-float input { width: 100%; padding: 14px 8px 4px 8px; font-size: 13px; text-align: left; }
     .input-float label { position: absolute; left: 10px; top: 12px; color: var(--text-muted); font-size: 12px; transition: 0.2s ease; pointer-events: none; text-transform: uppercase; }
@@ -56,8 +51,8 @@
     .val-interactive:hover { background: rgba(255, 77, 77, 0.08); }
     .val-interactive:hover .interactive-text { color: var(--accent); }
     .interactive-text { transition: color 0.2s; }
-    .roll-btn { cursor: pointer; transition: 0.15s; display: inline-block; font-size: 14px; margin-left: 4px; opacity: 0.8; }
-    .roll-btn:hover { opacity: 1; transform: scale(1.2); text-shadow: 0 0 8px var(--accent); }
+    .roll-btn { cursor: pointer; transition: 0.15s; display: inline-block; font-size: 12px; margin-left: 4px; opacity: 0.8; padding: 2px 6px; border: 1px solid var(--border-color); border-radius: 2px; background: var(--panel-bg); color: var(--accent); }
+    .roll-btn:hover { background: var(--accent); color: #000; }
     .side-panel { position: fixed; right: -350px; top: 0; width: 300px; height: 100%; background: #111215; border-left: 2px solid var(--border-color); z-index: 1000; transition: right 0.3s ease; padding: 12px; box-shadow: -5px 0 15px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 8px; }
     .side-panel.open { right: 0; }
     .side-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a3f4b; padding-bottom: 8px; }
@@ -71,7 +66,7 @@
     .row-3-col { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: start; }
     .col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
     .box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 3px; overflow: hidden; min-width: 0; }
-    .box-title { background: var(--border-color); color: #000; font-weight: bold; text-align: center; padding: 3px; font-size: 12px; letter-spacing: 1px; }
+    .box-title { background: var(--border-color); color: #000; font-weight: bold; text-align: center; padding: 3px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
     .box-content { padding: 6px; display: flex; flex-direction: column; gap: 6px; }
     .flex-row { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
     .accent-bold { color: var(--border-color) !important; font-weight: bold; }
@@ -92,28 +87,18 @@
     .panic-title { background: var(--accent); }
     .stress-input { font-weight: bold; color: var(--accent); }
     .panic-btn { border-color: var(--accent); color: var(--accent); font-size: 13px; padding: 5px; width: 100%;}
-    .panic-log { font-size: 11px; min-height: 22px; border: 1px dashed #404652; padding: 4px; color: #aaa; border-radius: 3px; background: #0b0c0f;}
-    .sub-label { font-size: 10px; color: var(--border-color); text-transform: uppercase; }
+    .panic-log { font-size: 11px; min-height: 22px; border: 1px dashed #404652; padding: 4px; color: #aaa; border-radius: 3px; background: #0b0c0f; text-align: center; display: flex; align-items: center; justify-content: center;}
     .inv-item-card { border: 1px solid #3a3f4b; border-radius: 3px; background: #111215; margin-bottom: 4px; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
     .drag-area { min-height: 40px; display: flex; flex-direction: column; gap: 4px; }
-    .bag-area { border: 1px dashed transparent; min-height: 80px; padding: 3px; border-radius: 3px;}
+    .bag-area { border: 1px dashed transparent; min-height: 80px; padding: 3px; border-radius: 3px; transition: opacity 0.3s ease; }
+    .bag-area.dropped { opacity: 0.35; filter: grayscale(100%); pointer-events: auto; }
     .drag-over { border-color: var(--accent) !important; background: rgba(201,42,42,0.05) !important; }
     .item-name { font-weight: bold; font-size: 12px; text-align: left; }
     .item-del { background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 0 4px; font-size: 16px; font-weight: bold;}
     .item-del:hover { color: #fff; }
-    .settings-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 0 4px; font-size: 14px; }
-    .settings-btn:hover { color: var(--accent); }
-    .admin-account-group { border: 1px solid var(--border-color); border-radius: 3px; margin-bottom: 15px; padding: 8px; background: #111215; }
-    .admin-account-group h3 { margin: 0 0 8px 0; color: var(--accent); font-size: 13px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;}
-    .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 5px; text-align: center; font-size: 11px; }
-    .admin-table th { background: #181a1f; color: var(--text-muted); }
-    .admin-table tr:hover { background: #1a1c23; }
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 999; }
     .auth-card { background: var(--panel-bg); border: 2px solid var(--border-color); width: 320px; padding: 16px; display: flex; flex-direction: column; gap: 12px; border-radius: 3px;}
-    
-    /* COMPENDIUM SPECIFIC CSS */
     .comp-item { display: flex; background: #111215; border: 1px solid #3a3f4b; border-radius: 3px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
     .comp-img { width: 260px; flex-shrink: 0; background: #0b0c0f; border-right: 1px solid #3a3f4b; overflow: hidden; padding: 4px; position: relative; display: flex; align-items: center; justify-content: center;}
     .comp-img img { width: 100%; height: 100%; object-fit: contain; display: block; opacity: 0.9; }
@@ -123,19 +108,30 @@
     .comp-stat { color: #fff; }
     .comp-stat span { color: var(--text-muted); }
     .comp-desc { font-size: 11px; color: #aaa; margin-bottom: 10px; line-height: 1.3;}
-    .active-slot { min-height: 60px; border: 1px dashed #3a3f4b; padding: 4px; display: flex; align-items: center; justify-content: center; background: #0b0c0f; flex-direction: column;}
+    .active-slot, .equip-slot { min-height: 60px; border: 1px dashed #3a3f4b; padding: 4px; display: flex; align-items: center; justify-content: center; background: #0b0c0f; flex-direction: column; transition: 0.2s;}
+    .equip-slot { border-color: #6b7280; }
+    .equip-slot.filled { border-color: #4ade80; border-style: solid; background: #0b110f; }
+    .skills-table { width: 100%; font-size: 11px; text-align: left; border-collapse: collapse; }
+    .skills-table th { color: var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px; font-weight: normal; text-transform: uppercase; }
+    .skills-table td { padding: 4px 2px; border-bottom: 1px solid #1a1c23; }
+    .skills-table tr:last-child td { border-bottom: none; }
+    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table th, .admin-table td { border: 1px solid #3a3f4b; padding: 5px; text-align: center; font-size: 11px; }
+    .admin-table th { background: #181a1f; color: var(--text-muted); }
+    .admin-table tr:hover { background: #1a1c23; }
+    .ground-area { border: 1px dashed #404652; min-height: 100px; padding: 6px; background: #0b0c0f; border-radius: 3px; display: flex; flex-direction: column; gap: 4px;}
   </style>
 </head>
 <body>
 
 <div id="sidePanel" class="side-panel">
   <div class="side-panel-header">
-    <h2>Мои профили</h2>
+    <h2>ПРОФИЛИ ЗВЕНА</h2>
     <button class="close-panel-btn" onclick="toggleSidePanel()">✕</button>
   </div>
   <div id="sidePanelList" style="display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex: 1;"></div>
   <div style="border-top: 1px dashed #3a3f4b; padding-top: 8px;">
-    <button onclick="createNewCharacter()" style="width: 100%;">+ НОВЫЙ БОЕЦ</button>
+    <button onclick="createNewCharacter()" style="width: 100%;">[+] НОВЫЙ БОЕЦ</button>
   </div>
 </div>
 
@@ -150,7 +146,7 @@
     <div class="input-float">
       <input type="password" id="loginPass" placeholder=" " autocomplete="off" style="padding-right: 32px;" spellcheck="false">
       <label for="loginPass">Пароль доступа</label>
-      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:14px; cursor:pointer;">👁</button>
+      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:14px; cursor:pointer;">О</button>
     </div>
     <div style="display: flex; gap: 6px;">
       <button type="button" onclick="handleLogin()" style="flex:1;">ВОЙТИ</button>
@@ -162,9 +158,9 @@
 
 <div id="customAlertModal" class="modal-overlay" style="display: none; z-index: 10000;">
   <div class="auth-card" style="border-color: #404652; width: 350px;">
-    <div class="box-title" style="background: #404652; color: #fff;">УВЕДОМЛЕНИЕ СИСТЕМЫ</div>
+    <div class="box-title" style="background: #404652; color: #fff;">СИСТЕМНОЕ УВЕДОМЛЕНИЕ</div>
     <div id="customAlertText" style="font-size: 13px; color: #fff; text-align: center; margin: 15px 0;"></div>
-    <button onclick="document.getElementById('customAlertModal').style.display='none'" style="width: 100%; border-color: #404652; color: #fff;">ОК</button>
+    <button onclick="document.getElementById('customAlertModal').style.display='none'" style="width: 100%; border-color: #404652; color: #fff;">ПРИНЯТЬ</button>
   </div>
 </div>
 
@@ -200,16 +196,17 @@
     </div>
 
     <main class="row-3-col">
+      <!-- КОЛОНКА 1: АТРИБУТЫ И НАВЫКИ -->
       <section class="col">
         <div class="box">
-          <div class="box-title">Атрибуты</div>
+          <div class="box-title">Атрибуты Каркаса</div>
           <div class="box-content stats-grid" style="padding: 6px;">
             <div class="stat-container">
               <div class="stat-mod" id="str_m">+0</div>
               <div class="val-interactive" onclick="toggleExpand('str_details')">
                 <span class="item-name interactive-text" style="flex:1;">СИЛ</span>
                 <span id="str_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('str', 'str_display', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('str', 'str_display', event)">D20</span>
               </div>
               <div id="str_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -225,7 +222,7 @@
               <div class="val-interactive" onclick="toggleExpand('dex_details')">
                 <span class="item-name interactive-text" style="flex:1;">ЛОВ</span>
                 <span id="dex_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('dex', 'dex_display', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('dex', 'dex_display', event)">D20</span>
               </div>
               <div id="dex_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -241,7 +238,7 @@
               <div class="val-interactive" onclick="toggleExpand('con_details')">
                 <span class="item-name interactive-text" style="flex:1;">ТЕЛ</span>
                 <span id="con_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('con', 'con_display', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('con', 'con_display', event)">D20</span>
               </div>
               <div id="con_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -257,7 +254,7 @@
               <div class="val-interactive" onclick="toggleExpand('int_details')">
                 <span class="item-name interactive-text" style="flex:1;">ИНТ</span>
                 <span id="int_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('int', 'int_display', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('int', 'int_display', event)">D20</span>
               </div>
               <div id="int_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -273,7 +270,7 @@
               <div class="val-interactive" onclick="toggleExpand('wis_details')">
                 <span class="item-name interactive-text" style="flex:1;">МУД</span>
                 <span id="wis_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('wis', 'wis_display', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('wis', 'wis_display', event)">D20</span>
               </div>
               <div id="wis_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -289,7 +286,7 @@
               <div class="val-interactive" onclick="toggleExpand('cha_details')">
                 <span class="item-name interactive-text" style="flex:1;">ХАР</span>
                 <span id="cha_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('cha', 'cha_display', event)">🎲</span>
+                <span class="roll-btn" onclick="rollUniversal('cha', 'cha_display', event)">D20</span>
               </div>
               <div id="cha_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -307,20 +304,131 @@
           <div class="box-content stats-grid" style="padding: 6px;">
             <div class="stat-container val-interactive" style="justify-content: space-between;" onclick="rollUniversal('con', 'con_display', event)">
                <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">СТОЙКОСТЬ (ТЕЛ)</span>
-               <span class="roll-btn">🎲</span>
+               <span class="roll-btn">БРОСОК</span>
             </div>
             <div class="stat-container val-interactive" style="justify-content: space-between;" onclick="rollUniversal('dex', 'dex_display', event)">
                <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">РЕФЛЕКСЫ (ЛОВ)</span>
-               <span class="roll-btn">🎲</span>
+               <span class="roll-btn">БРОСОК</span>
             </div>
             <div class="stat-container val-interactive" style="justify-content: space-between; grid-column: span 2;" onclick="rollUniversal('wis', 'wis_display', event)">
                <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">ВОЛЯ (МУД)</span>
-               <span class="roll-btn">🎲</span>
+               <span class="roll-btn">БРОСОК</span>
             </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-title">НАВЫКИ / ДИСЦИПЛИНЫ</div>
+          <div class="box-content" style="padding: 6px 4px;">
+            <table class="skills-table">
+              <tr><th>НАВЫК</th><th>АТР</th><th>УРОВЕНЬ</th><th>РАЗН</th><th>ИТОГ</th><th></th></tr>
+              <!-- СИЛ -->
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Атлетика</td>
+                <td style="color:#aaa;">СИЛ</td>
+                <td><select id="sk_ath_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_ath_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_ath_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('ath', 'Атлетика')">D20</span></td>
+              </tr>
+              <!-- ЛОВ -->
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Акробатика</td>
+                <td style="color:#aaa;">ЛОВ</td>
+                <td><select id="sk_acr_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_acr_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_acr_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('acr', 'Акробатика')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Скрытность</td>
+                <td style="color:#aaa;">ЛОВ</td>
+                <td><select id="sk_ste_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_ste_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_ste_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('ste', 'Скрытность')">D20</span></td>
+              </tr>
+              <!-- ИНТ -->
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Взлом</td>
+                <td style="color:#aaa;">ИНТ</td>
+                <td><select id="sk_hac_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_hac_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_hac_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('hac', 'Взлом')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Взрывотехника</td>
+                <td style="color:#aaa;">ИНТ</td>
+                <td><select id="sk_exp_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_exp_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_exp_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('exp', 'Взрывотехника')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Ремонт</td>
+                <td style="color:#aaa;">ИНТ</td>
+                <td><select id="sk_rep_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_rep_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_rep_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('rep', 'Ремонт')">D20</span></td>
+              </tr>
+              <!-- МУД -->
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Медицина</td>
+                <td style="color:#aaa;">МУД</td>
+                <td><select id="sk_med_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_med_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_med_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('med', 'Медицина')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Выживание</td>
+                <td style="color:#aaa;">МУД</td>
+                <td><select id="sk_sur_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_sur_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_sur_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('sur', 'Выживание')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Внимание</td>
+                <td style="color:#aaa;">МУД</td>
+                <td><select id="sk_awa_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_awa_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_awa_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('awa', 'Внимание')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Проницательность</td>
+                <td style="color:#aaa;">МУД</td>
+                <td><select id="sk_ins_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_ins_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_ins_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('ins', 'Проницательность')">D20</span></td>
+              </tr>
+              <!-- ХАР -->
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Убеждение</td>
+                <td style="color:#aaa;">ХАР</td>
+                <td><select id="sk_per_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_per_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_per_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('per', 'Убеждение')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Запугивание</td>
+                <td style="color:#aaa;">ХАР</td>
+                <td><select id="sk_int_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_int_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_int_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('int', 'Запугивание')">D20</span></td>
+              </tr>
+            </table>
           </div>
         </div>
       </section>
 
+      <!-- КОЛОНКА 2: ЦЕЛОСТНОСТЬ И НАПРЯЖЕНИЕ -->
       <section class="col">
         <div class="box">
           <div class="box-title">Целостность Каркаса</div>
@@ -348,8 +456,18 @@
             <div id="strain_alert" class="alert-box" style="border:none;">[!] ОТКАЗ: ЛЕЧЕНИЕ ЗАБЛОКИРОВАНО</div>
           </div>
         </div>
+
+        <div class="box panic-box">
+          <div class="box-title panic-title" style="color:#000;">Психометрия (СТРЕСС)</div>
+          <div class="box-content">
+            <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" style="width:40px;" class="stress-input" onchange="autoSave()"></div>
+            <button class="panic-btn" onclick="rollPanic(event)">БРОСОК ПАНИКИ D20</button>
+            <div id="panic_log" class="panic-log">[ ОЖИДАНИЕ БРОСКА ]</div>
+          </div>
+        </div>
       </section>
 
+      <!-- КОЛОНКА 3: БОЕВОЙ КАЛЬКУЛЯТОР -->
       <section class="col">
         <div class="box">
           <div class="box-title">ВХОДЯЩИЙ УРОН (КАЛЬКУЛЯТОР)</div>
@@ -366,15 +484,7 @@
               Урон по HP: <span id="calc_out_hp" class="accent-bold" style="font-size:16px;">-</span> |
               Износ: <span id="calc_out_sp" class="accent-bold" style="font-size:16px; color:#4ade80 !important;">-</span>
             </div>
-          </div>
-        </div>
-
-        <div class="box panic-box">
-          <div class="box-title panic-title">Психометрия (Alien RPG)</div>
-          <div class="box-content">
-            <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" style="width:40px;" class="stress-input" onchange="autoSave()"></div>
-            <button class="panic-btn" onclick="rollPanic(event)">БРОСОК ПАНИКИ 🎲</button>
-            <div id="panic_log" class="panic-log"></div>
+            <div style="font-size:10px; color:#6b7280; text-align:center;">Учитывайте ручные корректировки защиты от элементов экипировки.</div>
           </div>
         </div>
       </section>
@@ -394,7 +504,7 @@
           </div>
           <div id="weight_total_details" class="expandable" style="background:#0e0f12; border-top:1px dashed #20232a;">
             <div class="calc-row">
-              <div class="calc-col"><input type="number" id="carry_base" readonly><span class="calc-label">СИЛ+ТЕЛ</span></div>
+              <div class="calc-col"><input type="number" id="carry_base" readonly><span class="calc-label">База + Мод</span></div>
               <div class="calc-col"><span class="math-sign">+</span></div>
               <div class="calc-col"><input type="number" id="carry_misc" value="0" onchange="fastCalc(); autoSave();" onclick="event.stopPropagation()"><span class="calc-label">Разн</span></div>
               <div class="calc-col"><span class="math-sign">=</span></div>
@@ -405,16 +515,16 @@
 
         <div class="inv-item-card" style="border:none; margin:0;">
           <div class="val-interactive" onclick="toggleExpand('gear_penalty_details')" style="justify-content:center;">
-            <span class="interactive-text" style="font-size:13px; font-weight:bold; margin-right:8px;">ШТРАФ СКОРОСТИ</span>
-            <span id="top_speed_display" style="font-size:16px; font-weight:bold; color:var(--accent);">0 кл</span>
+            <span class="interactive-text" style="font-size:13px; font-weight:bold; margin-right:8px;">СКОРОСТЬ</span>
+            <span id="top_speed_display" style="font-size:16px; font-weight:bold; color:var(--accent);">6 кл</span>
           </div>
           <div id="gear_penalty_details" class="expandable" style="background:#0e0f12; border-top:1px dashed #20232a;">
             <div class="calc-row">
-              <div class="calc-col"><input type="number" id="armor_penalty" value="0" onchange="fastCalc(); autoSave();"><span class="calc-label">Броня</span></div>
-              <div class="calc-col"><span class="math-sign">+</span></div>
-              <div class="calc-col"><input type="number" id="weight_penalty" readonly><span class="calc-label">Перегруз</span></div>
+              <div class="calc-col"><input type="number" id="spd_base" readonly><span class="calc-label">База ЛОВ</span></div>
+              <div class="calc-col"><span class="math-sign">-</span></div>
+              <div class="calc-col"><input type="number" id="penalty_total" readonly style="color:var(--accent); font-weight:bold;"><span class="calc-label">Штраф</span></div>
               <div class="calc-col"><span class="math-sign">=</span></div>
-              <div class="calc-col"><input type="number" id="penalty_total" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
+              <div class="calc-col"><input type="number" id="spd_total" readonly class="accent-bold"><span class="calc-label">Итого</span></div>
             </div>
           </div>
         </div>
@@ -423,38 +533,31 @@
     </div>
 
     <main class="row-3-col">
+      <!-- БРОНЯ И ОРУЖИЕ -->
       <section class="col">
         <div class="box">
-          <div class="box-title">Броня (Stopping Power)</div>
-          <div class="box-content">
-            <div class="flex-row"><span>Броня (SP)</span><div style="display:flex; gap:3px;"><input type="number" id="sp_torso" value="10" style="width:40px;" onchange="fastCalc(); autoSave()"><button onclick="ablate('sp_torso')">-1</button></div></div>
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="box-title">Фиксаторы (Активные слоты)</div>
-          <div style="font-size:10px; color:var(--text-muted); text-align:center; padding: 2px 0; border-bottom: 1px dashed #3a3f4b;">Перетащите патроны в слот для зарядки</div>
-          <div class="box-content" style="gap: 4px; padding: 4px;" id="active_slots_container">
+          <div class="box-title">АКТИВНАЯ ЭКИПИРОВКА</div>
+          <div class="box-content" style="padding: 4px;">
+            <div style="font-size:10px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px; margin-bottom:4px;">БРОНЯ (ПЕРЕТАЩИТЕ КОМПЛЕКТ)</div>
+            <div id="armor_slot_container" style="margin-bottom: 8px;"></div>
+            
+            <div style="font-size:10px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px; margin-bottom:4px; display:flex; justify-content:space-between;">
+              <span>ОРУЖИЕ В РУКАХ</span>
+            </div>
+            <div id="active_slots_container" style="display:flex; flex-direction:column; gap:4px;"></div>
           </div>
         </div>
       </section>
 
+      <!-- РПС -->
       <section class="col">
         <div class="box">
-          <div class="box-title">Разгрузочная система (РПС)</div>
-          <div class="box-content">
-            <div style="margin-bottom: 4px; display:flex; flex-direction:column; gap:4px;">
-              <div id="vest_config_view" style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size:11px; color:var(--text-muted); overflow:hidden;">
-                  <span id="vest_name_display" style="color:#fff; font-weight:bold; font-size:12px; text-transform:uppercase;">СТАНДАРТНАЯ РПС</span><br>
-                  Слоты: <span id="vest_slots_display" style="color:#fff;">4</span>
-                </div>
-                <button onclick="toggleVestLock()" id="vest_toggle_btn" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;">🔒</button>
-              </div>
-            </div>
+          <div class="box-title">РАЗГРУЗОЧНАЯ СИСТЕМА (РПС)</div>
+          <div class="box-content" style="padding: 4px;">
+            <div id="rps_slot_container" style="margin-bottom: 8px;"></div>
             
-            <div class="flex-row" style="font-size:10px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
-              <span style="flex:1; letter-spacing:1px;">ПОДСУМКИ (МАКС 1КГ)</span>
+            <div class="flex-row" style="font-size:10px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px; margin-bottom:4px;">
+              <span style="flex:1; letter-spacing:1px;" id="vest_slots_label">ПОДСУМКИ (ЛИМИТ 0КГ)</span>
               <span>ВЕС: <span id="vest_status" class="accent-bold" style="font-size:12px;">0</span> кг</span>
             </div>
             
@@ -463,33 +566,42 @@
         </div>
       </section>
 
+      <!-- РЮКЗАК -->
       <section class="col">
         <div class="box">
-          <div class="box-title">Инвентарь / Рюкзак</div>
-          <div class="box-content">
-            <div style="margin-bottom: 4px; display:flex; flex-direction:column; gap:4px;">
-              <div id="bag_config_view" style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size:11px; color:var(--text-muted); overflow:hidden;">
-                  <span id="bag_name_display" style="color:#fff; font-weight:bold; font-size:12px; text-transform:uppercase;">РЮКЗАК / ХРАНИЛИЩЕ</span>
-                </div>
-                <button onclick="toggleInvLock()" id="inv_toggle_btn" style="padding: 3px 6px; font-size: 14px; flex-shrink: 0;">🔒</button>
-              </div>
+          <div class="box-title">РЮКЗАК / ХРАНИЛИЩЕ</div>
+          <div class="box-content" style="padding: 4px;">
+            <div style="display:flex; gap:4px; margin-bottom:4px;">
+              <button id="btn_toggle_bag" onclick="toggleBackpackDrop()" style="flex:1; font-size:10px; padding:2px;"></button>
             </div>
+            <div id="bag_slot_container" style="margin-bottom: 8px;"></div>
             
             <div class="flex-row" style="font-size:10px; color:var(--text-muted); margin-bottom:4px; padding: 0 4px; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px;">
-              <span style="flex:1; letter-spacing:1px; margin-left:22px;">ПРЕДМЕТЫ</span>
+              <span style="flex:1; letter-spacing:1px; margin-left:22px;">СОДЕРЖИМОЕ</span>
               <span style="width: 45px; text-align:center;">ЕМК</span>
               <span style="width: 35px; text-align:center;">КОЛ</span>
               <span style="width: 35px; text-align:center;">ВЕС</span>
-              <span style="width: 40px; text-align:center;">ИТОГ</span>
+              <span style="width: 40px; text-align:right;">ИТОГ</span>
               <span style="width: 16px;"></span>
             </div>
 
             <div id="dynamic_pack_grid" class="bag-area" ondrop="dropToBag(event)" ondragover="allowDrop(event)"></div>
+            <div style="text-align:right; font-size:11px; padding-top:4px; color:var(--text-muted);">
+               ОБЪЕМ: <span id="bag_current_wt" style="color:#fff; font-weight:bold;">0</span> / <span id="bag_max_wt" style="color:var(--accent); font-weight:bold;">3</span> кг
+            </div>
           </div>
         </div>
       </section>
     </main>
+
+    <!-- ПОЛ / ЗЕМЛЯ -->
+    <div class="box" style="margin-top:8px;">
+      <div class="box-title" style="background:#404652; color:#fff;">ПОЛ / ЗЕМЛЯ (БУФЕР)</div>
+      <div class="box-content">
+        <div style="font-size:10px; color:var(--text-muted); text-align:center;">Безлимитная зона. Предметы здесь не учитываются в весе персонажа. Перетаскивайте лут сюда или забирайте отсюда.</div>
+        <div id="ground_grid" class="ground-area" ondrop="dropToGround(event)" ondragover="allowDrop(event)"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ВКЛАДКА 3: КОМПЕНДИУМ -->
@@ -505,6 +617,8 @@
           <button class="tab-btn" onclick="filterComp('rifle', this)">ВИНТОВКИ</button>
           <button class="tab-btn" onclick="filterComp('melee', this)">ХОЛОДНОЕ</button>
           <button class="tab-btn" onclick="filterComp('armor', this)">БРОНЯ</button>
+          <button class="tab-btn" onclick="filterComp('rps', this)">РПС</button>
+          <button class="tab-btn" onclick="filterComp('backpack', this)">РЮКЗАКИ</button>
           <button class="tab-btn" onclick="filterComp('ammo', this)">БОЕПРИПАСЫ</button>
         </div>
         <div id="compendiumList" style="display: flex; flex-direction: column;"></div>
@@ -533,9 +647,56 @@
     document.getElementById('customAlertModal').style.display = 'flex';
   }
 
+  function getBulletWeight(caliber) {
+    if (!caliber) return 0;
+    let l = caliber.toLowerCase();
+    if (l.includes('8x22')) return 0.027;
+    if (l.includes('10x20')) return 0.03;
+    if (l.includes('12x35')) return 0.05;
+    if (l.includes('16x15')) return 0.1;
+    if (l.includes('18.5')) return 0.075;
+    return 0;
+  }
+
+  function getEmptyMagWeight(name) {
+    if (!name) return 0.1;
+    let n = name.toLowerCase();
+    if (n.includes('nadelwerfer') || n.includes('auskund')) return 0.2;
+    if (n.includes('автодробовик')) return 0.25;
+    if (n.includes('p-33') || n.includes('прототип') || n.includes('drache') || n.includes('protector')) return 0.1;
+    return 0.1;
+  }
+
+  function getItemWeight(item) {
+    if (!item) return 0;
+    let w = parseFloat(item.unitWeight) || 0;
+    if (item.type === 'ammo') {
+        let bw = getBulletWeight(item.name);
+        if (item.ammoKind === 'box') {
+            return Math.round(((item.ammoCur || 0) * bw) * 100) / 100 * (item.qty || 1);
+        } else {
+            let emw = getEmptyMagWeight(item.name);
+            return Math.round((emw + (item.ammoCur || 0) * bw) * 100) / 100 * (item.qty || 1);
+        }
+    } else if (item.type === 'weapon') {
+        let loadedWt = 0;
+        if (item.loadedAmmo && (item.ammoCur > 0)) {
+            let bw = getBulletWeight(item.loadedAmmoCaliber || item.name);
+            if (item.reloadType === 'mag') {
+                let emw = getEmptyMagWeight(item.loadedAmmoName || '');
+                loadedWt = emw + item.ammoCur * bw;
+            } else {
+                loadedWt = item.ammoCur * bw;
+            }
+        }
+        return Math.round((w + loadedWt) * 100) / 100;
+    }
+    return Math.round(w * (item.qty || 1) * 100) / 100;
+  }
+
   function runDamageCalc() {
     let dmg = parseInt(document.getElementById('calc_dmg').value) || 0;
-    let sp = parseInt(document.getElementById('sp_torso').value) || 0;
+    let sp = parseInt(document.getElementById('calc_sp_display').value) || 0;
     let ap = parseInt(document.getElementById('calc_ap').value) || 0;
     
     if (dmg <= 0) return;
@@ -551,66 +712,97 @@
 
     let curHp = parseInt(document.getElementById('hp_cur').value) || 0;
     document.getElementById('hp_cur').value = Math.max(0, curHp - hpDmg);
-    document.getElementById('sp_torso').value = Math.max(0, sp - spDmg);
+    
+    if (armorSlotItem && spDmg > 0) {
+        armorSlotItem.sp = Math.max(0, (armorSlotItem.sp || 0) - spDmg);
+    }
     
     fastCalc();
     customAlert(`УДАР НАНЕСЕН!<br><br>Потеряно здоровья: <b style="color:var(--accent); font-size:16px;">${hpDmg} HP</b><br>Износ брони: <b style="color:#4ade80;">${spDmg > 0 ? '-' + spDmg : '0'} SP</b>`);
   }
 
   const COMPENDIUM = [
-    { id: 'c1', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'P-33 "Platzen"', img: 'P33Platzen.webp', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '9', wt: 1, recoil: 4, fireRate: 3, desc: 'Наверное, самый распространенный огнестрел на фронте. Способен вести огонь очередями, но контролировать отдачу из-за компактных размеров крайне сложно. Скромная ёмкость магазина не даст сильно разогнаться. Калибр: 8x22 мм.' },
-    { id: 'c3', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'Автопистолет (Прототип)', img: 'АвтопистолетПрототип.webp', dmg: '1d6', ap: '0%', range: '6 / 12 кл', cap: '14', wt: 1.5, recoil: 3, fireRate: 4, desc: 'Экспериментальная и довольно спорная конструкция. Бешеная скорострельность позволяет мгновенно дать прикурить врагу, подобравшемуся слишком близко, однако пули быстро теряют убойную силу, а совладать с подбросом ствола в силах не каждый. Стреляет патронами 8x22 мм.' },
-    { id: 'c2', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'Type-75 "Protector"', img: 'Type75Protector.webp', dmg: '1d8', ap: '0%', range: '15 / 30 кл', cap: '10', wt: 1.5, recoil: 0, fireRate: 1, desc: 'Табельный полуавтоматический пистолет. Проверенная временем классика: прост, надежен и безотказен в любых условиях. Стреляет патронами 10x20 мм.' },
-    { id: 'c5', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП Type 84 "Drache"', img: 'ППType84Drache.webp', dmg: '1d6', ap: '0%', range: '15 / 30 кл', cap: '15', wt: 4, recoil: 2, fireRate: 3, desc: 'Один из самых массовых пистолетов-пулеметов. Оснащен складным прикладом. Стреляет фиксированными очередями по три компактных патрона 8х22 мм, автоматический режим отсутствует. Отдача слабая, оружие предельно просто в освоении.' },
-    { id: 'c8', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП P-65 "Nadelwerfer"', img: 'ППP65Nadelwerfer.webp', dmg: '1d6', ap: '0%', range: '10 / 25 кл', cap: '20', wt: 5, recoil: 3, fireRate: 5, desc: 'Увесистый пистолет-пулемет ближнего боя. Несмотря на малые габариты и скромный калибр 8x22 мм, способен моментально залить цель свинцом и буквально сгрызть броню. Обратная сторона — бешеная отдача, с которой сладит только опытный стрелок, прожорливость к боезапасу и крошечная эффективная дистанция.' },
-    { id: 'c9', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП Type 93 "Auskund"', img: 'ППType93Auskund.webp', dmg: '1d8', ap: '0%', range: '20 / 40 кл', cap: '20', wt: 4.5, recoil: 3, fireRate: 4, desc: 'Пожалуй, самый сбалансированный пистолет-пулемет: высокий темп стрельбы, серьезный патрон 10x20 мм и вполне комфортная отдача. Однако из-за массы и габаритов носить его в качестве запасного ствола уже не получится.' },
-    { id: 'c4', cat: 'pistol', type: 'weapon', reloadType: 'internal', name: 'Револьвер "Einhorn"', img: 'РевольверEinhorn.webp', dmg: '1d12+2', ap: '0%', range: '15 / 30 кл', cap: '6', wt: 2, recoil: 0, fireRate: 1, desc: 'Крупнокалиберный самовзводный револьвер на 6 патронов 12х35 мм, заслуживший прозвище «ручная мортира». Чудовищная останавливающая сила. Тяжелые синяки на ладони — самое легкое, чем отделается стрелок. Если держите его в руках, вы либо палач, либо в шаге от собственной гибели.' },
-    { id: 'c6', cat: 'shotgun', type: 'weapon', reloadType: 'internal', name: 'Помпа Ein-12', img: 'ПомпаEin12.webp', dmg: '2d10', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 5, recoil: 0, fireRate: 1, desc: 'Боевой помповый дробовик со складным прикладом под патроны 18,5 мм. Внутренний трубчатый магазин на 5 зарядов. В клинче: 2d10+4. На 1-3 кл: отталкивает на 2 кл и сбивает с ног (спасбросок Стойкости). После выстрела не забудь передернуть цевье. Только не чужое.' },
-    { id: 'c7', cat: 'rifle', type: 'weapon', reloadType: 'internal', name: 'BW-5 "Nitro Express"', img: 'BW5NitroExpress.webp', dmg: '1d20', ap: '20%', range: '25 / 50 кл', cap: '2', wt: 8, recoil: 7, fireRate: 2, desc: 'Крупнокалиберное двуствольное ружье под патроны «Nitro Express» 16x15,7 мм. Оглушительная отдача сбивает дыхание: каждый выстрел требует траты Основного и Дополнительного действий. Доступен режим залпа дуплетом, но ты ведь не настолько поехал крышей?.. (При стрельбе дуплетом стрелок получает 1d12 урона).' },
+    // ПИСТОЛЕТЫ
+    { id: 'c1', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'P-33 "Platzen"', img: 'P33Platzen.webp', dmg: '1d6', ap: '0%', range: '10 / 20 кл', cap: '9', wt: 0.7, recoil: 4, fireRate: 3, desc: 'Наверное, самый распространенный огнестрел на фронте. Способен вести огонь очередями, но контролировать отдачу из-за компактных размеров крайне сложно. Скромная ёмкость магазина не даст сильно разогнаться. Калибр: 8x22 мм.' },
+    { id: 'c3', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'Автопистолет (Прототип)', img: 'АвтопистолетПрототип.webp', dmg: '1d6', ap: '0%', range: '6 / 12 кл', cap: '14', wt: 1.4, recoil: 3, fireRate: 4, desc: 'Экспериментальная и довольно спорная конструкция. Бешеная скорострельность позволяет мгновенно дать прикурить врагу, подобравшемуся слишком близко, однако пули быстро теряют убойную силу, а совладать с подбросом ствола в силах не каждый. Стреляет патронами 8x22 мм.' },
+    { id: 'c2', cat: 'pistol', type: 'weapon', reloadType: 'mag', name: 'Type-75 "Protector"', img: 'Type75Protector.webp', dmg: '1d8', ap: '0%', range: '15 / 30 кл', cap: '10', wt: 1.1, recoil: 0, fireRate: 1, desc: 'Табельный полуавтоматический пистолет. Проверенная временем классика: прост, надежен и безотказен в любых условиях. Стреляет патронами 10x20 мм.' },
+    { id: 'c4', cat: 'pistol', type: 'weapon', reloadType: 'internal', name: 'Револьвер "Einhorn"', img: 'РевольверEinhorn.webp', dmg: '1d12+2', ap: '0%', range: '15 / 30 кл', cap: '6', wt: 1.8, recoil: 0, fireRate: 1, desc: 'Крупнокалиберный самовзводный револьвер на 6 патронов 12х35 мм, заслуживший прозвище «ручная мортира». Чудовищная останавливающая сила. Тяжелые синяки на ладони — самое легкое, чем отделается стрелок. Если держите его в руках, вы либо палач, либо в шаге от собственной гибели.' },
+    // ПП
+    { id: 'c5', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП Type 84 "Drache"', img: 'ППType84Drache.webp', dmg: '1d6', ap: '0%', range: '15 / 30 кл', cap: '15', wt: 3.1, recoil: 2, fireRate: 3, desc: 'Один из самых массовых пистолетов-пулеметов. Оснащен складным прикладом. Стреляет фиксированными очередями по три компактных патрона 8х22 мм, автоматический режим отсутствует. Отдача слабая, оружие предельно просто в освоении.' },
+    { id: 'c8', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП P-65 "Nadelwerfer"', img: 'ППP65Nadelwerfer.webp', dmg: '1d6', ap: '0%', range: '10 / 25 кл', cap: '20', wt: 3.6, recoil: 3, fireRate: 5, desc: 'Увесистый пистолет-пулемет ближнего боя. Несмотря на малые габариты и скромный калибр 8x22 мм, способен моментально залить цель свинцом и буквально сгрызть броню. Обратная сторона — бешеная отдача, с которой сладит только опытный стрелок, прожорливость к боезапасу и крошечная эффективная дистанция.' },
+    { id: 'c9', cat: 'smg', type: 'weapon', reloadType: 'mag', name: 'ПП Type 93 "Auskund"', img: 'ППType93Auskund.webp', dmg: '1d8', ap: '0%', range: '20 / 40 кл', cap: '20', wt: 3.7, recoil: 3, fireRate: 4, desc: 'Пожалуй, самый сбалансированный пистолет-пулемет: высокий темп стрельбы, серьезный патрон 10x20 мм и вполне комфортная отдача. Однако из-за массы и габаритов носить его в качестве запасного ствола уже не получится.' },
+    // ДРОБОВИКИ & ВИНТОВКИ
+    { id: 'c6', cat: 'shotgun', type: 'weapon', reloadType: 'internal', name: 'Помпа Ein-12', img: 'ПомпаEin12.webp', dmg: '2d10', ap: '0%', range: '10 / 15 кл', cap: '5', wt: 3.6, recoil: 0, fireRate: 1, desc: 'Боевой помповый дробовик со складным прикладом под патроны 18,5 мм. Внутренний трубчатый магазин на 5 зарядов. В клинче: 2d10+4. На 1-3 кл: отталкивает на 2 кл и сбивает с ног (спасбросок Стойкости). После выстрела не забудь передернуть цевье. Только не чужое.' },
+    { id: 'c7', cat: 'rifle', type: 'weapon', reloadType: 'internal', name: 'BW-5 "Nitro Express"', img: 'BW5NitroExpress.webp', dmg: '1d20', ap: '20%', range: '25 / 50 кл', cap: '2', wt: 5.5, recoil: 7, fireRate: 2, desc: 'Крупнокалиберное двуствольное ружье под патроны «Nitro Express» 16x15,7 мм. Оглушительная отдача сбивает дыхание: каждый выстрел требует траты Основного и Дополнительного действий. Доступен режим залпа дуплетом, но ты ведь не настолько поехал крышей?.. (При стрельбе дуплетом стрелок получает 1d12 урона).' },
+    // ХОЛОДНОЕ
     { id: 'm1', cat: 'melee', type: 'weapon', name: 'Боевой нож', img: 'БоевойНож.webp', dmg: '1d8 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 0.5, recoil: 0, fireRate: 0, desc: 'Одноручное. Полевой армейский нож. В фронтовых реалиях понятие «выживание» всегда подразумевает ликвидацию врага, и в умелых руках этот клинок справляется со своей задачей на отлично.' },
     { id: 'm2', cat: 'melee', type: 'weapon', name: 'Мачете', img: 'Мачете.webp', dmg: '1d12 + СИЛ', ap: '0%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Клинок латинского типа. Легкий, прекрасно лежит в руке и без труда перерубает ветви, технические шланги и чужие конечности.' },
-    { id: 'm3', cat: 'melee', type: 'weapon', name: 'EIG-1 riot control baton', img: 'ТактическаяДубинка.webp', dmg: '1d10 + СИЛ', ap: '40%', range: 'Ближний бой', cap: '-', wt: 1, recoil: 0, fireRate: 0, desc: 'Одноручное. Спецсредство Службы Безопасности. Когда-то поддерживало правопорядок на улицах, теперь проламывает черепа. Простая, прочная, с идеальным балансом. Износ брони: -2 SP за удар.' },
+    { id: 'm3', cat: 'melee', type: 'weapon', name: 'EIG-1 baton', img: 'ТактическаяДубинка.webp', dmg: '1d10 + СИЛ', ap: '40%', range: 'Ближний бой', cap: '-', wt: 1.5, recoil: 0, fireRate: 0, desc: 'Одноручное. Спецсредство Службы Безопасности. Когда-то поддерживало правопорядок на улицах, теперь проламывает черепа. Простая, прочная, с идеальным балансом. Износ брони: -2 SP за удар.' },
     { id: 'm4', cat: 'melee', type: 'weapon', name: 'Монтировка', img: 'Монтировка.webp', dmg: '1d10 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 2, recoil: 0, fireRate: 0, desc: 'Одноручное. Универсальный фомка-инструмент: помогает срывать петли, вскрывать заклинившие переборки и крошить лицевые пластины противников. Износ брони: -2 SP за удар.' },
     { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', img: 'ПожарныйТопор.webp', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый аварийный топор. Кажется, когда-то он был создан для спасения жизней из огня. Теперь он только отнимает их.' },
-    { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', img: 'Кувалда.webp', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 8, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый промышленный молот для разрушения бронеплит. Износ брони: -3 SP за удар. ПАТРОНЫ КОНЧИЛИСЬ — ДА И ХУЙ С НИМИ!' },
-    { id: 'arm1', cat: 'armor', type: 'armor', name: 'Стандартный бронежилет СБ', img: 'БронежилетСБ.webp', sp: 10, wt: 3, desc: 'Служебный бронежилет из композитных пластин. Прекрасный вариант для тестирования калькулятора урона.' }
+    { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', img: 'Кувалда.webp', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 6.0, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый промышленный молот для разрушения бронеплит. Износ брони: -3 SP за удар. ПАТРОНЫ КОНЧИЛИСЬ — ДА И ХУЙ С НИМИ!' },
+    // БРОНЯ
+    { id: 'a1', cat: 'armor', type: 'armor', name: 'Тканевый жилет скрытого ношения', img: '', sp: 5, wt: 1.5, pen: 0, desc: 'Скрытное ношение под одеждой, +1 к Рефлексам.' },
+    { id: 'a2', cat: 'armor', type: 'armor', name: 'Усиленная роба цеховика', img: '', sp: 6, wt: 3.0, pen: 0, desc: '+2 к спасброскам Стойкости против пыли, ржавчины и химии.' },
+    { id: 'a3', cat: 'armor', type: 'armor', name: 'Курьерский лёгкий костюм', img: '', sp: 7, wt: 2.5, pen: 0, desc: 'Повышает тактическую мобильность (+1 кл скорости).' },
+    { id: 'a4', cat: 'armor', type: 'armor', name: 'Утеплённый китель', img: '', sp: 8, wt: 5.0, pen: 0, desc: 'Кевларовые пакеты. +1 к проверкам Выживания против холода.' },
+    { id: 'a5', cat: 'armor', type: 'armor', name: 'Пехотный штампованный ватник', img: '', sp: 11, wt: 8.5, pen: -1, desc: 'Стальной панцирь. +4 к проверкам Выживания против обморожения.' },
+    { id: 'a6', cat: 'armor', type: 'armor', name: 'Полевой инженерный комплект', img: '', sp: 10, wt: 7.0, pen: 0, desc: 'Пассивный экзоскелет (+6 кг к лимиту веса). Огнеупорен.' },
+    { id: 'a7', cat: 'armor', type: 'armor', name: 'Маскхалат разведгруппы', img: '', sp: 8, wt: 3.5, pen: 0, desc: 'Размывает силуэт: +2 к Скрытности, +1 к Рефлексам.' },
+    { id: 'a8', cat: 'armor', type: 'armor', name: 'Войсковой штурмовой комплект', img: '', sp: 12, wt: 6.0, pen: 0, desc: 'Керамика 3-го класса, каска. Честный армейский стандарт.' },
+    { id: 'a9', cat: 'armor', type: 'armor', name: 'Сапёрный штурмовой комплект', img: '', sp: 13, wt: 8.0, pen: -1, desc: 'Усиленный воротник и фартук: +2 к проверкам Взрывотехники.' },
+    { id: 'a10', cat: 'armor', type: 'armor', name: 'Тяжёлый панцирь «Монолит»', img: '', sp: 18, wt: 13.0, pen: -1, desc: 'Требует ТЕЛ 14+. Иммунитет к нокдауну от помповых ружей.' },
+    // РПС
+    { id: 'r1', cat: 'rps', type: 'rps', name: 'Брезентовая бандольера', img: '', slots: 4, slotLimit: 1.0, pen: 0, desc: 'Только патроны, медицина, гранаты, мелкие предметы.' },
+    { id: 'r2', cat: 'rps', type: 'rps', name: 'Уставная РПС', img: '', slots: 3, slotLimit: 2.0, pen: 0, desc: 'Вмещает спарки, тяжёлые рожки 10 мм и ручной инструмент.' },
+    { id: 'r3', cat: 'rps', type: 'rps', name: 'Полевой жилет санитара', img: '', slots: 6, slotLimit: 0.5, pen: 0, desc: 'Оптимизирован под стимуляторы, инъекторы и лёгкие пачки пуль.' },
+    { id: 'r4', cat: 'rps', type: 'rps', name: 'Штурмовой жилет «Шквал»', img: '', slots: 6, slotLimit: 2.0, pen: -1, desc: 'Вмещает любые магазины, взрывчатку или топорики.' },
+    { id: 'r5', cat: 'rps', type: 'rps', name: 'Патрульный жилет', img: '', slots: 6, slotLimit: 1.0, pen: -1, desc: 'Стандартный увеличенный боекомплект постовых частей.' },
+    { id: 'r6', cat: 'rps', type: 'rps', name: 'Инженерный корсет', img: '', slots: 6, slotLimit: 2.0, pen: -2, desc: 'Тяжёлый крепёж. При ТЕЛ 14+ штраф падает до -1 кл.' },
+    // РЮКЗАКИ
+    { id: 'b1', cat: 'backpack', type: 'backpack', name: 'Брезентовый вещмешок', img: '', cap: 8, pen: 0, wt: 0.5, desc: 'Простой затяжной мешок, нулевое влияние на темп.' },
+    { id: 'b2', cat: 'backpack', type: 'backpack', name: 'Малый штурмовой ранец', img: '', cap: 10, pen: -1, wt: 1.0, desc: 'Компактный ранец для коротких рейдов.' },
+    { id: 'b3', cat: 'backpack', type: 'backpack', name: 'Санитарный ранец', img: '', cap: 10, pen: -1, wt: 1.0, desc: 'Медицинские предметы достаются без траты основного действия.' },
+    { id: 'b4', cat: 'backpack', type: 'backpack', name: 'Армейский ранец', img: '', cap: 14, pen: -1, wt: 1.5, desc: 'Общевойсковой прямоугольный ранец с внешними подвесами.' },
+    { id: 'b5', cat: 'backpack', type: 'backpack', name: 'Инженерный гермобокс', img: '', cap: 18, pen: -2, wt: 2.8, desc: 'Ударопрочный дюралевый короб, защита от огня/ударов.' },
+    { id: 'b6', cat: 'backpack', type: 'backpack', name: 'Экспедиционный каркасный рюкзак', img: '', cap: 26, pen: -3, wt: 3.5, desc: 'Станковая рама под максимальный объём припасов.' }
   ];
 
   const AMMO_GROUPS = [
     { cal: '8x22 мм', img: 'Ammo8mm.webp', hasMag: true,
       forms: [
-        { name: 'Пачка', cap: 60, wt: 2.0, kind: 'box' },
-        { name: 'Магазин (P-33)', cap: 9, wt: 0.5, kind: 'magazine' },
-        { name: 'Магазин (Прототип)', cap: 14, wt: 0.5, kind: 'magazine' },
-        { name: 'Магазин (Drache)', cap: 15, wt: 0.5, kind: 'magazine' },
-        { name: 'Магазин (Nadelwerfer)', cap: 20, wt: 0.5, kind: 'magazine' }
+        { name: 'Пачка', cap: 60, wt: 1.6, kind: 'box' },
+        { name: 'Магазин (P-33)', cap: 9, wt: 0.1, kind: 'magazine' },
+        { name: 'Магазин (Прототип)', cap: 14, wt: 0.1, kind: 'magazine' },
+        { name: 'Магазин (Drache)', cap: 15, wt: 0.1, kind: 'magazine' },
+        { name: 'Магазин (Nadelwerfer)', cap: 20, wt: 0.2, kind: 'magazine' }
       ],
       options: [
-        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Рабочая лошадка. Износ брони цели: -1 SP.' },
-        { type: 'ББ', dmg: 'База', ap: '20%', desc: 'Бронебойные патроны с сердечником. Пробивают легкую защиту. Износ: -1 SP.' },
-        { type: 'HP', dmg: '+2 к HP', ap: '-50%', desc: 'Экспансивные пули. Не ломают броню (0 SP износа), рвут открытую плоть.' }
+        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Рабочая лошадка. Износ брони: -1 SP.' },
+        { type: 'ББ', dmg: 'База', ap: '20%', desc: 'Бронебойные патроны. Износ: -1 SP.' },
+        { type: 'HP', dmg: '+2 к HP', ap: '-50%', desc: 'Экспансивные пули. (0 SP износа).' }
       ]
     },
     { cal: '10x20 мм', img: 'Ammo10mm.webp', hasMag: true,
       forms: [
-        { name: 'Пачка', cap: 40, wt: 2.4, kind: 'box' },
-        { name: 'Магазин (Protector)', cap: 10, wt: 0.8, kind: 'magazine' },
-        { name: 'Магазин (Auskund)', cap: 20, wt: 0.8, kind: 'magazine' }
+        { name: 'Пачка', cap: 40, wt: 1.2, kind: 'box' },
+        { name: 'Магазин (Protector)', cap: 10, wt: 0.1, kind: 'magazine' },
+        { name: 'Магазин (Auskund)', cap: 20, wt: 0.2, kind: 'magazine' }
       ],
       options: [
-        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
-        { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ: -1 SP.' },
-        { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 10мм пули. Наносят чудовищный урон по здоровью без брони.' }
+        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные 10мм. Износ брони: -1 SP.' },
+        { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 10мм. Износ: -1 SP.' },
+        { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 10мм пули. (0 SP износа).' }
       ]
     },
     { cal: '12x35 мм', img: 'Ammo12mm.webp', hasMag: false,
       forms: [
-        { name: 'Пачка', cap: 18, wt: 1.0, kind: 'box' }
+        { name: 'Пачка', cap: 18, wt: 0.9, kind: 'box' }
       ],
       options: [
-        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
-        { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
-        { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у незащищенной цели.' }
+        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Износ брони цели: -1 SP.' },
+        { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 12мм. Износ: -1 SP.' },
+        { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 12мм. (0 SP износа).' }
       ]
     },
     { cal: '16x15.7 "Nitro"', img: 'Ammo16mm.webp', hasMag: false,
@@ -618,19 +810,19 @@
         { name: 'Пачка', cap: 10, wt: 1.0, kind: 'box' }
       ],
       options: [
-        { type: 'FMJ', dmg: 'База', ap: '20%', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ: -1 SP.' },
-        { type: 'ББ', dmg: 'База', ap: '40%', desc: 'Элитные бронебойные болванки 16мм. Игнорируют половину любой брони. Износ: -1 SP.' },
-        { type: 'HP', dmg: '+1d12', ap: '-50%', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' }
+        { type: 'FMJ', dmg: 'База', ap: '20%', desc: 'Износ брони цели: -1 SP.' },
+        { type: 'ББ', dmg: 'База', ap: '40%', desc: 'Элитные бронебойные. Износ: -1 SP.' },
+        { type: 'HP', dmg: '+1d12', ap: '-50%', desc: 'Экспансивные 16мм. (0 SP износа).' }
       ]
     },
     { cal: '18.5 мм', img: 'Ammo18mm.webp', hasMag: true,
       forms: [
-        { name: 'Пачка', cap: 15, wt: 1.0, kind: 'box' },
-        { name: 'Магазин (Автодробовик)', cap: 10, wt: 1.0, kind: 'magazine' }
+        { name: 'Пачка', cap: 20, wt: 1.5, kind: 'box' },
+        { name: 'Магазин (Автодробовик)', cap: 10, wt: 0.25, kind: 'magazine' }
       ],
       options: [
-        { type: 'Картечь', dmg: 'База', ap: '0%', desc: 'Стандартная картечь. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
-        { type: 'Слаг', dmg: '1d12', ap: '50%', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
+        { type: 'Картечь', dmg: 'База', ap: '0%', desc: 'Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
+        { type: 'Слаг', dmg: '1d12', ap: '50%', desc: 'Без отбрасывания. Износ брони: -1 SP.' }
       ]
     }
   ];
@@ -649,15 +841,19 @@
   let currentSheetOwner = null; 
   let lastUpdatedAt = null;
   
+  let armorSlotItem = null;
+  let rpsSlotItem = null;
+  let bagSlotItem = null;
+
   let bagItemsArray = []; 
-  let vestItemsArray = [null, null, null, null, null, null, null, null]; 
+  let vestItemsArray = [null, null, null, null, null, null]; 
   let activeSlotsArray = [null, null]; 
+  let groundItemsArray = [];
   
-  let invLocked = true;
-  let vestLocked = true;
+  let isBackpackDropped = false;
 
   function toggleExpand(id) { const el = document.getElementById(id); if (el) el.classList.toggle('open'); }
-  function togglePasswordVisibility() { const pwdInput = document.getElementById('loginPass'); const toggleBtn = document.getElementById('pwdToggleBtn'); if (pwdInput.type === 'password') { pwdInput.type = 'text'; toggleBtn.innerText = '🚫'; } else { pwdInput.type = 'password'; toggleBtn.innerText = '👁'; } }
+  function togglePasswordVisibility() { const pwdInput = document.getElementById('loginPass'); const toggleBtn = document.getElementById('pwdToggleBtn'); if (pwdInput.type === 'password') { pwdInput.type = 'text'; toggleBtn.innerText = 'X'; } else { pwdInput.type = 'password'; toggleBtn.innerText = 'O'; } }
   function toggleSidePanel() { document.getElementById('sidePanel').classList.toggle('open'); }
 
   function getMod(val) { if (val <= 3) return -2; if (val <= 7) return -1; if (val <= 13) return 0; if (val <= 17) return 1; return 2; }
@@ -677,7 +873,15 @@
     const stress = parseInt(document.getElementById('stress')?.value) || 0;
     const tot = d20 + stress;
     const isPanic = (tot >= 15) ? 1 : 0;
-    document.getElementById('panic_log').innerText = `d20 (${d20}) + Стресс (${stress}) = ${tot} -> ${isPanic ? 'ПАНИКА!' : 'СПОКОЕН'}`;
+    document.getElementById('panic_log').innerText = `D20 (${d20}) + СТРЕСС (${stress}) = ${tot} -> ${isPanic ? 'ПАНИКА!' : 'СПОКОЕН'}`;
+    if (isPanic) document.getElementById('panic_log').style.color = 'var(--accent)';
+    else document.getElementById('panic_log').style.color = '#4ade80';
+  }
+  function rollSkill(code, name) {
+    const d20 = rollD20();
+    const tot = parseInt(document.getElementById('sk_'+code+'_tot').innerText) || 0;
+    const res = d20 + tot;
+    customAlert(`БРОСОК: <b style="color:var(--accent);">${name}</b><br><br>D20 (${d20}) + Навык (${tot}) = <b style="font-size:20px; color:#fff;">${res}</b>`);
   }
 
   async function handleLogin() {
@@ -758,93 +962,29 @@
     } catch(e) {}
   }
   async function switchCharacter(id) { 
-    currentSheetId = id; 
-    lastUpdatedAt = null; 
-    safeSetItem('vineta_active_id', currentSheetId); 
-    toggleSidePanel(); 
-    await loadData(true); 
-    refreshCharacterList(); 
+    currentSheetId = id; lastUpdatedAt = null; safeSetItem('vineta_active_id', currentSheetId); 
+    toggleSidePanel(); await loadData(true); refreshCharacterList(); 
   }
   async function createNewCharacter() {
     const name = prompt('Позывной нового бойца:'); if (!name) return;
     currentSheetId = Date.now().toString(36); currentSheetOwner = currentUser.username;
-    lastUpdatedAt = null;
-    safeSetItem('vineta_active_id', currentSheetId);
+    lastUpdatedAt = null; safeSetItem('vineta_active_id', currentSheetId);
     resetForm(); document.getElementById('charName').value = name;
     await saveData(true); await refreshCharacterList();
   }
   function onNameChange() { autoSave(); setTimeout(refreshCharacterList, 1500); }
 
   function resetForm() {
-    bagItemsArray = []; vestItemsArray = [null,null,null,null,null,null,null,null]; activeSlotsArray = [null, null];
+    bagItemsArray = []; vestItemsArray = [null,null,null,null,null,null]; activeSlotsArray = [null, null]; groundItemsArray = [];
+    armorSlotItem = null; rpsSlotItem = null; bagSlotItem = null; isBackpackDropped = false;
     document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input, #viewInv select').forEach(inp => {
       if (inp.type === 'number') {
         if (inp.id.includes('hp')) inp.value = 25;
-        else if (inp.id.includes('sp_')) inp.value = 10;
-        else if (inp.id === 'spd_base') inp.value = 6;
         else if (inp.id.includes('_base')) inp.value = 10;
         else inp.value = 0;
       } else { inp.value = ''; }
     });
-    fastCalc(); renderInventory(); renderVest(); renderActiveSlots();
-  }
-
-  async function loadAdminRoster() {
-    if (!currentUser || currentUser.role !== 'admin') return;
-    const container = document.getElementById('adminTableContainer');
-    container.innerHTML = '<div style="text-align:center; padding:10px; color:#aaa;">Синхронизация с БД...</div>';
-    
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/vineta_sheets?select=id,owner,data,updated_at`, { headers: HEADERS });
-      if (!res.ok) throw new Error();
-      const rows = await res.json();
-      
-      let tableHtml = `<table class="admin-table">
-        <thead>
-          <tr>
-            <th style="width:25%;">ИГРОК</th>
-            <th style="width:30%;">ПОЗЫВНОЙ</th>
-            <th style="width:15%;">HP</th>
-            <th style="width:15%;">СТРЕСС</th>
-            <th style="width:15%;">ДЕЙСТВИЕ</th>
-          </tr>
-        </thead>
-        <tbody>`;
-        
-      rows.forEach(r => {
-        const d = r.data || {};
-        const hpCur = d.hp_cur !== undefined ? d.hp_cur : '-';
-        const hpMax = d.hp_max !== undefined ? d.hp_max : '-';
-        const stress = d.stress !== undefined ? d.stress : '-';
-        const name = d.charName || 'НЕТ ИМЕНИ';
-        const hpColor = (hpCur <= 0) ? 'var(--accent)' : '#4ade80';
-        
-        tableHtml += `
-          <tr>
-            <td style="color:#38bdf8; font-weight:bold;">${r.owner}</td>
-            <td style="color:#fff;">${name}</td>
-            <td style="font-weight:bold; color:${hpColor};">${hpCur} / ${hpMax}</td>
-            <td style="color:var(--accent); font-weight:bold;">${stress}</td>
-            <td>
-              <button onclick="adminLoadSheet('${r.id}', '${r.owner}')" style="font-size:9px; padding:2px 4px; width:100%;">ОТКРЫТЬ</button>
-            </td>
-          </tr>`;
-      });
-      tableHtml += `</tbody></table>`;
-      container.innerHTML = tableHtml;
-    } catch(e) {
-      container.innerHTML = '<div style="color:var(--accent); text-align:center;">ОШИБКА ДОСТУПА К БАЗЕ</div>';
-    }
-  }
-
-  function adminLoadSheet(sheetId, owner) {
-    currentSheetId = sheetId;
-    currentSheetOwner = owner;
-    lastUpdatedAt = null; 
-    safeSetItem('vineta_active_id', currentSheetId);
-    switchTab('sheet');
-    loadData(true);
-    customAlert(`ЗАГРУЖЕН ТЕРМИНАЛ:<br><b style="color:var(--accent);">${owner}</b>`);
+    fastCalc(); renderInventory(); renderActiveSlots(); renderEquipSlots(); renderGround();
   }
 
   function fastCalc() {
@@ -858,6 +998,7 @@
       if(elDisp) elDisp.innerText = total;
       vals[id] = total;
       const mod = getMod(total);
+      vals[id+'_m'] = mod;
       const elM = document.getElementById(id + '_m');
       if(elM) elM.innerText = (mod >= 0 ? '+' : '') + mod;
     });
@@ -876,130 +1017,176 @@
     else if (ratio <= 0.75) document.getElementById('w_serious')?.classList.add('wound-active');
     else document.getElementById('w_light')?.classList.add('wound-active');
 
+    // Навыки
+    const skills = [
+      {id: 'ath', st: 'str_m'}, {id: 'acr', st: 'dex_m'}, {id: 'ste', st: 'dex_m'},
+      {id: 'hac', st: 'int_m'}, {id: 'exp', st: 'int_m'}, {id: 'rep', st: 'int_m'},
+      {id: 'med', st: 'wis_m'}, {id: 'sur', st: 'wis_m'}, {id: 'awa', st: 'wis_m'},
+      {id: 'ins', st: 'wis_m'}, {id: 'per', st: 'cha_m'}, {id: 'int', st: 'cha_m'}
+    ];
+    skills.forEach(sk => {
+        let baseMod = vals[sk.st] || 0;
+        let prof = parseInt(document.getElementById('sk_'+sk.id+'_prof')?.value) || 0;
+        let misc = parseInt(document.getElementById('sk_'+sk.id+'_m')?.value) || 0;
+        let tot = baseMod + prof + misc;
+        const el = document.getElementById('sk_'+sk.id+'_tot');
+        if(el) el.innerText = (tot >= 0 ? '+' : '') + tot;
+    });
+
+    // Грузоподъемность: 20 + (MOD STR + MOD CON)*5
     const carryMisc = parseInt(document.getElementById('carry_misc')?.value) || 0;
-    const carryTotal = (vals.str || 0) + (vals.con || 0) + carryMisc;
+    let armorBonus = (armorSlotItem && armorSlotItem.name && armorSlotItem.name.includes('Инженерный комплект')) ? 6 : 0;
+    const carryTotal = 20 + ((vals.str_m || 0) + (vals.con_m || 0)) * 5 + carryMisc + armorBonus;
+    
+    document.getElementById('carry_base').value = 20 + ((vals.str_m || 0) + (vals.con_m || 0)) * 5;
     const elCarryTotal = document.getElementById('carry_total');
     if(elCarryTotal) elCarryTotal.value = carryTotal;
 
-    const spdBase = parseInt(document.getElementById('spd_base')?.value) || 6;
-    const armorPen = parseInt(document.getElementById('armor_penalty')?.value) || 0;
-
-    let bagWeight = bagItemsArray.reduce((sum, item) => sum + (item.unitWeight * item.qty), 0);
-    let vestWeight = vestItemsArray.reduce((sum, item) => sum + (item ? item.unitWeight : 0), 0);
-    let slotsWeight = activeSlotsArray.reduce((sum, item) => sum + (item ? item.unitWeight : 0), 0);
+    // Считаем текущий вес
+    let armorWt = armorSlotItem ? parseFloat(armorSlotItem.wt || 0) : 0;
+    let rpsWt = rpsSlotItem ? parseFloat(rpsSlotItem.wt || 0) : 0;
+    let rpsItemsWt = vestItemsArray.reduce((sum, item) => sum + getItemWeight(item), 0);
+    let activeWt = activeSlotsArray.reduce((sum, item) => sum + getItemWeight(item), 0);
+    let bagObjWt = bagSlotItem ? parseFloat(bagSlotItem.wt || 0) : 0;
+    let bagItemsWt = bagItemsArray.reduce((sum, item) => sum + getItemWeight(item), 0);
     
-    let totalWeight = bagWeight + vestWeight + slotsWeight;
+    let totalWeight = armorWt + rpsWt + rpsItemsWt + activeWt;
+    if (!isBackpackDropped) {
+        totalWeight += bagObjWt + bagItemsWt;
+    }
     
+    let overload = totalWeight - carryTotal;
     let weightPenalty = 0;
-    let overlimit = totalWeight - carryTotal;
-    if (overlimit > 0) {
-        if (overlimit <= 5) weightPenalty = -1;
-        else if (overlimit <= 10) weightPenalty = -2;
-        else if (overlimit <= 15) weightPenalty = -4;
+    if (overload > 0) {
+        if (overload <= 5) weightPenalty = -1;
+        else if (overload <= 10) weightPenalty = -2;
+        else if (overload <= 15) weightPenalty = -4;
         else weightPenalty = -99;
     }
-    const elWtPen = document.getElementById('weight_penalty');
-    if(elWtPen) elWtPen.value = weightPenalty;
     
-    const totalGearPenalty = armorPen + weightPenalty;
-    const elSpdGear = document.getElementById('spd_gear');
-    if(elSpdGear) elSpdGear.value = totalGearPenalty;
+    // Штрафы снаряжения
+    let armorPen = armorSlotItem ? parseInt(armorSlotItem.pen || 0) : 0;
+    let rpsPen = rpsSlotItem ? parseInt(rpsSlotItem.pen || 0) : 0;
+    if (rpsSlotItem && rpsSlotItem.name && rpsSlotItem.name.includes('Инженерный корсет') && vals.con >= 14) {
+        rpsPen = -1;
+    }
+    let bagPen = (!isBackpackDropped && bagSlotItem) ? parseInt(bagSlotItem.pen || 0) : 0;
+    
+    let totalGearPenalty = armorPen + rpsPen + bagPen + weightPenalty;
     
     const elPenTot = document.getElementById('penalty_total');
     if(elPenTot) elPenTot.value = totalGearPenalty;
     
-    const spdMisc = parseInt(document.getElementById('spd_misc')?.value) || 0;
-    let finalSpeed = spdBase + totalGearPenalty + spdMisc;
-    if(weightPenalty === -99) finalSpeed = 0;
+    const spdBase = 6 + (vals.dex_m || 0);
+    const elSpdBase = document.getElementById('spd_base');
+    if(elSpdBase) elSpdBase.value = spdBase;
 
-    const elOverEnc = document.getElementById('overencumber_alert');
-    if(elOverEnc) elOverEnc.style.display = (weightPenalty === -99) ? 'block' : 'none';
-    
+    let finalSpeed = spdBase + totalGearPenalty;
+    if (weightPenalty === -99) finalSpeed = 0;
+    else finalSpeed = Math.max(1, finalSpeed);
+
     const elSpdTot = document.getElementById('spd_total');
-    if(elSpdTot) elSpdTot.value = Math.max(0, finalSpeed);
-    
-    const elSpdMain = document.getElementById('spd_main_display');
-    if(elSpdMain) elSpdMain.innerText = Math.max(0, finalSpeed) + ' кл';
+    if(elSpdTot) elSpdTot.value = finalSpeed;
     
     const elTopSpd = document.getElementById('top_speed_display');
-    if(elTopSpd) elTopSpd.innerText = totalGearPenalty + ' кл';
+    if(elTopSpd) elTopSpd.innerText = finalSpeed + ' кл';
     
     const displayWt = Math.round(totalWeight * 10) / 10;
     const elTopWt = document.getElementById('top_weight_display');
     if(elTopWt) elTopWt.innerText = `${displayWt} / ${carryTotal} кг`;
     
-    const currentSp = document.getElementById('sp_torso')?.value || 0;
+    const currentSp = armorSlotItem ? (armorSlotItem.sp || 0) : 0;
     const elCalcSpDisp = document.getElementById('calc_sp_display');
     if (elCalcSpDisp) elCalcSpDisp.value = currentSp;
 
     autoSave();
   }
 
-  function ablate(id) { const el = document.getElementById(id); const val = parseInt(el.value) || 0; if (val > 0) el.value = val - 1; fastCalc(); }
-  function toggleInvLock() { invLocked = !invLocked; const btn = document.getElementById('inv_toggle_btn'); btn.innerHTML = invLocked ? '🔒' : '🔓'; renderInventory(); }
-  function toggleVestLock() { vestLocked = !vestLocked; const btn = document.getElementById('vest_toggle_btn'); btn.innerHTML = vestLocked ? '🔒' : '🔓'; renderVest(); renderActiveSlots();}
-
-  // --- DRAG AND DROP & INVENTORY LOGIC ---
-  function addBagItem() { 
-      let newId = Date.now();
-      bagItemsArray.push({ id: newId, type: 'item', name: '', unitWeight: 1, qty: 1, cap: '', desc: '', ammoKind: 'box' }); 
-      renderInventory(); fastCalc(); 
-      setTimeout(() => toggleExpand('bag_det_' + newId), 50);
+  function toggleBackpackDrop() {
+    isBackpackDropped = !isBackpackDropped;
+    renderEquipSlots(); renderInventory(); fastCalc();
   }
-  function handleBagItemInput(id, field, value) {
-    const item = bagItemsArray.find(i => i.id === id);
-    if (item) {
-      item[field] = (field === 'unitWeight' || field === 'qty' || field === 'ammoCur') ? (parseFloat(value) || 0) : value;
-      renderInventory(); fastCalc();
-    }
-  }
-  function removeBagItem(id) { bagItemsArray = bagItemsArray.filter(i => i.id !== id); renderInventory(); fastCalc(); }
 
+  // --- DRAG AND DROP ---
   function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
   document.addEventListener('dragleave', function(ev) {
-    if(ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area') || ev.target.classList.contains('active-slot'))) { ev.target.classList.remove('drag-over'); }
+    if(ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area') || ev.target.classList.contains('active-slot') || ev.target.classList.contains('equip-slot') || ev.target.classList.contains('ground-area'))) { ev.target.classList.remove('drag-over'); }
   });
 
   function drag(ev, source, id, index) { ev.dataTransfer.setData("source", source); ev.dataTransfer.setData("id", id); ev.dataTransfer.setData("index", index); }
 
-  function unloadWeapon(slotIndex) {
-      let w = activeSlotsArray[slotIndex];
-      if (!w || !w.loadedAmmo || (w.ammoCur || 0) <= 0) {
-           customAlert("Оружие не заряжено или уже пусто!");
-           return;
-      }
-      
-      let wReloadType = w.reloadType || 'mag';
-      let spawnKind = wReloadType === 'mag' ? 'magazine' : 'box';
-      let ffStr = spawnKind === 'magazine' ? 'Магазин' : 'Пачка';
-      let wCaliber = w.loadedAmmoCaliber || '';
+  function findItemBySource(source, sourceId, sourceIndex) {
+      if (source === 'ground') return groundItemsArray.find(i => i.id === sourceId);
+      if (source === 'bag') return bagItemsArray.find(i => i.id === sourceId);
+      if (source === 'vest') return vestItemsArray[sourceIndex];
+      if (source === 'active') return activeSlotsArray[sourceIndex];
+      if (source === 'armor') return armorSlotItem;
+      if (source === 'rps') return rpsSlotItem;
+      if (source === 'bagSlot') return bagSlotItem;
+      return null;
+  }
 
-      let restoredName = w.loadedAmmoName || `${ffStr} ${wCaliber} (${w.loadedAmmo})`;
-      
-      bagItemsArray.push({
-          id: Date.now() + Math.floor(Math.random()*1000),
-          type: 'ammo',
-          cat: 'ammo',
-          ammoKind: spawnKind,
-          name: restoredName,
-          unitWeight: w.loadedAmmoWt || (wReloadType === 'mag' ? 0.5 : 0.2),
-          qty: 1,
-          cap: w.loadedAmmoMaxCap || w.cap || w.ammoCur, 
-          ammoCur: w.ammoCur,
-          desc: `Извлечено из оружия.`
-      });
-      
-      w.loadedAmmo = null;
-      w.loadedAmmoName = null;
-      w.loadedAmmoCaliber = null;
-      w.loadedAmmoWt = null;
-      w.loadedAmmoMaxCap = null;
-      w.ammoCur = 0;
-      w.cap = w.baseCap || w.cap;
-      w.dmg = w.baseDmg || w.dmg;
-      w.ap = w.baseAp || w.ap;
-      
-      renderActiveSlots(); renderInventory(); fastCalc();
+  function removeItemBySource(source, sourceId, sourceIndex, movingItem) {
+      if (source === 'ground') {
+          let idx = groundItemsArray.findIndex(i => i.id === sourceId);
+          if(idx>-1) { groundItemsArray[idx].qty -= 1; if(groundItemsArray[idx].qty<=0) groundItemsArray.splice(idx,1); }
+      } else if (source === 'bag') {
+          let idx = bagItemsArray.findIndex(i => i.id === sourceId);
+          if(idx>-1) { bagItemsArray[idx].qty -= 1; if(bagItemsArray[idx].qty<=0) bagItemsArray.splice(idx,1); }
+      } else if (source === 'vest') {
+          vestItemsArray[sourceIndex] = null;
+      } else if (source === 'active') {
+          activeSlotsArray[sourceIndex] = null;
+      } else if (source === 'armor') {
+          armorSlotItem = null;
+      } else if (source === 'rps') {
+          rpsSlotItem = null;
+          vestItemsArray.forEach(i => { if(i) groundItemsArray.push(i); });
+          vestItemsArray = [null,null,null,null,null,null];
+      } else if (source === 'bagSlot') {
+          bagSlotItem = null;
+          bagItemsArray.forEach(i => groundItemsArray.push(i));
+          bagItemsArray = [];
+      }
+  }
+
+  function dropToEquipSlot(ev, type) {
+    ev.preventDefault();
+    document.querySelectorAll('.equip-slot').forEach(el => el.classList.remove('drag-over'));
+    
+    const source = ev.dataTransfer.getData("source");
+    const sourceId = parseInt(ev.dataTransfer.getData("id"));
+    const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
+    
+    let movingItem = findItemBySource(source, sourceId, sourceIndex);
+    if (!movingItem || movingItem.type !== type) {
+        customAlert('Неподходящий тип предмета для этого слота!');
+        return;
+    }
+    
+    let cloned = JSON.parse(JSON.stringify(movingItem)); cloned.qty = 1;
+    removeItemBySource(source, sourceId, sourceIndex, movingItem);
+
+    if (type === 'armor') {
+        if (armorSlotItem) groundItemsArray.push(armorSlotItem);
+        armorSlotItem = cloned;
+    } else if (type === 'rps') {
+        if (rpsSlotItem) {
+            groundItemsArray.push(rpsSlotItem);
+            vestItemsArray.forEach(i => { if(i) groundItemsArray.push(i); });
+            vestItemsArray = [null,null,null,null,null,null];
+        }
+        rpsSlotItem = cloned;
+    } else if (type === 'backpack') {
+        if (bagSlotItem) {
+            groundItemsArray.push(bagSlotItem);
+            bagItemsArray.forEach(i => groundItemsArray.push(i));
+            bagItemsArray = [];
+        }
+        bagSlotItem = cloned;
+    }
+    
+    renderEquipSlots(); renderActiveSlots(); renderVest(); renderInventory(); renderGround(); fastCalc();
   }
 
   function dropToActiveSlot(ev) {
@@ -1010,16 +1197,10 @@
     
     const targetIndex = parseInt(targetSlotElement.getAttribute('data-index'));
     const source = ev.dataTransfer.getData("source");
+    const sourceId = parseInt(ev.dataTransfer.getData("id"));
+    const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
     
-    let sourceId = parseInt(ev.dataTransfer.getData("id"));
-    let movingItem = null;
-    
-    if (source === 'bag') {
-      movingItem = bagItemsArray.find(i => i.id === sourceId);
-    } else if (source === 'vest') {
-      movingItem = vestItemsArray[parseInt(ev.dataTransfer.getData("index"))];
-    }
-
+    let movingItem = findItemBySource(source, sourceId, sourceIndex);
     if (!movingItem) return;
 
     if (movingItem.type === 'ammo') {
@@ -1029,14 +1210,8 @@
         let wReloadType = w.reloadType || 'mag';
         let itemAmmoKind = movingItem.ammoKind || 'magazine';
 
-        if (wReloadType === 'mag' && itemAmmoKind !== 'magazine') {
-            customAlert("Это оружие заряжается только съемными магазинами!");
-            return;
-        }
-        if (wReloadType === 'internal' && itemAmmoKind !== 'box') {
-            customAlert("Это оружие заряжается поштучно из пачки!");
-            return;
-        }
+        if (wReloadType === 'mag' && itemAmmoKind !== 'magazine') { customAlert("Это оружие заряжается только съемными магазинами!"); return; }
+        if (wReloadType === 'internal' && itemAmmoKind !== 'box') { customAlert("Это оружие заряжается поштучно из пачки!"); return; }
 
         let ammoLower = movingItem.name.toLowerCase();
         let wLower = w.name.toLowerCase();
@@ -1063,12 +1238,8 @@
 
         let availableAmmo = movingItem.ammoCur !== undefined ? parseInt(movingItem.ammoCur) : parseInt(movingItem.cap || 0);
 
-        // МАГАЗИННАЯ ЗАРЯДКА
         if (wReloadType === 'mag') {
-            if ((w.ammoCur || 0) > 0) {
-                customAlert("Извлеките текущий магазин перед зарядкой нового! [Кнопка РАЗРЯДИТЬ]");
-                return;
-            }
+            if ((w.ammoCur || 0) > 0) { customAlert("Извлеките текущий магазин перед зарядкой нового! [Кнопка РАЗРЯДИТЬ]"); return; }
             
             let isMagCompatible = false;
             if (ammoLower.includes('p-33') && wLower.includes('platzen')) isMagCompatible = true;
@@ -1079,34 +1250,18 @@
             else if (ammoLower.includes('auskund') && wLower.includes('auskund')) isMagCompatible = true;
             else if (ammoLower.includes('автодробовик') && (wLower.includes('автодробовик') || wLower.includes('auto'))) isMagCompatible = true;
 
-            if (!isMagCompatible) {
-                customAlert("Этот магазин не подходит к данному оружию!");
-                return;
-            }
+            if (!isMagCompatible) { customAlert("Этот магазин не подходит к данному оружию!"); return; }
 
             w.cap = movingItem.cap || availableAmmo;
             w.ammoCur = availableAmmo;
-            
-            if (source === 'bag') {
-                let idx = bagItemsArray.findIndex(i => i.id === sourceId);
-                bagItemsArray[idx].qty -= 1;
-                if(bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
-            } else if (source === 'vest') {
-                vestItemsArray[parseInt(ev.dataTransfer.getData("index"))] = null;
-            }
-        } 
-        // ВНУТРЕННЯЯ ЗАРЯДКА (Поштучная из пачки)
-        else {
+            removeItemBySource(source, sourceId, sourceIndex, movingItem);
+        } else {
             if ((w.ammoCur || 0) > 0 && w.loadedAmmo && w.loadedAmmo !== ammoType) {
-                bagItemsArray.push({
+                groundItemsArray.push({
                     id: Date.now() + Math.floor(Math.random()*1000),
                     type: 'ammo', cat: 'ammo', ammoKind: 'box',
                     name: w.loadedAmmoName || `Пачка ${wCaliber} (${w.loadedAmmo})`,
-                    unitWeight: 0.2,
-                    qty: 1,
-                    cap: w.baseCap,
-                    ammoCur: w.ammoCur,
-                    desc: `Извлечены из ${w.name}.`
+                    unitWeight: 0, qty: 1, cap: w.baseCap, ammoCur: w.ammoCur, desc: `Извлечены из ${w.name}.`
                 });
                 w.ammoCur = 0; 
             }
@@ -1115,46 +1270,35 @@
             let currentAmmo = parseInt(w.ammoCur) || 0;
             let space = maxSpace - currentAmmo;
             
-            if (space <= 0) {
-                customAlert("Оружие уже полностью заряжено!");
-                return;
-            }
+            if (space <= 0) { customAlert("Оружие уже полностью заряжено!"); return; }
             
             let amountToLoad = Math.min(space, availableAmmo);
             w.ammoCur = currentAmmo + amountToLoad;
             w.cap = maxSpace;
             
             let leftover = availableAmmo - amountToLoad;
-            
-            if (source === 'bag') {
-                let idx = bagItemsArray.findIndex(i => i.id === sourceId);
-                if (leftover > 0) {
-                    if (bagItemsArray[idx].qty > 1) {
+            if (leftover > 0) {
+                if (source === 'ground') {
+                    let idx = groundItemsArray.findIndex(i => i.id === sourceId);
+                    if(groundItemsArray[idx].qty > 1) {
+                        groundItemsArray[idx].qty -= 1;
+                        let s = JSON.parse(JSON.stringify(groundItemsArray[idx])); s.id = Date.now(); s.qty = 1; s.ammoCur = leftover;
+                        groundItemsArray.push(s);
+                    } else groundItemsArray[idx].ammoCur = leftover;
+                } else if (source === 'bag') {
+                    let idx = bagItemsArray.findIndex(i => i.id === sourceId);
+                    if(bagItemsArray[idx].qty > 1) {
                         bagItemsArray[idx].qty -= 1;
-                        let splitItem = JSON.parse(JSON.stringify(bagItemsArray[idx]));
-                        splitItem.id = Date.now() + Math.floor(Math.random()*1000);
-                        splitItem.qty = 1;
-                        splitItem.ammoCur = leftover;
-                        bagItemsArray.push(splitItem);
-                    } else {
-                        bagItemsArray[idx].ammoCur = leftover;
-                    }
-                } else {
-                    bagItemsArray[idx].qty -= 1;
-                    if(bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
-                }
-            } else if (source === 'vest') {
-                let vIdx = parseInt(ev.dataTransfer.getData("index"));
-                if (leftover > 0) {
-                    vestItemsArray[vIdx].ammoCur = leftover;
-                } else {
-                    vestItemsArray[vIdx] = null;
-                }
+                        let s = JSON.parse(JSON.stringify(bagItemsArray[idx])); s.id = Date.now(); s.qty = 1; s.ammoCur = leftover;
+                        bagItemsArray.push(s);
+                    } else bagItemsArray[idx].ammoCur = leftover;
+                } else if (source === 'vest') vestItemsArray[sourceIndex].ammoCur = leftover;
+            } else {
+                removeItemBySource(source, sourceId, sourceIndex, movingItem);
             }
         }
 
         w.dmg = w.baseDmg; w.ap = w.baseAp;
-
         if (ammoType === 'ББ') {
           if(w.baseAp === '20%') w.ap = '40%';
           else if(w.baseAp === '0%' && (w.name.includes('Protector') || w.name.includes('Auskund') || w.name.includes('Einhorn'))) w.ap = '30%';
@@ -1170,91 +1314,132 @@
           w.dmg = '2d10'; w.ap = '0%';
         }
         
-        w.loadedAmmo = ammoType;
-        w.loadedAmmoName = movingItem.name;
-        w.loadedAmmoCaliber = wCaliber;
-        w.loadedAmmoWt = movingItem.unitWeight;
-        w.loadedAmmoMaxCap = movingItem.cap || w.cap;
+        w.loadedAmmo = ammoType; w.loadedAmmoName = movingItem.name; w.loadedAmmoCaliber = wCaliber;
+        w.loadedAmmoWt = movingItem.unitWeight; w.loadedAmmoMaxCap = movingItem.cap || w.cap;
 
-        renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
+        renderActiveSlots(); renderVest(); renderInventory(); renderGround(); fastCalc();
         return;
     }
 
-    if (source === 'bag') {
-      let idx = bagItemsArray.findIndex(i => i.id === sourceId);
-      movingItem = JSON.parse(JSON.stringify(bagItemsArray[idx]));
-      movingItem.qty = 1; 
-      bagItemsArray[idx].qty -= 1;
-      if (bagItemsArray[idx].qty <= 0) bagItemsArray.splice(idx, 1);
-    } else if (source === 'vest') {
-      vestItemsArray[parseInt(ev.dataTransfer.getData("index"))] = null;
-    }
+    if (movingItem.type !== 'weapon') { customAlert('В этот слот можно положить только оружие!'); return; }
 
-    if (movingItem) {
-      if (activeSlotsArray[targetIndex] !== null) { bagItemsArray.push(activeSlotsArray[targetIndex]); }
-      if (!movingItem.baseDmg && movingItem.dmg) movingItem.baseDmg = movingItem.dmg;
-      if (!movingItem.baseAp && movingItem.ap) movingItem.baseAp = movingItem.ap;
-      if (!movingItem.baseCap && movingItem.cap) movingItem.baseCap = movingItem.cap;
-      activeSlotsArray[targetIndex] = movingItem;
-    }
-    renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
+    let cloned = JSON.parse(JSON.stringify(movingItem)); cloned.qty = 1;
+    removeItemBySource(source, sourceId, sourceIndex, movingItem);
+
+    if (activeSlotsArray[targetIndex] !== null) { groundItemsArray.push(activeSlotsArray[targetIndex]); }
+    if (!cloned.baseDmg && cloned.dmg) cloned.baseDmg = cloned.dmg;
+    if (!cloned.baseAp && cloned.ap) cloned.baseAp = cloned.ap;
+    if (!cloned.baseCap && cloned.cap) cloned.baseCap = cloned.cap;
+    activeSlotsArray[targetIndex] = cloned;
+    
+    renderActiveSlots(); renderVest(); renderInventory(); renderGround(); fastCalc();
   }
 
   function dropToVest(ev) {
     ev.preventDefault();
     document.querySelectorAll('.vest-slot').forEach(el => el.classList.remove('drag-over'));
+    if (!rpsSlotItem) { customAlert('Сначала наденьте РПС!'); return; }
     
     let targetIndex = -1;
     const targetSlotElement = ev.target.closest('.vest-slot');
-    if (targetSlotElement) {
-        targetIndex = parseInt(targetSlotElement.getAttribute('data-index'));
-    }
+    if (targetSlotElement) targetIndex = parseInt(targetSlotElement.getAttribute('data-index'));
 
     if (isNaN(targetIndex) || targetIndex === -1 || vestItemsArray[targetIndex] !== null) {
-        targetIndex = vestItemsArray.findIndex(i => i === null);
+        targetIndex = vestItemsArray.findIndex((i, idx) => i === null && idx < (rpsSlotItem.slots || 3));
     }
-    
-    if (targetIndex === -1 || targetIndex > 3) {
-        customAlert('Все подсумки заняты!');
-        return;
-    }
+    if (targetIndex === -1 || targetIndex >= (rpsSlotItem.slots || 3)) { customAlert('Все подсумки заняты!'); return; }
     
     const source = ev.dataTransfer.getData("source");
-    let movingItem = null;
-    if (source === 'bag') {
-      const sourceId = parseInt(ev.dataTransfer.getData("id"));
-      const itemIndex = bagItemsArray.findIndex(i => i.id === sourceId);
-      if (itemIndex > -1) {
-        if (bagItemsArray[itemIndex].unitWeight > 1) { customAlert('Подсумок вмещает максимум 1 кг!'); return; }
-        let fullItem = bagItemsArray[itemIndex];
-        movingItem = JSON.parse(JSON.stringify(fullItem)); movingItem.qty = 1;
-        fullItem.qty -= 1; if (fullItem.qty <= 0) bagItemsArray.splice(itemIndex, 1);
-      }
-    } else if (source === 'active') {
-       const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
-       if (activeSlotsArray[sourceIndex].unitWeight > 1) { customAlert('Слишком большой предмет для РПС!'); return; }
-       movingItem = activeSlotsArray[sourceIndex]; activeSlotsArray[sourceIndex] = null;
-    }
+    const sourceId = parseInt(ev.dataTransfer.getData("id"));
+    const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
     
-    if (movingItem) vestItemsArray[targetIndex] = movingItem;
-    renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
+    let movingItem = findItemBySource(source, sourceId, sourceIndex);
+    if (!movingItem) return;
+
+    if (movingItem.type === 'armor') { customAlert('Броню нельзя положить в РПС!'); return; }
+    if (movingItem.type === 'weapon' && parseFloat(movingItem.wt || movingItem.unitWeight) > 1.0) { customAlert('Оружие больше 1кг не лезет в РПС!'); return; }
+    
+    let itemWt = getItemWeight(movingItem);
+    if (movingItem.qty > 1) itemWt = itemWt / movingItem.qty;
+
+    if (itemWt > (rpsSlotItem.slotLimit || 1.0)) { customAlert(`Предмет слишком тяжелый для этой РПС! (Лимит: ${rpsSlotItem.slotLimit} кг)`); return; }
+
+    let cloned = JSON.parse(JSON.stringify(movingItem)); cloned.qty = 1;
+    removeItemBySource(source, sourceId, sourceIndex, movingItem);
+
+    vestItemsArray[targetIndex] = cloned;
+    renderActiveSlots(); renderVest(); renderInventory(); renderGround(); fastCalc();
   }
 
   function dropToBag(ev) {
     ev.preventDefault(); document.getElementById('dynamic_pack_grid').classList.remove('drag-over');
+    
     const source = ev.dataTransfer.getData("source");
-    let movingItem = null;
+    const sourceId = parseInt(ev.dataTransfer.getData("id"));
+    const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
     
-    if (source === 'vest') {
-      const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
-      movingItem = vestItemsArray[sourceIndex]; vestItemsArray[sourceIndex] = null;
-    } else if (source === 'active') {
-      const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
-      movingItem = activeSlotsArray[sourceIndex]; activeSlotsArray[sourceIndex] = null;
+    let movingItem = findItemBySource(source, sourceId, sourceIndex);
+    if (!movingItem) return;
+
+    let itemWt = getItemWeight(movingItem);
+    if (movingItem.qty > 1) itemWt = itemWt / movingItem.qty;
+
+    let bagCurrentWt = bagItemsArray.reduce((sum, item) => sum + getItemWeight(item), 0);
+    let bagCapacity = bagSlotItem ? parseFloat(bagSlotItem.cap || 3) : 3;
+
+    if (bagCurrentWt + itemWt > bagCapacity) {
+        customAlert(`В рюкзаке нет места! (Лимит: ${bagCapacity} кг)`); return;
     }
+
+    let cloned = JSON.parse(JSON.stringify(movingItem)); cloned.qty = 1;
+    removeItemBySource(source, sourceId, sourceIndex, movingItem);
+
+    bagItemsArray.push(cloned);
+    renderActiveSlots(); renderVest(); renderInventory(); renderGround(); fastCalc();
+  }
+
+  function dropToGround(ev) {
+    ev.preventDefault(); document.getElementById('ground_grid').classList.remove('drag-over');
     
-    if (movingItem) { bagItemsArray.push(movingItem); }
-    renderActiveSlots(); renderVest(); renderInventory(); fastCalc();
+    const source = ev.dataTransfer.getData("source");
+    if (source === 'ground') return; // no-op
+
+    const sourceId = parseInt(ev.dataTransfer.getData("id"));
+    const sourceIndex = parseInt(ev.dataTransfer.getData("index"));
+    
+    let movingItem = findItemBySource(source, sourceId, sourceIndex);
+    if (!movingItem) return;
+
+    let cloned = JSON.parse(JSON.stringify(movingItem)); cloned.qty = 1;
+    removeItemBySource(source, sourceId, sourceIndex, movingItem);
+
+    groundItemsArray.push(cloned);
+    renderActiveSlots(); renderVest(); renderInventory(); renderGround(); renderEquipSlots(); fastCalc();
+  }
+
+  function unloadWeapon(slotIndex) {
+      let w = activeSlotsArray[slotIndex];
+      if (!w || !w.loadedAmmo || (w.ammoCur || 0) <= 0) return;
+      
+      let wReloadType = w.reloadType || 'mag';
+      let spawnKind = wReloadType === 'mag' ? 'magazine' : 'box';
+      let ffStr = spawnKind === 'magazine' ? 'Магазин' : 'Пачка';
+      let wCaliber = w.loadedAmmoCaliber || '';
+
+      let restoredName = w.loadedAmmoName || `${ffStr} ${wCaliber} (${w.loadedAmmo})`;
+      
+      groundItemsArray.push({
+          id: Date.now() + Math.floor(Math.random()*1000),
+          type: 'ammo', cat: 'ammo', ammoKind: spawnKind, name: restoredName,
+          unitWeight: 0, qty: 1, cap: w.loadedAmmoMaxCap || w.cap || w.ammoCur, 
+          ammoCur: w.ammoCur, desc: `Извлечено из оружия.`
+      });
+      
+      w.loadedAmmo = null; w.loadedAmmoName = null; w.loadedAmmoCaliber = null;
+      w.loadedAmmoWt = null; w.loadedAmmoMaxCap = null;
+      w.ammoCur = 0; w.cap = w.baseCap || w.cap; w.dmg = w.baseDmg || w.dmg; w.ap = w.baseAp || w.ap;
+      
+      renderActiveSlots(); renderGround(); fastCalc();
   }
 
   function changeAmmo(slotIndex, delta) {
@@ -1267,8 +1452,60 @@
     if (next < 0) next = 0;
     if (w.cap && next > max) next = max;
     w.ammoCur = next;
-    renderActiveSlots();
-    autoSave();
+    renderActiveSlots(); fastCalc();
+  }
+
+  function renderEquipSlots() {
+      const armC = document.getElementById('armor_slot_container');
+      if (armorSlotItem) {
+          armC.innerHTML = `<div class="inv-item-card equip-slot filled" draggable="true" ondragstart="drag(event, 'armor', ${armorSlotItem.id}, 0)" ondrop="dropToEquipSlot(event, 'armor')" ondragover="allowDrop(event)">
+            <span style="font-weight:bold; color:var(--accent); font-size:14px;">${armorSlotItem.name}</span>
+            <span style="font-size:11px; color:#aaa;">Броня: ${armorSlotItem.sp} SP | Вес: ${armorSlotItem.wt} кг</span>
+          </div>`;
+      } else {
+          armC.innerHTML = `<div class="inv-item-card equip-slot" ondrop="dropToEquipSlot(event, 'armor')" ondragover="allowDrop(event)">
+            <div style="color:var(--text-muted); font-size:12px;">[ СЛОТ БРОНИ ПУСТ ]</div>
+          </div>`;
+      }
+
+      const rpsC = document.getElementById('rps_slot_container');
+      if (rpsSlotItem) {
+          rpsC.innerHTML = `<div class="inv-item-card equip-slot filled" draggable="true" ondragstart="drag(event, 'rps', ${rpsSlotItem.id}, 0)" ondrop="dropToEquipSlot(event, 'rps')" ondragover="allowDrop(event)">
+            <span style="font-weight:bold; color:var(--accent); font-size:14px;">${rpsSlotItem.name}</span>
+            <span style="font-size:11px; color:#aaa;">Лимит ячейки: ${rpsSlotItem.slotLimit} кг</span>
+          </div>`;
+          document.getElementById('vest_slots_label').innerText = `ПОДСУМКИ (${rpsSlotItem.slots} ШТ)`;
+      } else {
+          rpsC.innerHTML = `<div class="inv-item-card equip-slot" ondrop="dropToEquipSlot(event, 'rps')" ondragover="allowDrop(event)">
+            <div style="color:var(--text-muted); font-size:12px;">[ РПС НЕ НАДЕТА ]</div>
+          </div>`;
+          document.getElementById('vest_slots_label').innerText = `ПОДСУМКИ (0 ШТ)`;
+      }
+
+      const bagC = document.getElementById('bag_slot_container');
+      const bagToggle = document.getElementById('btn_toggle_bag');
+      if (bagSlotItem) {
+          bagC.innerHTML = `<div class="inv-item-card equip-slot filled" draggable="true" ondragstart="drag(event, 'bagSlot', ${bagSlotItem.id}, 0)" ondrop="dropToEquipSlot(event, 'backpack')" ondragover="allowDrop(event)">
+            <span style="font-weight:bold; color:var(--accent); font-size:14px;">${bagSlotItem.name}</span>
+            <span style="font-size:11px; color:#aaa;">Вместимость: ${bagSlotItem.cap} кг | Вес: ${bagSlotItem.wt} кг</span>
+          </div>`;
+          bagToggle.style.display = 'block';
+          bagToggle.innerText = isBackpackDropped ? '[ НАДЕТЬ РЮКЗАК ]' : '[ СБРОСИТЬ РЮКЗАК ]';
+          bagToggle.style.color = isBackpackDropped ? 'var(--text-muted)' : 'var(--accent)';
+          bagToggle.style.borderColor = isBackpackDropped ? '#3a3f4b' : 'var(--accent)';
+      } else {
+          bagC.innerHTML = `<div class="inv-item-card equip-slot" ondrop="dropToEquipSlot(event, 'backpack')" ondragover="allowDrop(event)">
+            <div style="color:var(--text-muted); font-size:12px;">[ КАРМАНЫ: ЛИМИТ 3КГ ]</div>
+          </div>`;
+          bagToggle.style.display = 'none';
+      }
+      
+      const grid = document.getElementById('dynamic_pack_grid');
+      if (isBackpackDropped && bagSlotItem) {
+          grid.classList.add('dropped');
+      } else {
+          grid.classList.remove('dropped');
+      }
   }
 
   function renderActiveSlots() {
@@ -1282,31 +1519,25 @@
                       <div style="color:var(--text-muted); font-size:12px;">[ СЛОТ ОРУЖИЯ ${i+1} ПУСТ ]</div>
                     </div>`;
         } else {
-            let stats = '';
+            let stats = `УРОН: <span style="color:var(--accent); font-weight:bold;">${item.dmg || '-'}</span> | AP: <span style="color:#fff">${item.ap || '-'}</span>`;
             let ammoControls = '';
-            
-            if (item.type === 'weapon') {
-                stats = `УРОН: <span style="color:var(--accent); font-weight:bold;">${item.dmg || '-'}</span> | AP: <span style="color:#fff">${item.ap || '-'}</span>`;
-                if (!item.cat || item.cat !== 'melee') {
-                    let loadedText = item.loadedAmmo ? `<span style="font-size:10px; color:#4ade80;">[${item.loadedAmmo}]</span>` : `<span style="font-size:10px; color:#f59e0b;">[РАЗРЯЖЕНО]</span>`;
-                    stats += ` ${loadedText}`;
-                    
-                    let curAm = item.ammoCur !== undefined ? item.ammoCur : 0;
-                    let maxAm = item.cap || 0;
-                    ammoControls = `
-                    <div style="display:flex; justify-content:space-between; width:100%; align-items:center; margin-top:6px; background:#0b0c0f; padding:4px; border-radius:2px; border:1px solid #3a3f4b;">
-                        <button onclick="changeAmmo(${i}, -1)" style="padding:2px 8px; font-weight:bold; font-size:14px; border-color:var(--accent); color:var(--accent);" ${!item.loadedAmmo || curAm <= 0 ? 'disabled' : ''}>-1</button>
-                        <span style="font-weight:bold; font-size:13px; color:#fff;">${item.loadedAmmo ? curAm : 0} / ${maxAm}</span>
-                        <button onclick="changeAmmo(${i}, 1)" style="padding:2px 8px; font-weight:bold; font-size:14px;" ${!item.loadedAmmo || curAm >= maxAm ? 'disabled' : ''}>+1</button>
-                        <button onclick="unloadWeapon(${i})" style="padding:2px 6px;" ${!item.loadedAmmo ? 'disabled' : ''}>РАЗРЯДИТЬ</button>
-                    </div>`;
-                }
+            if (item.cat !== 'melee') {
+                let loadedText = item.loadedAmmo ? `<span style="font-size:10px; color:#4ade80;">[${item.loadedAmmo}]</span>` : `<span style="font-size:10px; color:#f59e0b;">[РАЗРЯЖЕНО]</span>`;
+                stats += ` ${loadedText}`;
+                let curAm = item.ammoCur !== undefined ? item.ammoCur : 0;
+                let maxAm = item.cap || 0;
+                ammoControls = `
+                <div style="display:flex; justify-content:space-between; width:100%; align-items:center; margin-top:6px; background:#0b0c0f; padding:4px; border-radius:2px; border:1px solid #3a3f4b;">
+                    <button onclick="changeAmmo(${i}, -1)" style="padding:2px 8px; font-weight:bold; font-size:14px; border-color:var(--accent); color:var(--accent);" ${!item.loadedAmmo || curAm <= 0 ? 'disabled' : ''}>-1</button>
+                    <span style="font-weight:bold; font-size:13px; color:#fff;">${item.loadedAmmo ? curAm : 0} / ${maxAm}</span>
+                    <button onclick="changeAmmo(${i}, 1)" style="padding:2px 8px; font-weight:bold; font-size:14px;" ${!item.loadedAmmo || curAm >= maxAm ? 'disabled' : ''}>+1</button>
+                    <button onclick="unloadWeapon(${i})" style="padding:2px 6px;" ${!item.loadedAmmo ? 'disabled' : ''}>РАЗРЯДИТЬ</button>
+                </div>`;
             }
-            
             html = `<div class="inv-item-card active-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'active', ${item.id}, ${i})" ondrop="dropToActiveSlot(event)" ondragover="allowDrop(event)" style="align-items:flex-start; padding:8px; border: 1px solid var(--accent); background:#1a1111;">
                       <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                         <span style="font-weight:bold; color:var(--accent);">${item.name}</span>
-                        <span style="font-size:12px; color:#aaa;">${item.unitWeight} кг</span>
+                        <span style="font-size:12px; color:#aaa;">${getItemWeight(item)} кг</span>
                       </div>
                       <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${stats}</div>
                       ${ammoControls}
@@ -1319,108 +1550,60 @@
   function renderVest() {
     const grid = document.getElementById('vest_grid'); grid.innerHTML = '';
     let totalVestWt = 0;
-    for (let i = 0; i < 4; i++) {
+    let slotsCount = rpsSlotItem ? (rpsSlotItem.slots || 3) : 0;
+    
+    for (let i = 0; i < slotsCount; i++) {
       const item = vestItemsArray[i];
       if (!item) {
         grid.innerHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding:10px; text-align:center; color:#3a3f4b; font-size:11px;">[ Пусто ]</div>`;
       } else {
-        totalVestWt += item.unitWeight;
+        totalVestWt += getItemWeight(item);
         grid.innerHTML += `
             <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding:6px; display:flex; justify-content:space-between; align-items:center;">
               <span class="item-name">${item.name}</span>
-              <span style="font-size:11px; color:var(--text-muted);">${item.unitWeight} кг</span>
+              <span style="font-size:11px; color:var(--text-muted);">${getItemWeight(item)} кг</span>
             </div>`;
       }
     }
     document.getElementById('vest_status').innerText = Math.round(totalVestWt * 10) / 10;
   }
 
+  function createItemHTML(item, sourceName, index) {
+      let wt = getItemWeight(item);
+      let ammoDisp = '-';
+      if (item.type === 'weapon') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
+      else if (item.type === 'ammo') {
+         if (item.ammoKind === 'box') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}`;
+         else ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
+      }
+      return `
+        <div class="inv-item-card" draggable="true" ondragstart="drag(event, '${sourceName}', ${item.id}, ${index})" style="padding:6px; display:flex; gap:6px; align-items:center;">
+          <span class="item-name" style="flex:1;">${item.name || 'Безымянный'}</span>
+          <span style="width: 45px; text-align:center; font-weight:bold; font-size:11px; color:#4ade80;">${ammoDisp}</span>
+          <span style="width: 35px; text-align:center; font-weight:bold;">${item.qty}</span>
+          <span style="font-size:11px; color:var(--text-muted); width: 35px; text-align:center;">${Math.round((wt / item.qty)*10)/10}</span>
+          <span style="font-size:13px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${wt}</span>
+        </div>`;
+  }
+
   function renderInventory() {
     const grid = document.getElementById('dynamic_pack_grid'); grid.innerHTML = '';
-    bagItemsArray.forEach(item => {
-      const totalWt = Math.round((item.unitWeight * item.qty) * 10) / 10;
-      if (invLocked) {
-        let ammoDisp = '-';
-        if (item.type === 'weapon') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
-        else if (item.type === 'ammo') {
-             if (item.ammoKind === 'box') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}`;
-             else ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
-        }
-        
-        grid.innerHTML += `
-          <div class="inv-item-card" draggable="true" ondragstart="drag(event, 'bag', ${item.id}, null)" style="padding:8px; display:flex; gap:6px; align-items:center;">
-            <span class="item-name" style="flex:1;">${item.name || 'Безымянный'}</span>
-            <span style="width: 45px; text-align:center; font-weight:bold; font-size:11px; color:#4ade80;">${ammoDisp}</span>
-            <span style="width: 35px; text-align:center; font-weight:bold;">${item.qty}</span>
-            <span style="font-size:11px; color:var(--text-muted); width: 35px; text-align:center;">${item.unitWeight}</span>
-            <span style="font-size:13px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${totalWt}</span>
-          </div>`;
-      } else {
-        let extraFields = `
-           <div style="display:flex; gap:4px; align-items:center; margin-bottom:4px;">
-              <select onchange="handleBagItemInput(${item.id}, 'type', this.value)" style="width:70px; padding:2px; font-size:10px;">
-                 <option value="item" ${item.type==='item'?'selected':''}>Предмет</option>
-                 <option value="weapon" ${item.type==='weapon'?'selected':''}>Оружие</option>
-                 <option value="armor" ${item.type==='armor'?'selected':''}>Броня</option>
-                 <option value="ammo" ${item.type==='ammo'?'selected':''}>Патроны</option>
-              </select>
-              <input type="text" value="${item.name}" placeholder="Название..." style="flex:1;" onchange="handleBagItemInput(${item.id}, 'name', this.value)">
-           </div>
-        `;
-        if (item.type === 'weapon') {
-          extraFields += `<div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px; align-items:center;">
-                            <input type="text" placeholder="Урон" value="${item.dmg || ''}" style="width:60px;" onchange="handleBagItemInput(${item.id}, 'dmg', this.value)">
-                            <input type="text" placeholder="AP" value="${item.ap || ''}" style="width:50px;" onchange="handleBagItemInput(${item.id}, 'ap', this.value)">
-                            <input type="text" placeholder="Дальность" value="${item.range || ''}" style="flex:1;" onchange="handleBagItemInput(${item.id}, 'range', this.value)">
-                         </div>
-                         <div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px; align-items:center;">
-                            <span style="color:var(--text-muted); text-transform:uppercase;">Патроны:</span>
-                            <input type="number" placeholder="Тек." value="${item.ammoCur !== undefined ? item.ammoCur : (item.cap || '')}" style="width:40px;" onchange="handleBagItemInput(${item.id}, 'ammoCur', this.value)">
-                            <span style="color:var(--text-muted);">/</span>
-                            <input type="number" placeholder="Макс" value="${item.cap || ''}" style="width:40px;" onchange="handleBagItemInput(${item.id}, 'cap', this.value)">
-                         </div>`;
-        } else if (item.type === 'ammo') {
-            let kindSel = `<select style="width:80px; padding:2px; font-size:10px;" onchange="handleBagItemInput(${item.id}, 'ammoKind', this.value)">
-                <option value="magazine" ${item.ammoKind!=='box'?'selected':''}>Магазин</option>
-                <option value="box" ${item.ammoKind==='box'?'selected':''}>Пачка</option>
-            </select>`;
-            
-            let ammoFields = '';
-            if (item.ammoKind !== 'box') {
-                ammoFields = `<span style="color:var(--text-muted); text-transform:uppercase;">Емк:</span>
-                              <input type="number" placeholder="Тек" value="${item.ammoCur !== undefined ? item.ammoCur : (item.cap || '')}" style="width:40px;" onchange="handleBagItemInput(${item.id}, 'ammoCur', this.value)">
-                              <span style="color:var(--text-muted);">/</span>
-                              <input type="number" placeholder="Макс" value="${item.cap || ''}" style="width:40px;" onchange="handleBagItemInput(${item.id}, 'cap', this.value)">`;
-            } else {
-                ammoFields = `<span style="color:var(--text-muted); text-transform:uppercase;">Остаток:</span>
-                              <input type="number" placeholder="Шт" value="${item.ammoCur !== undefined ? item.ammoCur : (item.cap || '')}" style="width:50px;" onchange="handleBagItemInput(${item.id}, 'ammoCur', this.value)">`;
-            }
-
-            extraFields += `<div style="display:flex; gap:4px; margin-bottom:4px; font-size:10px; align-items:center;">
-                            ${kindSel} ${ammoFields}
-                         </div>`;
-        }
-        extraFields += `<input type="text" placeholder="Описание..." value="${item.desc || ''}" style="width:100%; text-align:left; font-size:10px;" onchange="handleBagItemInput(${item.id}, 'desc', this.value)">`;
-        
-        grid.innerHTML += `
-          <div class="inv-item-card" style="padding:6px; background:#161719;">
-             <div class="val-interactive" style="padding:2px 4px; justify-content:flex-start; gap:8px;" onclick="toggleExpand('bag_det_${item.id}')">
-                <span style="font-weight:bold; flex:1; font-size:12px; color:var(--accent); text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name || 'Новый предмет'}</span>
-                <input type="number" value="${item.qty}" min="1" style="width:35px; height:20px;" onclick="event.stopPropagation()" onchange="handleBagItemInput(${item.id}, 'qty', this.value)">
-                <input type="number" value="${item.unitWeight}" step="0.5" style="width:40px; height:20px;" onclick="event.stopPropagation()" onchange="handleBagItemInput(${item.id}, 'unitWeight', this.value)">
-                <button class="item-del" onclick="event.stopPropagation(); removeBagItem(${item.id})">✕</button>
-             </div>
-             <div id="bag_det_${item.id}" class="expandable" style="background:#0e0f12; border-radius:3px; margin-top:4px;" onclick="event.stopPropagation()">
-                <div style="padding: 6px; border-top:1px dashed #3a3f4b;">
-                    ${extraFields}
-                </div>
-             </div>
-          </div>`;
-      }
+    let totalWt = 0;
+    bagItemsArray.forEach((item, idx) => {
+      totalWt += getItemWeight(item);
+      grid.innerHTML += createItemHTML(item, 'bag', idx);
     });
-    if (!invLocked) {
-      grid.innerHTML += `<button onclick="addBagItem()" style="width: 100%; border: 1px dashed #3a3f4b; background: transparent; color: var(--text-muted); padding: 10px;">⊕ СОЗДАТЬ ПРЕДМЕТ</button>`;
-    }
+    
+    let maxBagWt = bagSlotItem ? parseFloat(bagSlotItem.cap || 3) : 3;
+    document.getElementById('bag_current_wt').innerText = Math.round(totalWt*10)/10;
+    document.getElementById('bag_max_wt').innerText = maxBagWt;
+  }
+
+  function renderGround() {
+    const grid = document.getElementById('ground_grid'); grid.innerHTML = '';
+    groundItemsArray.forEach((item, idx) => {
+      grid.innerHTML += createItemHTML(item, 'ground', idx);
+    });
   }
 
   function filterComp(cat, btnElement) {
@@ -1440,13 +1623,12 @@
      
      document.getElementById(`ammo_desc_${gIdx}`).innerHTML = `${opt.desc}<br><span style="color:#4ade80; font-weight:bold; font-size:13px;">${opt.ap}</span> | <b style="font-size:13px;">${opt.dmg}</b>`;
      document.getElementById(`ammo_cap_${gIdx}`).innerText = form.cap;
-     document.getElementById(`ammo_wt_${gIdx}`).innerText = form.wt;
+     document.getElementById(`ammo_wt_${gIdx}`).innerText = Math.round((form.kind === 'box' ? form.cap * getBulletWeight(g.cal) : form.wt + form.cap * getBulletWeight(g.cal))*10)/10;
   }
   
-  window.addAmmoGroupToBag = function(gIdx) {
+  window.addAmmoGroupToGround = function(gIdx) {
      let typeSel = document.getElementById(`ammo_type_${gIdx}`).value;
      let ffSelIdx = document.getElementById(`ammo_ff_${gIdx}`) ? document.getElementById(`ammo_ff_${gIdx}`).value : 0;
-     
      let g = AMMO_GROUPS[gIdx];
      let opt = g.options[typeSel];
      let form = g.forms[ffSelIdx];
@@ -1455,14 +1637,12 @@
      let finalName = `${form.name} ${g.cal} (${opt.type})`;
      let finalCap = form.cap;
      
-     bagItemsArray.push({
+     groundItemsArray.push({
           id: Date.now() + Math.floor(Math.random()*100),
-          type: 'ammo', cat: 'ammo', ammoKind: kind,
-          name: finalName, unitWeight: form.wt, qty: 1,
+          type: 'ammo', cat: 'ammo', ammoKind: kind, name: finalName, unitWeight: form.wt, qty: 1,
           desc: opt.desc, cap: finalCap, ammoCur: finalCap, dmg: opt.dmg, ap: opt.ap
       });
-      fastCalc(); renderInventory();
-      customAlert(`[ ${finalName} ] добавлен в Рюкзак`);
+      renderGround(); customAlert(`[ ${finalName} ] сброшен на пол.`);
   }
 
   function renderCompendium(category) {
@@ -1488,15 +1668,13 @@
           
         AMMO_GROUPS.forEach((g, gIdx) => {
             let optionsHtml = g.options.map((o, oIdx) => `<option value="${oIdx}">${o.type}</option>`).join('');
-            
             let ffHtml = `<select id="ammo_ff_${gIdx}" style="width: 100%; margin-bottom: 4px; text-align: left; background:#181a1f;" onchange="updateAmmoInfo(${gIdx})">`;
-            g.forms.forEach((f, fIdx) => {
-                ffHtml += `<option value="${fIdx}">${f.name}</option>`;
-            });
+            g.forms.forEach((f, fIdx) => { ffHtml += `<option value="${fIdx}">${f.name}</option>`; });
             ffHtml += `</select>`;
-            
             let def = g.options[0];
             let firstForm = g.forms[0];
+            let bw = getBulletWeight(g.cal);
+            let firstWt = Math.round((firstForm.kind === 'box' ? firstForm.cap * bw : firstForm.wt + firstForm.cap * bw)*10)/10;
             
             tableHtml += `
             <tr style="border-bottom: 1px solid #3a3f4b;">
@@ -1507,20 +1685,15 @@
               </td>
               <td style="padding: 10px 8px; vertical-align: top;">
                 <b style="color: #fff; font-size:14px; display:inline-block; margin-bottom:6px;">${g.cal}</b>
-                <div>
-                  ${ffHtml}
-                  <select id="ammo_type_${gIdx}" style="width: 100%; text-align: left; background:#181a1f; color:var(--accent);" onchange="updateAmmoInfo(${gIdx})">
-                    ${optionsHtml}
-                  </select>
-                </div>
+                <div>${ffHtml}<select id="ammo_type_${gIdx}" style="width: 100%; text-align: left; background:#181a1f; color:var(--accent);" onchange="updateAmmoInfo(${gIdx})">${optionsHtml}</select></div>
               </td>
               <td style="padding: 10px 8px; font-size:11px; color:#ccc; line-height:1.4;" id="ammo_desc_${gIdx}">
                 ${def.desc}<br><span style="color: #4ade80; font-weight:bold; font-size:13px;">${def.ap}</span> | <b style="font-size:13px;">${def.dmg}</b>
               </td>
               <td style="padding: 10px 8px; text-align: center; font-weight: bold; font-size:14px; color:#4ade80;" id="ammo_cap_${gIdx}">${firstForm.cap}</td>
-              <td style="padding: 10px 8px; text-align: center; font-size:14px;" id="ammo_wt_${gIdx}">${firstForm.wt}</td>
+              <td style="padding: 10px 8px; text-align: center; font-size:14px;" id="ammo_wt_${gIdx}">${firstWt}</td>
               <td style="padding: 10px 8px; text-align: center; vertical-align: middle;">
-                <button onclick="addAmmoGroupToBag(${gIdx})" style="font-size: 11px; padding: 6px; width: 100%; border-color: var(--accent); color: var(--accent);">+ РЮКЗАК</button>
+                <button onclick="addAmmoGroupToGround(${gIdx})" style="font-size: 11px; padding: 6px; width: 100%; border-color: var(--accent); color: var(--accent);">+ НА ПОЛ</button>
               </td>
             </tr>`;
         });
@@ -1534,15 +1707,10 @@
 
     filtered.forEach(item => {
       let extraStats = '';
-      if(item.type === 'weapon') {
-        extraStats = `
-          <div class="comp-stat"><span>ОТДАЧА:</span> ${item.recoil} | <span>СКОРОСТРЕЛ:</span> ${item.fireRate}</div>
-          <div class="comp-stat"><span>Дальность:</span> ${item.range}</div>
-        `;
-      }
-      if(item.type === 'armor') {
-         extraStats = `<div class="comp-stat"><span>БРОНЯ (SP):</span> ${item.sp}</div>`;
-      }
+      if(item.type === 'weapon') extraStats = `<div class="comp-stat"><span>ОТДАЧА:</span> ${item.recoil} | <span>СКОРОСТРЕЛ:</span> ${item.fireRate}</div><div class="comp-stat"><span>Дальность:</span> ${item.range}</div>`;
+      if(item.type === 'armor') extraStats = `<div class="comp-stat"><span>БРОНЯ (SP):</span> ${item.sp} | <span>ШТРАФ:</span> ${item.pen} кл</div>`;
+      if(item.type === 'rps') extraStats = `<div class="comp-stat"><span>СЛОТОВ:</span> ${item.slots} | <span>ШТРАФ:</span> ${item.pen} кл</div>`;
+      if(item.type === 'backpack') extraStats = `<div class="comp-stat"><span>ОБЪЕМ:</span> ${item.cap} кг | <span>ШТРАФ:</span> ${item.pen} кл</div>`;
       
       list.innerHTML += `
         <div class="comp-item">
@@ -1556,43 +1724,27 @@
                   ${item.dmg ? `<div class="comp-stat"><span>УРОН:</span> ${item.dmg}</div>` : ''}
                   ${item.ap ? `<div class="comp-stat"><span>ПРОБИТИЕ:</span> ${item.ap}</div>` : ''}
                   ${extraStats}
-                  <div class="comp-stat"><span>ВЕС:</span> ${item.wt} кг ${item.cap ? `| <span>ЕМКОСТЬ:</span> <span style="color:#4ade80;">${item.cap}</span>` : ''}</div>
+                  <div class="comp-stat"><span>ВЕС:</span> ${item.wt} кг ${item.cap && item.type==='weapon' ? `| <span>ЕМКОСТЬ:</span> <span style="color:#4ade80;">${item.cap}</span>` : ''}</div>
                 </div>
                 <div class="comp-desc">${item.desc}</div>
             </div>
-            <button onclick="addToBagFromComp('${item.id}')" style="width:100%; border-color:var(--accent); color:var(--accent);">+ В РЮКЗАК</button>
+            <button onclick="addToGroundFromComp('${item.id}')" style="width:100%; border-color:var(--accent); color:var(--accent);">+ НА ПОЛ</button>
           </div>
         </div>`;
     });
   }
 
-  function addToBagFromComp(id) {
+  function addToGroundFromComp(id) {
     const cItem = COMPENDIUM.find(i => i.id === id);
     if (!cItem) return;
-    
-    const existingIndex = bagItemsArray.findIndex(i => i.name === cItem.name && i.type === cItem.type);
-    if (existingIndex > -1) {
-        bagItemsArray[existingIndex].qty += 1;
-    } else {
-        bagItemsArray.push({
-            id: Date.now() + Math.floor(Math.random()*100),
-            type: cItem.type,
-            cat: cItem.cat,
-            reloadType: cItem.reloadType,
-            name: cItem.name,
-            unitWeight: cItem.wt,
-            qty: 1,
-            desc: cItem.desc,
-            dmg: cItem.dmg,
-            ap: cItem.ap,
-            range: cItem.range,
-            cap: cItem.cap,
-            baseCap: cItem.cap,
-            ammoCur: 0
-        });
-    }
-    fastCalc();
-    customAlert(`[ ${cItem.name} ] добавлен в Рюкзак`);
+    groundItemsArray.push({
+        id: Date.now() + Math.floor(Math.random()*100),
+        type: cItem.type, cat: cItem.cat, reloadType: cItem.reloadType,
+        name: cItem.name, unitWeight: cItem.wt, qty: 1, desc: cItem.desc,
+        dmg: cItem.dmg, ap: cItem.ap, range: cItem.range, cap: cItem.cap, baseCap: cItem.cap,
+        sp: cItem.sp, pen: cItem.pen, slots: cItem.slots, slotLimit: cItem.slotLimit, ammoCur: 0
+    });
+    renderGround(); customAlert(`[ ${cItem.name} ] сброшен на пол.`);
   }
 
   // --- SAVE / LOAD ---
@@ -1608,13 +1760,18 @@
 
   function getFormData() {
     const data = {};
-    document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewInv input').forEach(inp => {
+    document.querySelectorAll('#viewSheet input, #viewSheet textarea, #viewSheet select').forEach(inp => {
       if (inp.id === 'sheetOwner' || inp.id.startsWith('login') || inp.id.startsWith('calc_')) return; 
       data[inp.id] = inp.type === 'number' ? Number(inp.value) : inp.value;
     });
     data.bag_items_json = JSON.stringify(bagItemsArray);
     data.vest_items_json = JSON.stringify(vestItemsArray);
     data.active_items_json = JSON.stringify(activeSlotsArray);
+    data.ground_items_json = JSON.stringify(groundItemsArray);
+    data.armor_slot_json = JSON.stringify(armorSlotItem);
+    data.rps_slot_json = JSON.stringify(rpsSlotItem);
+    data.bag_slot_json = JSON.stringify(bagSlotItem);
+    data.is_backpack_dropped = isBackpackDropped;
     return data;
   }
 
@@ -1622,7 +1779,6 @@
     if (!currentSheetId || !currentUser || isRemoteUpdating) return;
     const payload = getFormData();
     const now = new Date().toISOString();
-    
     lastUpdatedAt = now;
     
     try {
@@ -1647,10 +1803,7 @@
       const rows = await res.json();
       if (rows && rows.length > 0) {
         const dbUpdatedAt = rows[0].updated_at;
-        
-        if (!force && lastUpdatedAt && dbUpdatedAt && new Date(dbUpdatedAt) <= new Date(lastUpdatedAt)) {
-            return; 
-        }
+        if (!force && lastUpdatedAt && dbUpdatedAt && new Date(dbUpdatedAt) <= new Date(lastUpdatedAt)) return; 
         
         lastUpdatedAt = dbUpdatedAt;
         isRemoteUpdating = true;
@@ -1658,11 +1811,16 @@
         const data = rows[0].data;
         for (let key in data) {
           const el = document.getElementById(key);
-          if (el && key !== 'sheetOwner' && !key.includes('json') && !key.startsWith('calc_')) el.value = data[key];
+          if (el && key !== 'sheetOwner' && !key.includes('json') && key !== 'is_backpack_dropped' && !key.startsWith('calc_')) el.value = data[key];
         }
         try { bagItemsArray = JSON.parse(data.bag_items_json || "[]"); } catch(e){}
-        try { vestItemsArray = JSON.parse(data.vest_items_json || "[null,null,null,null,null,null,null,null]"); } catch(e){}
+        try { vestItemsArray = JSON.parse(data.vest_items_json || "[null,null,null,null,null,null]"); } catch(e){}
         try { activeSlotsArray = JSON.parse(data.active_items_json || "[null,null]"); } catch(e){}
+        try { groundItemsArray = JSON.parse(data.ground_items_json || "[]"); } catch(e){}
+        try { armorSlotItem = JSON.parse(data.armor_slot_json || "null"); } catch(e){}
+        try { rpsSlotItem = JSON.parse(data.rps_slot_json || "null"); } catch(e){}
+        try { bagSlotItem = JSON.parse(data.bag_slot_json || "null"); } catch(e){}
+        isBackpackDropped = data.is_backpack_dropped || false;
         
         isRemoteUpdating = false;
         document.getElementById('sync_status').innerText = `[ СИНХР ]`;
@@ -1671,10 +1829,10 @@
         isRemoteUpdating = true; resetForm(); isRemoteUpdating = false;
       }
     } catch (err) {}
-    fastCalc(); renderInventory(); renderVest(); renderActiveSlots();
+    fastCalc(); renderEquipSlots(); renderInventory(); renderVest(); renderActiveSlots(); renderGround();
   }
 
-  setInterval(() => { if (!invLocked || !vestLocked || isRemoteUpdating || !currentSheetId) return; loadData(false); }, 15000);
+  setInterval(() => { if (isRemoteUpdating || !currentSheetId) return; loadData(false); }, 15000);
 
   async function initApp() {
     const savedId = safeGetItem('vineta_active_id');
