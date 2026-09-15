@@ -146,7 +146,7 @@
     <div class="input-float">
       <input type="password" id="loginPass" placeholder=" " autocomplete="off" style="padding-right: 32px;" spellcheck="false">
       <label for="loginPass">Пароль доступа</label>
-      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:14px; cursor:pointer;">О</button>
+      <button type="button" onclick="togglePasswordVisibility()" id="pwdToggleBtn" style="position:absolute; right:2px; background:transparent; border:none; font-size:14px; cursor:pointer;">O</button>
     </div>
     <div style="display: flex; gap: 6px;">
       <button type="button" onclick="handleLogin()" style="flex:1;">ВОЙТИ</button>
@@ -324,63 +324,80 @@
               <tr><th>НАВЫК</th><th>АТР</th><th>УРОВЕНЬ</th><th>РАЗН</th><th>ИТОГ</th><th></th></tr>
               <!-- СИЛ -->
               <tr>
-                <td style="font-weight:bold; color:#fff;">Атлетика</td>
+                <td style="font-weight:bold; color:#fff;">Тяжелая работа</td>
                 <td style="color:#aaa;">СИЛ</td>
-                <td><select id="sk_ath_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_ath_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_ath_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('ath', 'Атлетика')">D20</span></td>
+                <td><select id="sk_hmc_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_hmc_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_hmc_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('hmc', 'Тяжелая работа')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Ближний бой</td>
+                <td style="color:#aaa;">СИЛ</td>
+                <td><select id="sk_clc_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_clc_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_clc_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('clc', 'Ближний бой')">D20</span></td>
+              </tr>
+              <!-- ТЕЛ -->
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Выносливость</td>
+                <td style="color:#aaa;">ТЕЛ</td>
+                <td><select id="sk_sta_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_sta_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_sta_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('sta', 'Выносливость')">D20</span></td>
               </tr>
               <!-- ЛОВ -->
               <tr>
-                <td style="font-weight:bold; color:#fff;">Акробатика</td>
+                <td style="font-weight:bold; color:#fff;">Подвижность</td>
                 <td style="color:#aaa;">ЛОВ</td>
-                <td><select id="sk_acr_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_acr_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_acr_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('acr', 'Акробатика')">D20</span></td>
+                <td><select id="sk_mob_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_mob_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_mob_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('mob', 'Подвижность')">D20</span></td>
               </tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Скрытность</td>
+                <td style="font-weight:bold; color:#fff;">Дальний бой</td>
                 <td style="color:#aaa;">ЛОВ</td>
-                <td><select id="sk_ste_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_ste_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_ste_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('ste', 'Скрытность')">D20</span></td>
+                <td><select id="sk_rnc_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_rnc_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_rnc_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('rnc', 'Дальний бой')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Вождение</td>
+                <td style="color:#aaa;">ЛОВ</td>
+                <td><select id="sk_pil_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_pil_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_pil_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('pil', 'Вождение')">D20</span></td>
               </tr>
               <!-- ИНТ -->
               <tr>
-                <td style="font-weight:bold; color:#fff;">Взлом</td>
+                <td style="font-weight:bold; color:#fff;">Комтех</td>
                 <td style="color:#aaa;">ИНТ</td>
-                <td><select id="sk_hac_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_hac_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_hac_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('hac', 'Взлом')">D20</span></td>
+                <td><select id="sk_com_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_com_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_com_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('com', 'Комтех')">D20</span></td>
               </tr>
-              <tr>
-                <td style="font-weight:bold; color:#fff;">Взрывотехника</td>
-                <td style="color:#aaa;">ИНТ</td>
-                <td><select id="sk_exp_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_exp_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_exp_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('exp', 'Взрывотехника')">D20</span></td>
-              </tr>
-              <tr>
-                <td style="font-weight:bold; color:#fff;">Ремонт</td>
-                <td style="color:#aaa;">ИНТ</td>
-                <td><select id="sk_rep_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_rep_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_rep_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('rep', 'Ремонт')">D20</span></td>
-              </tr>
-              <!-- МУД -->
               <tr>
                 <td style="font-weight:bold; color:#fff;">Медицина</td>
-                <td style="color:#aaa;">МУД</td>
+                <td style="color:#aaa;">ИНТ</td>
                 <td><select id="sk_med_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
                 <td><input type="number" id="sk_med_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
                 <td id="sk_med_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
                 <td><span class="roll-btn" onclick="rollSkill('med', 'Медицина')">D20</span></td>
+              </tr>
+              <!-- МУД -->
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Наблюдательность</td>
+                <td style="color:#aaa;">МУД</td>
+                <td><select id="sk_obs_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_obs_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_obs_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('obs', 'Наблюдательность')">D20</span></td>
               </tr>
               <tr>
                 <td style="font-weight:bold; color:#fff;">Выживание</td>
@@ -390,38 +407,22 @@
                 <td id="sk_sur_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
                 <td><span class="roll-btn" onclick="rollSkill('sur', 'Выживание')">D20</span></td>
               </tr>
-              <tr>
-                <td style="font-weight:bold; color:#fff;">Внимание</td>
-                <td style="color:#aaa;">МУД</td>
-                <td><select id="sk_awa_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_awa_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_awa_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('awa', 'Внимание')">D20</span></td>
-              </tr>
-              <tr>
-                <td style="font-weight:bold; color:#fff;">Проницательность</td>
-                <td style="color:#aaa;">МУД</td>
-                <td><select id="sk_ins_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_ins_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_ins_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('ins', 'Проницательность')">D20</span></td>
-              </tr>
               <!-- ХАР -->
               <tr>
-                <td style="font-weight:bold; color:#fff;">Убеждение</td>
+                <td style="font-weight:bold; color:#fff;">Командование</td>
                 <td style="color:#aaa;">ХАР</td>
-                <td><select id="sk_per_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_per_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_per_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('per', 'Убеждение')">D20</span></td>
+                <td><select id="sk_cmd_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_cmd_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_cmd_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('cmd', 'Командование')">D20</span></td>
               </tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Запугивание</td>
+                <td style="font-weight:bold; color:#fff;">Манипуляция</td>
                 <td style="color:#aaa;">ХАР</td>
-                <td><select id="sk_int_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_int_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_int_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('int', 'Запугивание')">D20</span></td>
+                <td><select id="sk_man_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_man_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_man_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('man', 'Манипуляция')">D20</span></td>
               </tr>
             </table>
           </div>
@@ -554,6 +555,9 @@
         <div class="box">
           <div class="box-title">РАЗГРУЗОЧНАЯ СИСТЕМА (РПС)</div>
           <div class="box-content" style="padding: 4px;">
+            <div style="display:flex; justify-content:flex-end; margin-bottom:4px;">
+               <button class="inv-lock-btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size:12px;">🔒</button>
+            </div>
             <div id="rps_slot_container" style="margin-bottom: 8px;"></div>
             
             <div class="flex-row" style="font-size:10px; color:var(--text-muted); border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px; margin-bottom:4px;">
@@ -573,6 +577,7 @@
           <div class="box-content" style="padding: 4px;">
             <div style="display:flex; gap:4px; margin-bottom:4px;">
               <button id="btn_toggle_bag" onclick="toggleBackpackDrop()" style="flex:1; font-size:10px; padding:2px;"></button>
+              <button class="inv-lock-btn" onclick="toggleInvLock()" style="padding: 2px 6px; font-size:12px;">🔒</button>
             </div>
             <div id="bag_slot_container" style="margin-bottom: 8px;"></div>
             
@@ -596,7 +601,10 @@
 
     <!-- ПОЛ / ЗЕМЛЯ -->
     <div class="box" style="margin-top:8px;">
-      <div class="box-title" style="background:#404652; color:#fff;">ПОЛ / ЗЕМЛЯ (БУФЕР)</div>
+      <div class="box-title" style="background:#404652; color:#fff; display:flex; justify-content:center; position:relative;">
+          <span>ПОЛ / ЗЕМЛЯ (БУФЕР)</span>
+          <button class="inv-lock-btn" onclick="toggleInvLock()" style="position:absolute; right:4px; top:2px; padding: 0 6px; font-size:12px; background:transparent; border:none;">🔒</button>
+      </div>
       <div class="box-content">
         <div style="font-size:10px; color:var(--text-muted); text-align:center;">Безлимитная зона. Предметы здесь не учитываются в весе персонажа. Перетаскивайте лут сюда или забирайте отсюда.</div>
         <div id="ground_grid" class="ground-area" ondrop="dropToGround(event)" ondragover="allowDrop(event)"></div>
@@ -742,15 +750,15 @@
     { id: 'm5', cat: 'melee', type: 'weapon', name: 'Пожарный топор', img: 'ПожарныйТопор.webp', dmg: '1d12 + СИЛ', ap: '30%', range: 'Ближний бой', cap: '-', wt: 3.5, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый аварийный топор. Кажется, когда-то он был создан для спасения жизней из огня. Теперь он только отнимает их.' },
     { id: 'm6', cat: 'melee', type: 'weapon', name: 'Кувалда', img: 'Кувалда.webp', dmg: '1d12 + СИЛ', ap: '50%', range: 'Ближний бой', cap: '-', wt: 6.0, recoil: 0, fireRate: 0, desc: 'Двуручное. Тяжелый промышленный молот для разрушения бронеплит. Износ брони: -3 SP за удар. ПАТРОНЫ КОНЧИЛИСЬ — ДА И ХУЙ С НИМИ!' },
     // БРОНЯ
-    { id: 'a1', cat: 'armor', type: 'armor', name: 'Тканевый жилет скрытого ношения', img: '', sp: 5, wt: 1.5, pen: 0, desc: 'Скрытное ношение под одеждой, +1 к Рефлексам.' },
-    { id: 'a2', cat: 'armor', type: 'armor', name: 'Усиленная роба цеховика', img: '', sp: 6, wt: 3.0, pen: 0, desc: '+2 к спасброскам Стойкости против пыли, ржавчины и химии.' },
-    { id: 'a3', cat: 'armor', type: 'armor', name: 'Курьерский лёгкий костюм', img: '', sp: 7, wt: 2.5, pen: 0, desc: 'Повышает тактическую мобильность (+1 кл скорости).' },
-    { id: 'a4', cat: 'armor', type: 'armor', name: 'Утеплённый китель', img: '', sp: 8, wt: 5.0, pen: 0, desc: 'Кевларовые пакеты. +1 к проверкам Выживания против холода.' },
-    { id: 'a5', cat: 'armor', type: 'armor', name: 'Пехотный штампованный ватник', img: '', sp: 11, wt: 8.5, pen: -1, desc: 'Стальной панцирь. +4 к проверкам Выживания против обморожения.' },
-    { id: 'a6', cat: 'armor', type: 'armor', name: 'Полевой инженерный комплект', img: '', sp: 10, wt: 7.0, pen: 0, desc: 'Пассивный экзоскелет (+6 кг к лимиту веса). Огнеупорен.' },
-    { id: 'a7', cat: 'armor', type: 'armor', name: 'Маскхалат разведгруппы', img: '', sp: 8, wt: 3.5, pen: 0, desc: 'Размывает силуэт: +2 к Скрытности, +1 к Рефлексам.' },
+    { id: 'a1', cat: 'armor', type: 'armor', name: 'Тканевый жилет скрытого ношения', img: '', sp: 5, wt: 1.5, pen: 0, desc: 'Скрытное ношение под одеждой.' },
+    { id: 'a2', cat: 'armor', type: 'armor', name: 'Усиленная роба цеховика', img: '', sp: 6, wt: 3.0, pen: 0, desc: 'Плотная рабочая одежда.' },
+    { id: 'a3', cat: 'armor', type: 'armor', name: 'Курьерский лёгкий костюм', img: '', sp: 7, wt: 2.5, pen: 0, desc: 'Спортивный крой, повышает тактическую мобильность (+1 кл скорости).' },
+    { id: 'a4', cat: 'armor', type: 'armor', name: 'Утеплённый китель', img: '', sp: 8, wt: 5.0, pen: 0, desc: 'Кевларовые пакеты. Дает бонус к броскам Выживания от холода.' },
+    { id: 'a5', cat: 'armor', type: 'armor', name: 'Пехотный штампованный ватник', img: '', sp: 11, wt: 8.5, pen: -1, desc: 'Стальной панцирь. Дает бонус к броскам Выживания от холода.' },
+    { id: 'a6', cat: 'armor', type: 'armor', name: 'Полевой инженерный комплект', img: '', sp: 10, wt: 7.0, pen: 0, desc: 'Пассивный экзоскелет (+8 кг к лимиту веса).' },
+    { id: 'a7', cat: 'armor', type: 'armor', name: 'Маскхалат разведгруппы', img: '', sp: 8, wt: 3.5, pen: 0, desc: 'Легкий камуфлированный костюм, размывает силуэт.' },
     { id: 'a8', cat: 'armor', type: 'armor', name: 'Войсковой штурмовой комплект', img: '', sp: 12, wt: 6.0, pen: 0, desc: 'Керамика 3-го класса, каска. Честный армейский стандарт.' },
-    { id: 'a9', cat: 'armor', type: 'armor', name: 'Сапёрный штурмовой комплект', img: '', sp: 13, wt: 8.0, pen: -1, desc: 'Усиленный воротник и фартук: +2 к проверкам Взрывотехники.' },
+    { id: 'a9', cat: 'armor', type: 'armor', name: 'Сапёрный штурмовой комплект', img: '', sp: 13, wt: 8.0, pen: -1, desc: 'Усиленный воротник и фартук.' },
     { id: 'a10', cat: 'armor', type: 'armor', name: 'Тяжёлый панцирь «Монолит»', img: '', sp: 18, wt: 13.0, pen: -1, desc: 'Требует ТЕЛ 14+. Иммунитет к нокдауну от помповых ружей.' },
     // РПС
     { id: 'r1', cat: 'rps', type: 'rps', name: 'Брезентовая бандольера', img: '', slots: 4, slotLimit: 1.0, pen: 0, desc: 'Только патроны, медицина, гранаты, мелкие предметы.' },
@@ -851,10 +859,16 @@
   let groundItemsArray = [];
   
   let isBackpackDropped = false;
+  let invLocked = true;
 
   function toggleExpand(id) { const el = document.getElementById(id); if (el) el.classList.toggle('open'); }
   function togglePasswordVisibility() { const pwdInput = document.getElementById('loginPass'); const toggleBtn = document.getElementById('pwdToggleBtn'); if (pwdInput.type === 'password') { pwdInput.type = 'text'; toggleBtn.innerText = 'X'; } else { pwdInput.type = 'password'; toggleBtn.innerText = 'O'; } }
   function toggleSidePanel() { document.getElementById('sidePanel').classList.toggle('open'); }
+  function toggleInvLock() {
+      invLocked = !invLocked;
+      document.querySelectorAll('.inv-lock-btn').forEach(b => b.innerText = invLocked ? '🔒' : '🔓');
+      renderInventory(); renderGround(); renderVest();
+  }
 
   function getMod(val) { if (val <= 3) return -2; if (val <= 7) return -1; if (val <= 13) return 0; if (val <= 17) return 1; return 2; }
   function rollD20() { return Math.floor(Math.random() * 20) + 1; }
@@ -1017,12 +1031,12 @@
     else if (ratio <= 0.75) document.getElementById('w_serious')?.classList.add('wound-active');
     else document.getElementById('w_light')?.classList.add('wound-active');
 
-    // Навыки
+    // Навыки Alien RPG
     const skills = [
-      {id: 'ath', st: 'str_m'}, {id: 'acr', st: 'dex_m'}, {id: 'ste', st: 'dex_m'},
-      {id: 'hac', st: 'int_m'}, {id: 'exp', st: 'int_m'}, {id: 'rep', st: 'int_m'},
-      {id: 'med', st: 'wis_m'}, {id: 'sur', st: 'wis_m'}, {id: 'awa', st: 'wis_m'},
-      {id: 'ins', st: 'wis_m'}, {id: 'per', st: 'cha_m'}, {id: 'int', st: 'cha_m'}
+      {id: 'hmc', st: 'str_m'}, {id: 'clc', st: 'str_m'}, {id: 'sta', st: 'con_m'},
+      {id: 'mob', st: 'dex_m'}, {id: 'rnc', st: 'dex_m'}, {id: 'pil', st: 'dex_m'},
+      {id: 'com', st: 'int_m'}, {id: 'med', st: 'int_m'}, {id: 'obs', st: 'wis_m'},
+      {id: 'sur', st: 'wis_m'}, {id: 'cmd', st: 'cha_m'}, {id: 'man', st: 'cha_m'}
     ];
     skills.forEach(sk => {
         let baseMod = vals[sk.st] || 0;
@@ -1033,9 +1047,9 @@
         if(el) el.innerText = (tot >= 0 ? '+' : '') + tot;
     });
 
-    // Грузоподъемность: 20 + (MOD STR + MOD CON)*5
+    // Грузоподъемность
     const carryMisc = parseInt(document.getElementById('carry_misc')?.value) || 0;
-    let armorBonus = (armorSlotItem && armorSlotItem.name && armorSlotItem.name.includes('Инженерный комплект')) ? 6 : 0;
+    let armorBonus = (armorSlotItem && armorSlotItem.name && armorSlotItem.name.includes('Инженерный комплект')) ? 8 : 0;
     const carryTotal = 20 + ((vals.str_m || 0) + (vals.con_m || 0)) * 5 + carryMisc + armorBonus;
     
     document.getElementById('carry_base').value = 20 + ((vals.str_m || 0) + (vals.con_m || 0)) * 5;
@@ -1043,11 +1057,11 @@
     if(elCarryTotal) elCarryTotal.value = carryTotal;
 
     // Считаем текущий вес
-    let armorWt = armorSlotItem ? parseFloat(armorSlotItem.wt || 0) : 0;
-    let rpsWt = rpsSlotItem ? parseFloat(rpsSlotItem.wt || 0) : 0;
+    let armorWt = armorSlotItem ? parseFloat(armorSlotItem.unitWeight || 0) : 0;
+    let rpsWt = rpsSlotItem ? parseFloat(rpsSlotItem.unitWeight || 0) : 0;
     let rpsItemsWt = vestItemsArray.reduce((sum, item) => sum + getItemWeight(item), 0);
     let activeWt = activeSlotsArray.reduce((sum, item) => sum + getItemWeight(item), 0);
-    let bagObjWt = bagSlotItem ? parseFloat(bagSlotItem.wt || 0) : 0;
+    let bagObjWt = bagSlotItem ? parseFloat(bagSlotItem.unitWeight || 0) : 0;
     let bagItemsWt = bagItemsArray.reduce((sum, item) => sum + getItemWeight(item), 0);
     
     let totalWeight = armorWt + rpsWt + rpsItemsWt + activeWt;
@@ -1107,7 +1121,30 @@
     renderEquipSlots(); renderInventory(); fastCalc();
   }
 
-  // --- DRAG AND DROP ---
+  // --- DRAG AND DROP & ITEM EDITING ---
+  function updateItemData(source, id, field, val) {
+      let item = null;
+      if (source === 'bag') item = bagItemsArray.find(i=>i.id===id);
+      else if (source === 'ground') item = groundItemsArray.find(i=>i.id===id);
+      else if (source === 'vest') item = vestItemsArray.find(i=>i && i.id===id);
+      
+      if(item) {
+          if (field==='unitWeight' || field==='qty' || field==='ammoCur') item[field] = parseFloat(val)||0;
+          else item[field] = val;
+          renderInventory(); renderGround(); renderVest(); fastCalc();
+      }
+  }
+
+  function deleteItem(source, id) {
+      if (source === 'bag') bagItemsArray = bagItemsArray.filter(i=>i.id!==id);
+      else if (source === 'ground') groundItemsArray = groundItemsArray.filter(i=>i.id!==id);
+      else if (source === 'vest') {
+          let idx = vestItemsArray.findIndex(i=>i && i.id===id);
+          if(idx>-1) vestItemsArray[idx] = null;
+      }
+      renderInventory(); renderGround(); renderVest(); fastCalc();
+  }
+
   function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
   document.addEventListener('dragleave', function(ev) {
     if(ev.target.classList && (ev.target.classList.contains('vest-slot') || ev.target.classList.contains('bag-area') || ev.target.classList.contains('active-slot') || ev.target.classList.contains('equip-slot') || ev.target.classList.contains('ground-area'))) { ev.target.classList.remove('drag-over'); }
@@ -1419,21 +1456,24 @@
 
   function unloadWeapon(slotIndex) {
       let w = activeSlotsArray[slotIndex];
-      if (!w || !w.loadedAmmo || (w.ammoCur || 0) <= 0) return;
+      if (!w || !w.loadedAmmo) return;
       
       let wReloadType = w.reloadType || 'mag';
       let spawnKind = wReloadType === 'mag' ? 'magazine' : 'box';
       let ffStr = spawnKind === 'magazine' ? 'Магазин' : 'Пачка';
       let wCaliber = w.loadedAmmoCaliber || '';
+      let cur = parseInt(w.ammoCur) || 0;
 
-      let restoredName = w.loadedAmmoName || `${ffStr} ${wCaliber} (${w.loadedAmmo})`;
-      
-      groundItemsArray.push({
-          id: Date.now() + Math.floor(Math.random()*1000),
-          type: 'ammo', cat: 'ammo', ammoKind: spawnKind, name: restoredName,
-          unitWeight: 0, qty: 1, cap: w.loadedAmmoMaxCap || w.cap || w.ammoCur, 
-          ammoCur: w.ammoCur, desc: `Извлечено из оружия.`
-      });
+      if (spawnKind === 'magazine' || cur > 0) {
+          let restoredName = w.loadedAmmoName || `${ffStr} ${wCaliber} (${w.loadedAmmo})`;
+          groundItemsArray.push({
+              id: Date.now() + Math.floor(Math.random()*1000),
+              type: 'ammo', cat: 'ammo', ammoKind: spawnKind, name: restoredName,
+              unitWeight: w.loadedAmmoWt || (spawnKind === 'magazine' ? 0.1 : 0),
+              qty: 1, cap: w.loadedAmmoMaxCap || w.cap || cur, 
+              ammoCur: cur, desc: `Извлечено из оружия.`
+          });
+      }
       
       w.loadedAmmo = null; w.loadedAmmoName = null; w.loadedAmmoCaliber = null;
       w.loadedAmmoWt = null; w.loadedAmmoMaxCap = null;
@@ -1460,7 +1500,7 @@
       if (armorSlotItem) {
           armC.innerHTML = `<div class="inv-item-card equip-slot filled" draggable="true" ondragstart="drag(event, 'armor', ${armorSlotItem.id}, 0)" ondrop="dropToEquipSlot(event, 'armor')" ondragover="allowDrop(event)">
             <span style="font-weight:bold; color:var(--accent); font-size:14px;">${armorSlotItem.name}</span>
-            <span style="font-size:11px; color:#aaa;">Броня: ${armorSlotItem.sp} SP | Вес: ${armorSlotItem.wt} кг</span>
+            <span style="font-size:11px; color:#aaa;">Броня: ${armorSlotItem.sp} SP | Вес: ${armorSlotItem.unitWeight} кг</span>
           </div>`;
       } else {
           armC.innerHTML = `<div class="inv-item-card equip-slot" ondrop="dropToEquipSlot(event, 'armor')" ondragover="allowDrop(event)">
@@ -1487,7 +1527,7 @@
       if (bagSlotItem) {
           bagC.innerHTML = `<div class="inv-item-card equip-slot filled" draggable="true" ondragstart="drag(event, 'bagSlot', ${bagSlotItem.id}, 0)" ondrop="dropToEquipSlot(event, 'backpack')" ondragover="allowDrop(event)">
             <span style="font-weight:bold; color:var(--accent); font-size:14px;">${bagSlotItem.name}</span>
-            <span style="font-size:11px; color:#aaa;">Вместимость: ${bagSlotItem.cap} кг | Вес: ${bagSlotItem.wt} кг</span>
+            <span style="font-size:11px; color:#aaa;">Вместимость: ${bagSlotItem.cap} кг | Вес: ${bagSlotItem.unitWeight} кг</span>
           </div>`;
           bagToggle.style.display = 'block';
           bagToggle.innerText = isBackpackDropped ? '[ НАДЕТЬ РЮКЗАК ]' : '[ СБРОСИТЬ РЮКЗАК ]';
@@ -1558,11 +1598,19 @@
         grid.innerHTML += `<div class="inv-item-card vest-slot" data-index="${i}" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding:10px; text-align:center; color:#3a3f4b; font-size:11px;">[ Пусто ]</div>`;
       } else {
         totalVestWt += getItemWeight(item);
-        grid.innerHTML += `
-            <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding:6px; display:flex; justify-content:space-between; align-items:center;">
-              <span class="item-name">${item.name}</span>
-              <span style="font-size:11px; color:var(--text-muted);">${getItemWeight(item)} кг</span>
-            </div>`;
+        if (invLocked) {
+            grid.innerHTML += `
+                <div class="inv-item-card vest-slot" data-index="${i}" draggable="true" ondragstart="drag(event, 'vest', ${item.id}, ${i})" ondrop="dropToVest(event)" ondragover="allowDrop(event)" style="padding:6px; display:flex; justify-content:space-between; align-items:center;">
+                  <span class="item-name">${item.name}</span>
+                  <span style="font-size:11px; color:var(--text-muted);">${getItemWeight(item)} кг</span>
+                </div>`;
+        } else {
+            grid.innerHTML += `
+                <div class="inv-item-card vest-slot" data-index="${i}" style="padding:6px; display:flex; gap:6px; align-items:center; background:#161719;">
+                    <input type="text" value="${item.name}" style="flex:1; font-size:10px; width:50px;" onchange="updateItemData('vest', ${item.id}, 'name', this.value)">
+                    <button class="item-del" onclick="deleteItem('vest', ${item.id})">✕</button>
+                </div>`;
+        }
       }
     }
     document.getElementById('vest_status').innerText = Math.round(totalVestWt * 10) / 10;
@@ -1570,20 +1618,30 @@
 
   function createItemHTML(item, sourceName, index) {
       let wt = getItemWeight(item);
-      let ammoDisp = '-';
-      if (item.type === 'weapon') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
-      else if (item.type === 'ammo') {
-         if (item.ammoKind === 'box') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}`;
-         else ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
+      if (invLocked) {
+          let ammoDisp = '-';
+          if (item.type === 'weapon') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
+          else if (item.type === 'ammo') {
+             if (item.ammoKind === 'box') ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}`;
+             else ammoDisp = `${item.ammoCur !== undefined ? item.ammoCur : (item.cap||0)}/${item.cap||0}`;
+          }
+          return `
+            <div class="inv-item-card" draggable="true" ondragstart="drag(event, '${sourceName}', ${item.id}, ${index})" style="padding:6px; display:flex; gap:6px; align-items:center;">
+              <span class="item-name" style="flex:1;">${item.name || 'Безымянный'}</span>
+              <span style="width: 45px; text-align:center; font-weight:bold; font-size:11px; color:#4ade80;">${ammoDisp}</span>
+              <span style="width: 35px; text-align:center; font-weight:bold;">${item.qty}</span>
+              <span style="font-size:11px; color:var(--text-muted); width: 35px; text-align:center;">${Math.round((wt / item.qty)*10)/10}</span>
+              <span style="font-size:13px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${wt}</span>
+            </div>`;
+      } else {
+          return `
+            <div class="inv-item-card" style="padding:6px; display:flex; gap:6px; align-items:center; background:#161719;">
+              <input type="text" value="${item.name}" style="flex:1; font-size:11px;" onchange="updateItemData('${sourceName}', ${item.id}, 'name', this.value)">
+              <input type="number" value="${item.qty}" style="width:40px; font-size:11px;" onchange="updateItemData('${sourceName}', ${item.id}, 'qty', this.value)">
+              <input type="number" value="${item.unitWeight}" step="0.1" style="width:50px; font-size:11px;" onchange="updateItemData('${sourceName}', ${item.id}, 'unitWeight', this.value)">
+              <button class="item-del" onclick="deleteItem('${sourceName}', ${item.id})">✕</button>
+            </div>`;
       }
-      return `
-        <div class="inv-item-card" draggable="true" ondragstart="drag(event, '${sourceName}', ${item.id}, ${index})" style="padding:6px; display:flex; gap:6px; align-items:center;">
-          <span class="item-name" style="flex:1;">${item.name || 'Безымянный'}</span>
-          <span style="width: 45px; text-align:center; font-weight:bold; font-size:11px; color:#4ade80;">${ammoDisp}</span>
-          <span style="width: 35px; text-align:center; font-weight:bold;">${item.qty}</span>
-          <span style="font-size:11px; color:var(--text-muted); width: 35px; text-align:center;">${Math.round((wt / item.qty)*10)/10}</span>
-          <span style="font-size:13px; font-weight:bold; color:var(--text-muted); width: 40px; text-align:right;">${wt}</span>
-        </div>`;
   }
 
   function renderInventory() {
