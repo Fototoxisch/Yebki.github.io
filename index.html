@@ -115,8 +115,8 @@
     
     /* COMPENDIUM SPECIFIC CSS */
     .comp-item { display: flex; background: #111215; border: 1px solid #3a3f4b; border-radius: 3px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
-    .comp-img { width: 260px; flex-shrink: 0; background: #0b0c0f; border-right: 1px solid #3a3f4b; overflow: hidden; padding: 0; position: relative; display: flex; align-items: center; justify-content: center;}
-    .comp-img img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.9; }
+    .comp-img { width: 260px; flex-shrink: 0; background: #0b0c0f; border-right: 1px solid #3a3f4b; overflow: hidden; padding: 4px; position: relative; display: flex; align-items: center; justify-content: center;}
+    .comp-img img { width: 100%; height: 100%; object-fit: contain; display: block; opacity: 0.9; }
     .comp-details { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
     .comp-title { font-size: 15px; color: var(--accent); font-weight: bold; border-bottom: 1px dashed #3a3f4b; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;}
     .comp-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 11px; margin-bottom: 6px;}
@@ -577,30 +577,62 @@
   ];
 
   const AMMO_GROUPS = [
-    { cal: '8x22 мм', img: 'Ammo8mm.webp', wt: 0.5, boxCap: 50, magCap: 15, hasMag: true, options: [
-      { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Рабочая лошадка. Износ брони цели: -1 SP.' },
-      { type: 'ББ', dmg: 'База', ap: '20%', desc: 'Бронебойные патроны с сердечником. Пробивают легкую защиту. Износ: -1 SP.' },
-      { type: 'HP', dmg: '+2 к HP', ap: '-50%', desc: 'Экспансивные пули. Не ломают броню (0 SP износа), рвут открытую плоть.' }
-    ]},
-    { cal: '10x20 мм', img: 'Ammo10mm.webp', wt: 0.5, boxCap: 40, magCap: 15, hasMag: true, options: [
-      { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
-      { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ: -1 SP.' },
-      { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 10мм пули. Наносят чудовищный урон по здоровью без брони.' }
-    ]},
-    { cal: '12x35 мм', img: 'Ammo12mm.webp', wt: 0.5, boxCap: 18, hasMag: false, options: [
-      { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
-      { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
-      { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у незащищенной цели.' }
-    ]},
-    { cal: '16x15.7 "Nitro"', img: 'Ammo16mm.webp', wt: 1, boxCap: 10, hasMag: false, options: [
-      { type: 'FMJ', dmg: 'База', ap: '20%', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ: -1 SP.' },
-      { type: 'ББ', dmg: 'База', ap: '40%', desc: 'Элитные бронебойные болванки 16мм. Игнорируют половину любой брони. Износ: -1 SP.' },
-      { type: 'HP', dmg: '+1d12', ap: '-50%', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' }
-    ]},
-    { cal: '18.5 мм', img: 'Ammo18mm.webp', wt: 1, boxCap: 20, magCap: 10, hasMag: true, options: [
-      { type: 'Картечь', dmg: 'База', ap: '0%', desc: 'Стандартная картечь. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
-      { type: 'Слаг', dmg: '1d12', ap: '50%', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
-    ]}
+    { cal: '8x22 мм', img: 'Ammo8mm.webp', hasMag: true,
+      forms: [
+        { name: 'Пачка', cap: 60, wt: 2.0, kind: 'box' },
+        { name: 'Магазин (P-33)', cap: 9, wt: 0.5, kind: 'magazine' },
+        { name: 'Магазин (Прототип)', cap: 14, wt: 0.5, kind: 'magazine' },
+        { name: 'Магазин (Drache)', cap: 15, wt: 0.5, kind: 'magazine' },
+        { name: 'Магазин (Nadelwerfer)', cap: 20, wt: 0.5, kind: 'magazine' }
+      ],
+      options: [
+        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Рабочая лошадка. Износ брони цели: -1 SP.' },
+        { type: 'ББ', dmg: 'База', ap: '20%', desc: 'Бронебойные патроны с сердечником. Пробивают легкую защиту. Износ: -1 SP.' },
+        { type: 'HP', dmg: '+2 к HP', ap: '-50%', desc: 'Экспансивные пули. Не ломают броню (0 SP износа), рвут открытую плоть.' }
+      ]
+    },
+    { cal: '10x20 мм', img: 'Ammo10mm.webp', hasMag: true,
+      forms: [
+        { name: 'Пачка', cap: 40, wt: 2.4, kind: 'box' },
+        { name: 'Магазин (Protector)', cap: 10, wt: 0.8, kind: 'magazine' },
+        { name: 'Магазин (Auskund)', cap: 20, wt: 0.8, kind: 'magazine' }
+      ],
+      options: [
+        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Стандартные тяжелые патроны 10мм. Износ брони цели: -1 SP.' },
+        { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 10мм. Эффективны против композитных кирас. Износ: -1 SP.' },
+        { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 10мм пули. Наносят чудовищный урон по здоровью без брони.' }
+      ]
+    },
+    { cal: '12x35 мм', img: 'Ammo12mm.webp', hasMag: false,
+      forms: [
+        { name: 'Пачка', cap: 18, wt: 1.0, kind: 'box' }
+      ],
+      options: [
+        { type: 'FMJ', dmg: 'База', ap: '0%', desc: 'Массивные пули для револьвера. Износ брони цели: -1 SP.' },
+        { type: 'ББ', dmg: 'База', ap: '30%', desc: 'Бронебойные 12мм. Превращают револьвер в инструмент вскрытия офицеров.' },
+        { type: 'HP', dmg: '+4 к HP', ap: '-50%', desc: 'Экспансивные 12мм. Практически гарантия отрыва конечности у незащищенной цели.' }
+      ]
+    },
+    { cal: '16x15.7 "Nitro"', img: 'Ammo16mm.webp', hasMag: false,
+      forms: [
+        { name: 'Пачка', cap: 10, wt: 1.0, kind: 'box' }
+      ],
+      options: [
+        { type: 'FMJ', dmg: 'База', ap: '20%', desc: 'Огромные патроны для слонобоя. Прошивают даже стандартную защиту. Износ: -1 SP.' },
+        { type: 'ББ', dmg: 'База', ap: '40%', desc: 'Элитные бронебойные болванки 16мм. Игнорируют половину любой брони. Износ: -1 SP.' },
+        { type: 'HP', dmg: '+1d12', ap: '-50%', desc: 'Экспансивные 16мм. Попадание в открытое тело означает смерть.' }
+      ]
+    },
+    { cal: '18.5 мм', img: 'Ammo18mm.webp', hasMag: true,
+      forms: [
+        { name: 'Пачка', cap: 15, wt: 1.0, kind: 'box' },
+        { name: 'Магазин (Автодробовик)', cap: 10, wt: 1.0, kind: 'magazine' }
+      ],
+      options: [
+        { type: 'Картечь', dmg: 'База', ap: '0%', desc: 'Стандартная картечь. Отброс на 2 кл и нокдаун. Износ брони: -1 SP.' },
+        { type: 'Слаг', dmg: '1d12', ap: '50%', desc: 'Тяжелая свинцовая пуля (Slug). Увеличивает дальность, срывает дверные петли. Без отбрасывания.' }
+      ]
+    }
   ];
 
   let memoryStorage = {};
@@ -998,7 +1030,7 @@
         let itemAmmoKind = movingItem.ammoKind || 'magazine';
 
         if (wReloadType === 'mag' && itemAmmoKind !== 'magazine') {
-            customAlert("Это оружие заряжается только магазинами целиком!");
+            customAlert("Это оружие заряжается только съемными магазинами!");
             return;
         }
         if (wReloadType === 'internal' && itemAmmoKind !== 'box') {
@@ -1009,8 +1041,8 @@
         let ammoLower = movingItem.name.toLowerCase();
         let wLower = w.name.toLowerCase();
         let isCompatible = false;
-        
         let wCaliber = "";
+        
         if (wLower.includes('platzen') || wLower.includes('прототип') || wLower.includes('drache') || wLower.includes('nadelwerfer') || wLower.includes('8x22')) { wCaliber = '8x22 мм'; if (ammoLower.includes('8x22')) isCompatible = true; }
         else if (wLower.includes('protector') || wLower.includes('auskund') || wLower.includes('10x20')) { wCaliber = '10x20 мм'; if (ammoLower.includes('10x20')) isCompatible = true; }
         else if (wLower.includes('einhorn') || wLower.includes('12x35')) { wCaliber = '12x35 мм'; if (ammoLower.includes('12x35')) isCompatible = true; }
@@ -1038,6 +1070,20 @@
                 return;
             }
             
+            let isMagCompatible = false;
+            if (ammoLower.includes('p-33') && wLower.includes('platzen')) isMagCompatible = true;
+            else if (ammoLower.includes('прототип') && wLower.includes('прототип')) isMagCompatible = true;
+            else if (ammoLower.includes('drache') && wLower.includes('drache')) isMagCompatible = true;
+            else if (ammoLower.includes('nadelwerfer') && wLower.includes('nadelwerfer')) isMagCompatible = true;
+            else if (ammoLower.includes('protector') && wLower.includes('protector')) isMagCompatible = true;
+            else if (ammoLower.includes('auskund') && wLower.includes('auskund')) isMagCompatible = true;
+            else if (ammoLower.includes('автодробовик') && (wLower.includes('автодробовик') || wLower.includes('auto'))) isMagCompatible = true;
+
+            if (!isMagCompatible) {
+                customAlert("Этот магазин не подходит к данному оружию!");
+                return;
+            }
+
             w.cap = movingItem.cap || availableAmmo;
             w.ammoCur = availableAmmo;
             
@@ -1076,7 +1122,7 @@
             
             let amountToLoad = Math.min(space, availableAmmo);
             w.ammoCur = currentAmmo + amountToLoad;
-            w.cap = maxSpace; // Защищаем жесткий лимит
+            w.cap = maxSpace;
             
             let leftover = availableAmmo - amountToLoad;
             
@@ -1162,11 +1208,9 @@
     const targetSlotElement = ev.target.closest('.vest-slot');
     if (targetSlotElement) {
         targetIndex = parseInt(targetSlotElement.getAttribute('data-index'));
-    } else {
-        targetIndex = vestItemsArray.findIndex(i => i === null);
     }
 
-    if (targetIndex !== -1 && vestItemsArray[targetIndex] !== null) {
+    if (isNaN(targetIndex) || targetIndex === -1 || vestItemsArray[targetIndex] !== null) {
         targetIndex = vestItemsArray.findIndex(i => i === null);
     }
     
@@ -1389,28 +1433,32 @@
 
   window.updateAmmoInfo = function(gIdx) {
      let typeSel = document.getElementById(`ammo_type_${gIdx}`).value;
-     let ffSel = document.getElementById(`ammo_ff_${gIdx}`) ? document.getElementById(`ammo_ff_${gIdx}`).value : 'Пачка';
+     let ffSel = document.getElementById(`ammo_ff_${gIdx}`) ? document.getElementById(`ammo_ff_${gIdx}`).value : 0;
      let g = AMMO_GROUPS[gIdx];
      let opt = g.options[typeSel];
+     let form = g.forms[ffSel];
      
      document.getElementById(`ammo_desc_${gIdx}`).innerHTML = `${opt.desc}<br><span style="color:#4ade80; font-weight:bold; font-size:13px;">${opt.ap}</span> | <b style="font-size:13px;">${opt.dmg}</b>`;
-     document.getElementById(`ammo_cap_${gIdx}`).innerText = (ffSel === 'Магазин') ? g.magCap : g.boxCap;
+     document.getElementById(`ammo_cap_${gIdx}`).innerText = form.cap;
+     document.getElementById(`ammo_wt_${gIdx}`).innerText = form.wt;
   }
   
   window.addAmmoGroupToBag = function(gIdx) {
      let typeSel = document.getElementById(`ammo_type_${gIdx}`).value;
-     let ffSel = document.getElementById(`ammo_ff_${gIdx}`) ? document.getElementById(`ammo_ff_${gIdx}`).value : 'Пачка';
-     let opt = AMMO_GROUPS[gIdx].options[typeSel];
-     let g = AMMO_GROUPS[gIdx];
+     let ffSelIdx = document.getElementById(`ammo_ff_${gIdx}`) ? document.getElementById(`ammo_ff_${gIdx}`).value : 0;
      
-     let kind = (ffSel === 'Магазин') ? 'magazine' : 'box';
-     let finalName = `${ffSel} ${g.cal} (${opt.type})`;
-     let finalCap = (ffSel === 'Магазин') ? g.magCap : g.boxCap;
+     let g = AMMO_GROUPS[gIdx];
+     let opt = g.options[typeSel];
+     let form = g.forms[ffSelIdx];
+     
+     let kind = form.kind;
+     let finalName = `${form.name} ${g.cal} (${opt.type})`;
+     let finalCap = form.cap;
      
      bagItemsArray.push({
           id: Date.now() + Math.floor(Math.random()*100),
           type: 'ammo', cat: 'ammo', ammoKind: kind,
-          name: finalName, unitWeight: g.wt, qty: 1,
+          name: finalName, unitWeight: form.wt, qty: 1,
           desc: opt.desc, cap: finalCap, ammoCur: finalCap, dmg: opt.dmg, ap: opt.ap
       });
       fastCalc(); renderInventory();
@@ -1421,7 +1469,6 @@
     const list = document.getElementById('compendiumList');
     list.innerHTML = '';
     
-    // БОЕПРИПАСЫ (Таблица с картинкой и селектами)
     if (category === 'ammo') {
         const fallbackSVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22 style=%22background:%230b0c0f; border:1px dashed %23404652;%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23c92a2a%22 font-family=%22monospace%22 font-size=%2214%22 font-weight=%22bold%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E%5B ФОТО %5D%3C/text%3E%3C/svg%3E";
         
@@ -1430,7 +1477,7 @@
           <thead>
             <tr>
               <th style="padding: 8px; width: 70px;">ФОТО</th>
-              <th style="padding: 8px; text-align: left; color: var(--accent); width: 140px;">КАЛИБР / ТИП</th>
+              <th style="padding: 8px; text-align: left; color: var(--accent); width: 150px;">КАЛИБР / ТИП</th>
               <th style="padding: 8px;">СВОЙСТВА</th>
               <th style="padding: 8px; width: 40px;">ЕМК</th>
               <th style="padding: 8px; width: 40px;">ВЕС</th>
@@ -1441,17 +1488,21 @@
           
         AMMO_GROUPS.forEach((g, gIdx) => {
             let optionsHtml = g.options.map((o, oIdx) => `<option value="${oIdx}">${o.type}</option>`).join('');
-            let ffHtml = '';
-            if (g.hasMag) {
-                ffHtml = `<select id="ammo_ff_${gIdx}" style="width: 100%; margin-bottom: 4px; text-align: left; background:#181a1f;" onchange="updateAmmoInfo(${gIdx})"><option value="Пачка">Пачка</option><option value="Магазин">Магазин</option></select>`;
-            }
+            
+            let ffHtml = `<select id="ammo_ff_${gIdx}" style="width: 100%; margin-bottom: 4px; text-align: left; background:#181a1f;" onchange="updateAmmoInfo(${gIdx})">`;
+            g.forms.forEach((f, fIdx) => {
+                ffHtml += `<option value="${fIdx}">${f.name}</option>`;
+            });
+            ffHtml += `</select>`;
+            
             let def = g.options[0];
+            let firstForm = g.forms[0];
             
             tableHtml += `
             <tr style="border-bottom: 1px solid #3a3f4b;">
               <td style="padding: 4px; vertical-align: middle;">
                 <div style="width: 100%; height: 60px; background:#0b0c0f; border:1px solid #3a3f4b; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:3px;">
-                    <img src="Cards/${g.img}" style="width: 100%; height: 100%; object-fit: contain; opacity: 0.9;" onerror="this.onerror=null; this.src='${fallbackSVG}'">
+                    <img src="Cards/${g.img}" style="width: 100%; height: 100%; object-fit: contain; opacity: 0.9; padding: 4px;" onerror="this.onerror=null; this.src='${fallbackSVG}'">
                 </div>
               </td>
               <td style="padding: 10px 8px; vertical-align: top;">
@@ -1466,8 +1517,8 @@
               <td style="padding: 10px 8px; font-size:11px; color:#ccc; line-height:1.4;" id="ammo_desc_${gIdx}">
                 ${def.desc}<br><span style="color: #4ade80; font-weight:bold; font-size:13px;">${def.ap}</span> | <b style="font-size:13px;">${def.dmg}</b>
               </td>
-              <td style="padding: 10px 8px; text-align: center; font-weight: bold; font-size:14px; color:#4ade80;" id="ammo_cap_${gIdx}">${g.boxCap}</td>
-              <td style="padding: 10px 8px; text-align: center; font-size:14px;">${g.wt}</td>
+              <td style="padding: 10px 8px; text-align: center; font-weight: bold; font-size:14px; color:#4ade80;" id="ammo_cap_${gIdx}">${firstForm.cap}</td>
+              <td style="padding: 10px 8px; text-align: center; font-size:14px;" id="ammo_wt_${gIdx}">${firstForm.wt}</td>
               <td style="padding: 10px 8px; text-align: center; vertical-align: middle;">
                 <button onclick="addAmmoGroupToBag(${gIdx})" style="font-size: 11px; padding: 6px; width: 100%; border-color: var(--accent); color: var(--accent);">+ РЮКЗАК</button>
               </td>
@@ -1478,7 +1529,6 @@
         return;
     }
 
-    // ОРУЖИЕ И БРОНЯ
     const filtered = (category === 'all') ? COMPENDIUM.filter(i => i.cat !== 'ammo') : COMPENDIUM.filter(i => i.cat === category);
     const fallbackSVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22 style=%22background:%230b0c0f; border:1px dashed %23404652;%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23c92a2a%22 font-family=%22monospace%22 font-size=%2222%22 font-weight=%22bold%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E%5B НЕТ ФОТО %5D%3C/text%3E%3C/svg%3E";
 
@@ -1538,7 +1588,7 @@
             range: cItem.range,
             cap: cItem.cap,
             baseCap: cItem.cap,
-            ammoCur: 0 // Новое оружие достается незаряженным
+            ammoCur: 0
         });
     }
     fastCalc();
