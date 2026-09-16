@@ -86,7 +86,7 @@
     .panic-box { border-color: var(--accent); }
     .panic-title { background: var(--accent); }
     .stress-input { font-weight: bold; color: var(--accent); }
-    .panic-btn { border-color: var(--accent); color: var(--accent); font-size: 13px; padding: 5px; width: 100%;}
+    .panic-btn { border-color: var(--accent); color: var(--accent); font-size: 13px; padding: 5px; width: 100%; text-transform: uppercase;}
     .panic-log { font-size: 11px; min-height: 22px; border: 1px dashed #404652; padding: 4px; color: #aaa; border-radius: 3px; background: #0b0c0f; text-align: center; display: flex; align-items: center; justify-content: center;}
     .inv-item-card { border: 1px solid #3a3f4b; border-radius: 3px; background: #111215; margin-bottom: 4px; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
@@ -120,9 +120,49 @@
     .admin-table th { background: #181a1f; color: var(--text-muted); }
     .admin-table tr:hover { background: #1a1c23; }
     .ground-area { border: 1px dashed #404652; min-height: 100px; padding: 6px; background: #0b0c0f; border-radius: 3px; display: flex; flex-direction: column; gap: 4px;}
+
+    /* АНИМАЦИЯ КУБИКА D20 */
+    .dice-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(3px); }
+    .dice-overlay.active { opacity: 1; }
+    .dice-title { font-size: 20px; color: var(--border-color); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+    .dice-wrapper { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
+    .dice-svg { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--accent); transition: transform 0.1s; }
+    .dice-svg.rolling { animation: dice-spin 0.4s infinite linear; }
+    .dice-svg.pop { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--accent)); transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .dice-number { position: relative; z-index: 2; font-size: 52px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+    .dice-math { display: flex; align-items: center; gap: 10px; margin-top: 25px; font-size: 24px; font-weight: bold; height: 35px; }
+    .dice-mod { color: #aaa; opacity: 0; transition: opacity 0.3s; }
+    .dice-total { color: #fff; opacity: 0; transition: opacity 0.3s; font-size: 34px; }
+    .dice-close { margin-top: 50px; background: transparent; border: 1px dashed var(--text-muted); color: var(--text-muted); padding: 8px 20px; cursor: pointer; transition: 0.2s; font-size: 13px; text-transform: uppercase; }
+    .dice-close:hover { border-color: #fff; color: #fff; }
+    @keyframes dice-spin { 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
+
+<!-- АНИМАЦИЯ БРОСКА -->
+<div id="diceOverlay" class="dice-overlay" onclick="closeDiceRoll()">
+    <div style="pointer-events: none; display: flex; flex-direction: column; align-items: center;">
+        <div id="diceTitle" class="dice-title">БРОСОК</div>
+        <div class="dice-wrapper">
+            <svg class="dice-svg" id="diceShape" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" />
+                <polygon points="50,5 25,50 75,50" />
+                <polygon points="50,95 25,50 75,50" />
+                <polygon points="10,28 25,50" />
+                <polygon points="90,28 75,50" />
+                <polygon points="10,72 25,50" />
+                <polygon points="90,72 75,50" />
+            </svg>
+            <div id="diceNumber" class="dice-number">20</div>
+        </div>
+        <div class="dice-math">
+            <span id="diceModifier" class="dice-mod"></span>
+            <span id="diceTotal" class="dice-total"></span>
+        </div>
+        <div class="dice-close">[ НАЖМИТЕ ЧТОБЫ ЗАКРЫТЬ ]</div>
+    </div>
+</div>
 
 <div id="sidePanel" class="side-panel">
   <div class="side-panel-header">
@@ -206,7 +246,7 @@
               <div class="val-interactive" onclick="toggleExpand('str_details')">
                 <span class="item-name interactive-text" style="flex:1;">СИЛ</span>
                 <span id="str_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('str', 'str_display', event)">D20</span>
+                <span class="roll-btn" onclick="rollStat('str', 'СИЛА'); event.stopPropagation();">D20</span>
               </div>
               <div id="str_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -222,7 +262,7 @@
               <div class="val-interactive" onclick="toggleExpand('dex_details')">
                 <span class="item-name interactive-text" style="flex:1;">ЛОВ</span>
                 <span id="dex_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('dex', 'dex_display', event)">D20</span>
+                <span class="roll-btn" onclick="rollStat('dex', 'ЛОВКОСТЬ'); event.stopPropagation();">D20</span>
               </div>
               <div id="dex_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -238,7 +278,7 @@
               <div class="val-interactive" onclick="toggleExpand('con_details')">
                 <span class="item-name interactive-text" style="flex:1;">ТЕЛ</span>
                 <span id="con_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('con', 'con_display', event)">D20</span>
+                <span class="roll-btn" onclick="rollStat('con', 'ТЕЛОСЛОЖЕНИЕ'); event.stopPropagation();">D20</span>
               </div>
               <div id="con_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -254,7 +294,7 @@
               <div class="val-interactive" onclick="toggleExpand('int_details')">
                 <span class="item-name interactive-text" style="flex:1;">ИНТ</span>
                 <span id="int_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('int', 'int_display', event)">D20</span>
+                <span class="roll-btn" onclick="rollStat('int', 'ИНТЕЛЛЕКТ'); event.stopPropagation();">D20</span>
               </div>
               <div id="int_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -270,7 +310,7 @@
               <div class="val-interactive" onclick="toggleExpand('wis_details')">
                 <span class="item-name interactive-text" style="flex:1;">МУД</span>
                 <span id="wis_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('wis', 'wis_display', event)">D20</span>
+                <span class="roll-btn" onclick="rollStat('wis', 'МУДРОСТЬ'); event.stopPropagation();">D20</span>
               </div>
               <div id="wis_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -286,7 +326,7 @@
               <div class="val-interactive" onclick="toggleExpand('cha_details')">
                 <span class="item-name interactive-text" style="flex:1;">ХАР</span>
                 <span id="cha_display" style="font-size:15px; font-weight:bold; color:#fff; margin-right:6px;">10</span>
-                <span class="roll-btn" onclick="rollUniversal('cha', 'cha_display', event)">D20</span>
+                <span class="roll-btn" onclick="rollStat('cha', 'ХАРИЗМА'); event.stopPropagation();">D20</span>
               </div>
               <div id="cha_details" class="expandable" style="background:#0b0c0f; border-top:1px dashed #3a3f4b;">
                 <div class="calc-row">
@@ -300,20 +340,32 @@
         </div>
 
         <div class="box">
-          <div class="box-title">Спасброски</div>
-          <div class="box-content stats-grid" style="padding: 6px;">
-            <div class="stat-container val-interactive" style="justify-content: space-between;" onclick="rollUniversal('con', 'con_display', event)">
-               <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">СТОЙКОСТЬ (ТЕЛ)</span>
-               <span class="roll-btn">БРОСОК</span>
-            </div>
-            <div class="stat-container val-interactive" style="justify-content: space-between;" onclick="rollUniversal('dex', 'dex_display', event)">
-               <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">РЕФЛЕКСЫ (ЛОВ)</span>
-               <span class="roll-btn">БРОСОК</span>
-            </div>
-            <div class="stat-container val-interactive" style="justify-content: space-between; grid-column: span 2;" onclick="rollUniversal('wis', 'wis_display', event)">
-               <span class="interactive-text" style="font-weight:bold; font-size:11px; letter-spacing:0.5px;">ВОЛЯ (МУД)</span>
-               <span class="roll-btn">БРОСОК</span>
-            </div>
+          <div class="box-title">СПАСБРОСКИ</div>
+          <div class="box-content" style="padding: 6px 4px;">
+            <table class="skills-table">
+              <tr><th>СПАСБРОСОК</th><th>АТР</th><th>РАЗН</th><th>ИТОГ</th><th></th></tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Стойкость</td>
+                <td style="color:#aaa;">ТЕЛ</td>
+                <td><input type="number" id="sv_con_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sv_con_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSave('con', 'Стойкость (ТЕЛ)')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Рефлексы</td>
+                <td style="color:#aaa;">ЛОВ</td>
+                <td><input type="number" id="sv_dex_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sv_dex_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSave('dex', 'Рефлексы (ЛОВ)')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Воля</td>
+                <td style="color:#aaa;">МУД</td>
+                <td><input type="number" id="sv_wis_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sv_wis_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSave('wis', 'Воля (МУД)')">D20</span></td>
+              </tr>
+            </table>
           </div>
         </div>
 
@@ -322,82 +374,132 @@
           <div class="box-content" style="padding: 6px 4px;">
             <table class="skills-table">
               <tr><th>НАВЫК</th><th>АТР</th><th>УРОВЕНЬ</th><th>РАЗН</th><th>ИТОГ</th><th></th></tr>
+              
               <!-- СИЛ -->
+              <tr><th colspan="6" style="text-align:center; background:#161719; color:#fff; font-size:10px; padding:2px;">СИЛА</th></tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Тяжелая работа</td>
+                <td style="font-weight:bold; color:var(--accent);">Ближний бой</td>
                 <td style="color:#aaa;">СИЛ</td>
-                <td><select id="sk_hmc_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_hmc_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_hmc_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('hmc', 'Тяжелая работа')">D20</span></td>
+                <td><select id="sk_mel_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_mel_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_mel_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('mel', 'Ближний бой')">D20</span></td>
               </tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Ближний бой</td>
+                <td style="font-weight:bold; color:#fff;">Атлетика</td>
                 <td style="color:#aaa;">СИЛ</td>
-                <td><select id="sk_clc_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_clc_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_clc_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('clc', 'Ближний бой')">D20</span></td>
+                <td><select id="sk_ath_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_ath_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_ath_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('ath', 'Атлетика')">D20</span></td>
               </tr>
+              
               <!-- ТЕЛ -->
+              <tr><th colspan="6" style="text-align:center; background:#161719; color:#fff; font-size:10px; padding:2px;">ТЕЛОСЛОЖЕНИЕ</th></tr>
               <tr>
                 <td style="font-weight:bold; color:#fff;">Выносливость</td>
                 <td style="color:#aaa;">ТЕЛ</td>
-                <td><select id="sk_sta_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_sta_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_sta_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('sta', 'Выносливость')">D20</span></td>
+                <td><select id="sk_end_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_end_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_end_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('end', 'Выносливость')">D20</span></td>
               </tr>
+
               <!-- ЛОВ -->
+              <tr><th colspan="6" style="text-align:center; background:#161719; color:#fff; font-size:10px; padding:2px;">ЛОВКОСТЬ</th></tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Подвижность</td>
+                <td style="font-weight:bold; color:var(--accent);">Штурм. огнестрел</td>
                 <td style="color:#aaa;">ЛОВ</td>
-                <td><select id="sk_mob_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_mob_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_mob_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('mob', 'Подвижность')">D20</span></td>
+                <td><select id="sk_cqc_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_cqc_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_cqc_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('cqc', 'Штурмовой огнестрел')">D20</span></td>
               </tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Дальний бой</td>
+                <td style="font-weight:bold; color:var(--accent);">Тактическое ор.</td>
                 <td style="color:#aaa;">ЛОВ</td>
-                <td><select id="sk_rnc_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_rnc_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_rnc_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('rnc', 'Дальний бой')">D20</span></td>
+                <td><select id="sk_tac_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_tac_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_tac_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('tac', 'Тактическое оружие')">D20</span></td>
               </tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Вождение</td>
+                <td style="font-weight:bold; color:#fff;">Акробатика</td>
                 <td style="color:#aaa;">ЛОВ</td>
-                <td><select id="sk_pil_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_pil_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_pil_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('pil', 'Вождение')">D20</span></td>
+                <td><select id="sk_acr_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_acr_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_acr_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('acr', 'Акробатика')">D20</span></td>
               </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Скрытность</td>
+                <td style="color:#aaa;">ЛОВ</td>
+                <td><select id="sk_ste_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_ste_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_ste_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('ste', 'Скрытность')">D20</span></td>
+              </tr>
+
               <!-- ИНТ -->
+              <tr><th colspan="6" style="text-align:center; background:#161719; color:#fff; font-size:10px; padding:2px;">ИНТЕЛЛЕКТ</th></tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Комтех</td>
+                <td style="font-weight:bold; color:var(--accent);">Особое оружие</td>
                 <td style="color:#aaa;">ИНТ</td>
-                <td><select id="sk_com_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_com_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_com_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('com', 'Комтех')">D20</span></td>
+                <td><select id="sk_spc_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_spc_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_spc_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('spc', 'Особое оружие')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Взлом</td>
+                <td style="color:#aaa;">ИНТ</td>
+                <td><select id="sk_hac_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_hac_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_hac_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('hac', 'Взлом')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Взрывотехника</td>
+                <td style="color:#aaa;">ИНТ</td>
+                <td><select id="sk_exp_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_exp_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_exp_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('exp', 'Взрывотехника')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Ремонт</td>
+                <td style="color:#aaa;">ИНТ</td>
+                <td><select id="sk_rep_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_rep_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_rep_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('rep', 'Ремонт')">D20</span></td>
+              </tr>
+
+              <!-- МУД -->
+              <tr><th colspan="6" style="text-align:center; background:#161719; color:#fff; font-size:10px; padding:2px;">МУДРОСТЬ</th></tr>
+              <tr>
+                <td style="font-weight:bold; color:var(--accent);">Снайперское ор.</td>
+                <td style="color:#aaa;">МУД</td>
+                <td><select id="sk_snp_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_snp_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_snp_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('snp', 'Снайперское оружие')">D20</span></td>
               </tr>
               <tr>
                 <td style="font-weight:bold; color:#fff;">Медицина</td>
-                <td style="color:#aaa;">ИНТ</td>
+                <td style="color:#aaa;">МУД</td>
                 <td><select id="sk_med_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
                 <td><input type="number" id="sk_med_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
                 <td id="sk_med_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
                 <td><span class="roll-btn" onclick="rollSkill('med', 'Медицина')">D20</span></td>
               </tr>
-              <!-- МУД -->
               <tr>
-                <td style="font-weight:bold; color:#fff;">Наблюдательность</td>
+                <td style="font-weight:bold; color:#fff;">Внимание</td>
                 <td style="color:#aaa;">МУД</td>
-                <td><select id="sk_obs_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_obs_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_obs_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('obs', 'Наблюдательность')">D20</span></td>
+                <td><select id="sk_awa_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_awa_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_awa_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('awa', 'Внимание')">D20</span></td>
               </tr>
               <tr>
                 <td style="font-weight:bold; color:#fff;">Выживание</td>
@@ -407,7 +509,17 @@
                 <td id="sk_sur_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
                 <td><span class="roll-btn" onclick="rollSkill('sur', 'Выживание')">D20</span></td>
               </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Проницательность</td>
+                <td style="color:#aaa;">МУД</td>
+                <td><select id="sk_ins_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_ins_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_ins_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('ins', 'Проницательность')">D20</span></td>
+              </tr>
+
               <!-- ХАР -->
+              <tr><th colspan="6" style="text-align:center; background:#161719; color:#fff; font-size:10px; padding:2px;">ХАРИЗМА</th></tr>
               <tr>
                 <td style="font-weight:bold; color:#fff;">Командование</td>
                 <td style="color:#aaa;">ХАР</td>
@@ -417,12 +529,12 @@
                 <td><span class="roll-btn" onclick="rollSkill('cmd', 'Командование')">D20</span></td>
               </tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Манипуляция</td>
+                <td style="font-weight:bold; color:#fff;">Запугивание</td>
                 <td style="color:#aaa;">ХАР</td>
-                <td><select id="sk_man_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
-                <td><input type="number" id="sk_man_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_man_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('man', 'Манипуляция')">D20</span></td>
+                <td><select id="sk_int_prof" onchange="fastCalc(); autoSave();"><option value="0">+0</option><option value="2">+2</option><option value="4">+4</option></select></td>
+                <td><input type="number" id="sk_int_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_int_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('int', 'Запугивание')">D20</span></td>
               </tr>
             </table>
           </div>
@@ -462,7 +574,7 @@
           <div class="box-title panic-title" style="color:#000;">Психометрия (СТРЕСС)</div>
           <div class="box-content">
             <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" style="width:40px;" class="stress-input" onchange="autoSave()"></div>
-            <button class="panic-btn" onclick="rollPanic(event)">БРОСОК ПАНИКИ D20</button>
+            <button class="panic-btn" onclick="rollPanicBtn()">БРОСОК ПАНИКИ D20</button>
             <div id="panic_log" class="panic-log">[ ОЖИДАНИЕ БРОСКА ]</div>
           </div>
         </div>
@@ -655,6 +767,105 @@
     document.getElementById('customAlertModal').style.display = 'flex';
   }
 
+  // --- ЛОГИКА КУБИКА D20 (BG3 STYLE) ---
+  let isRolling = false;
+  
+  function triggerDiceRoll(title, modifier, isPanic = false) {
+      if (isRolling) return;
+      isRolling = true;
+      
+      const overlay = document.getElementById('diceOverlay');
+      const titleEl = document.getElementById('diceTitle');
+      const numEl = document.getElementById('diceNumber');
+      const modEl = document.getElementById('diceModifier');
+      const totalEl = document.getElementById('diceTotal');
+      const shape = document.getElementById('diceShape');
+
+      titleEl.innerText = (isPanic ? 'ПСИХОМЕТРИЯ: ' : 'БРОСОК: ') + title;
+      modEl.innerHTML = '';
+      totalEl.innerHTML = '';
+      modEl.style.opacity = 0;
+      totalEl.style.opacity = 0;
+      numEl.style.color = '#fff';
+      numEl.style.textShadow = '0 0 10px rgba(0,0,0,0.8)';
+      
+      overlay.style.display = 'flex';
+      void overlay.offsetWidth;
+      overlay.classList.add('active');
+      shape.classList.add('rolling');
+      shape.classList.remove('pop');
+
+      let ticks = 0;
+      let rollInterval = setInterval(() => {
+          numEl.innerText = Math.floor(Math.random() * 20) + 1;
+          ticks++;
+          if (ticks > 25) { 
+              clearInterval(rollInterval);
+              shape.classList.remove('rolling');
+              shape.classList.add('pop');
+              
+              const finalRoll = Math.floor(Math.random() * 20) + 1;
+              numEl.innerText = finalRoll;
+              
+              if (finalRoll === 20) {
+                  numEl.style.color = '#4ade80';
+                  numEl.style.textShadow = '0 0 15px #4ade80';
+              } else if (finalRoll === 1) {
+                  numEl.style.color = 'var(--accent)';
+                  numEl.style.textShadow = '0 0 15px var(--accent)';
+              }
+
+              setTimeout(() => {
+                  const sign = modifier >= 0 ? '+' : '';
+                  modEl.innerHTML = `${sign} ${modifier} <span style="font-size:12px;">(Мод)</span>`;
+                  modEl.style.opacity = 1;
+                  
+                  const total = finalRoll + modifier;
+                  
+                  if (isPanic) {
+                      const panicText = total >= 15 ? '<span style="color:var(--accent);">ПАНИКА!</span>' : '<span style="color:#4ade80;">В НОРМЕ</span>';
+                      totalEl.innerHTML = `= ${total} [ ${panicText} ]`;
+                      document.getElementById('panic_log').innerHTML = `СТРЕСС (${modifier}) + D20 (${finalRoll}) = ${total} -> ${panicText}`;
+                      if (total >= 15) document.getElementById('panic_log').style.color = 'var(--accent)';
+                      else document.getElementById('panic_log').style.color = '#4ade80';
+                  } else {
+                      totalEl.innerHTML = `= ${total}`;
+                  }
+                  totalEl.style.opacity = 1;
+                  isRolling = false;
+              }, 500);
+          }
+      }, 40);
+  }
+  
+  function closeDiceRoll() {
+      if (isRolling) return;
+      const overlay = document.getElementById('diceOverlay');
+      overlay.classList.remove('active');
+      setTimeout(() => { overlay.style.display = 'none'; }, 300);
+  }
+
+  function rollStat(code, name) {
+      const mod = parseInt(document.getElementById(code + '_m').innerText) || 0;
+      triggerDiceRoll(name, mod, false);
+  }
+
+  function rollSave(code, name) {
+      const mod = parseInt(document.getElementById('sv_' + code + '_tot').innerText) || 0;
+      triggerDiceRoll(name, mod, false);
+  }
+
+  function rollSkill(code, name) {
+      const mod = parseInt(document.getElementById('sk_' + code + '_tot').innerText) || 0;
+      triggerDiceRoll(name, mod, false);
+  }
+
+  function rollPanicBtn() {
+      const stress = parseInt(document.getElementById('stress').value) || 0;
+      triggerDiceRoll('СТРЕСС', stress, true);
+  }
+  // --- КОНЕЦ АНИМАЦИИ ---
+
   function getBulletWeight(caliber) {
     if (!caliber) return 0;
     let l = caliber.toLowerCase();
@@ -706,25 +917,20 @@
     let dmg = parseInt(document.getElementById('calc_dmg').value) || 0;
     let sp = parseInt(document.getElementById('calc_sp_display').value) || 0;
     let ap = parseInt(document.getElementById('calc_ap').value) || 0;
-    
     if (dmg <= 0) return;
-
     let effArmor = Math.round(sp * (1 - (ap / 100)));
     let hpDmg = Math.max(0, dmg - effArmor);
-    
     let spDmg = (ap < 0) ? 0 : 1; 
     if(sp === 0) spDmg = 0;
     
     document.getElementById('calc_out_hp').innerText = hpDmg;
     document.getElementById('calc_out_sp').innerText = (spDmg > 0 ? '-' + spDmg + ' SP' : '0 SP');
-
     let curHp = parseInt(document.getElementById('hp_cur').value) || 0;
     document.getElementById('hp_cur').value = Math.max(0, curHp - hpDmg);
     
     if (armorSlotItem && spDmg > 0) {
         armorSlotItem.sp = Math.max(0, (armorSlotItem.sp || 0) - spDmg);
     }
-    
     fastCalc();
     customAlert(`УДАР НАНЕСЕН!<br><br>Потеряно здоровья: <b style="color:var(--accent); font-size:16px;">${hpDmg} HP</b><br>Износ брони: <b style="color:#4ade80;">${spDmg > 0 ? '-' + spDmg : '0'} SP</b>`);
   }
@@ -871,32 +1077,6 @@
   }
 
   function getMod(val) { if (val <= 3) return -2; if (val <= 7) return -1; if (val <= 13) return 0; if (val <= 17) return 1; return 2; }
-  function rollD20() { return Math.floor(Math.random() * 20) + 1; }
-  function rollUniversal(statCode, elementId, event) {
-    if (event) event.stopPropagation();
-    const d20 = rollD20();
-    const statVal = parseInt(document.getElementById(statCode + '_display')?.innerText) || 10;
-    const mod = getMod(statVal);
-    const tot = d20 + mod;
-    window.location.hash = `#roll?type=stat&code=${statCode}&d20=${d20}&mod=${mod}&tot=${tot}&t=${Date.now()}`;
-    setTimeout(() => { window.location.hash = ""; }, 250);
-  }
-  function rollPanic(event) {
-    if (event) event.stopPropagation();
-    const d20 = rollD20();
-    const stress = parseInt(document.getElementById('stress')?.value) || 0;
-    const tot = d20 + stress;
-    const isPanic = (tot >= 15) ? 1 : 0;
-    document.getElementById('panic_log').innerText = `D20 (${d20}) + СТРЕСС (${stress}) = ${tot} -> ${isPanic ? 'ПАНИКА!' : 'СПОКОЕН'}`;
-    if (isPanic) document.getElementById('panic_log').style.color = 'var(--accent)';
-    else document.getElementById('panic_log').style.color = '#4ade80';
-  }
-  function rollSkill(code, name) {
-    const d20 = rollD20();
-    const tot = parseInt(document.getElementById('sk_'+code+'_tot').innerText) || 0;
-    const res = d20 + tot;
-    customAlert(`БРОСОК: <b style="color:var(--accent);">${name}</b><br><br>D20 (${d20}) + Навык (${tot}) = <b style="font-size:20px; color:#fff;">${res}</b>`);
-  }
 
   async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim(); const p = document.getElementById('loginPass').value.trim();
@@ -1031,13 +1211,21 @@
     else if (ratio <= 0.75) document.getElementById('w_serious')?.classList.add('wound-active');
     else document.getElementById('w_light')?.classList.add('wound-active');
 
-    // Навыки Alien RPG
+    // Спасброски
+    document.getElementById('sv_con_tot').innerText = (vals.con_m || 0) + (parseInt(document.getElementById('sv_con_m')?.value) || 0);
+    document.getElementById('sv_dex_tot').innerText = (vals.dex_m || 0) + (parseInt(document.getElementById('sv_dex_m')?.value) || 0);
+    document.getElementById('sv_wis_tot').innerText = (vals.wis_m || 0) + (parseInt(document.getElementById('sv_wis_m')?.value) || 0);
+
+    // 18 Навыков
     const skills = [
-      {id: 'hmc', st: 'str_m'}, {id: 'clc', st: 'str_m'}, {id: 'sta', st: 'con_m'},
-      {id: 'mob', st: 'dex_m'}, {id: 'rnc', st: 'dex_m'}, {id: 'pil', st: 'dex_m'},
-      {id: 'com', st: 'int_m'}, {id: 'med', st: 'int_m'}, {id: 'obs', st: 'wis_m'},
-      {id: 'sur', st: 'wis_m'}, {id: 'cmd', st: 'cha_m'}, {id: 'man', st: 'cha_m'}
+      {id: 'mel', st: 'str_m'}, {id: 'ath', st: 'str_m'},
+      {id: 'end', st: 'con_m'},
+      {id: 'cqc', st: 'dex_m'}, {id: 'tac', st: 'dex_m'}, {id: 'acr', st: 'dex_m'}, {id: 'ste', st: 'dex_m'},
+      {id: 'spc', st: 'int_m'}, {id: 'hac', st: 'int_m'}, {id: 'exp', st: 'int_m'}, {id: 'rep', st: 'int_m'},
+      {id: 'snp', st: 'wis_m'}, {id: 'med', st: 'wis_m'}, {id: 'awa', st: 'wis_m'}, {id: 'sur', st: 'wis_m'}, {id: 'ins', st: 'wis_m'},
+      {id: 'cmd', st: 'cha_m'}, {id: 'int', st: 'cha_m'}
     ];
+    
     skills.forEach(sk => {
         let baseMod = vals[sk.st] || 0;
         let prof = parseInt(document.getElementById('sk_'+sk.id+'_prof')?.value) || 0;
