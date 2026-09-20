@@ -87,7 +87,7 @@
     .panic-title { background: var(--accent); }
     .stress-input { font-weight: bold; color: var(--accent); }
     .panic-btn { border-color: var(--accent); color: var(--accent); font-size: 13px; padding: 5px; width: 100%; text-transform: uppercase;}
-    .panic-log { font-size: 11px; min-height: 22px; border: 1px dashed #404652; padding: 4px; color: #aaa; border-radius: 3px; background: #0b0c0f; text-align: center; display: flex; align-items: center; justify-content: center;}
+    .panic-log { font-size: 11px; min-height: 22px; border: 1px dashed #404652; padding: 4px; color: #aaa; border-radius: 3px; background: #0b0c0f; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.4;}
     .inv-item-card { border: 1px solid #3a3f4b; border-radius: 3px; background: #111215; margin-bottom: 4px; }
     .inv-item-card.drag-over { border-color: var(--accent); background: rgba(201,42,42,0.1); }
     .drag-area { min-height: 40px; display: flex; flex-direction: column; gap: 4px; }
@@ -130,9 +130,9 @@
     .dice-svg.rolling { animation: dice-spin 0.4s infinite linear; }
     .dice-svg.pop { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--accent)); transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .dice-number { position: relative; z-index: 2; font-size: 52px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
-    .dice-math { display: flex; align-items: center; gap: 10px; margin-top: 25px; font-size: 24px; font-weight: bold; height: 35px; }
+    .dice-math { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 25px; font-size: 24px; font-weight: bold; min-height: 40px; text-align: center;}
     .dice-mod { color: #aaa; opacity: 0; transition: opacity 0.3s; }
-    .dice-total { color: #fff; opacity: 0; transition: opacity 0.3s; font-size: 34px; }
+    .dice-total { color: #fff; opacity: 0; transition: opacity 0.3s; font-size: 34px; line-height: 1.2; }
     .dice-close { margin-top: 50px; background: transparent; border: 1px dashed var(--text-muted); color: var(--text-muted); padding: 8px 20px; cursor: pointer; transition: 0.2s; font-size: 13px; text-transform: uppercase; }
     .dice-close:hover { border-color: #fff; color: #fff; }
     @keyframes dice-spin { 100% { transform: rotate(360deg); } }
@@ -394,8 +394,9 @@
         <div class="box panic-box">
           <div class="box-title panic-title" style="color:#000;">Психометрия (СТРЕСС)</div>
           <div class="box-content">
-            <div class="flex-row"><span>СТРЕСС (0-10):</span><input type="number" id="stress" value="0" style="width:40px;" class="stress-input" onchange="autoSave()"></div>
-            <button class="panic-btn" onclick="rollPanicBtn()">БРОСОК ПАНИКИ D20</button>
+            <div class="flex-row"><span>СТРЕСС (0-20):</span><input type="number" id="stress" value="0" style="width:40px;" class="stress-input" onchange="autoSave()"></div>
+            <div class="flex-row"><span>УГРОЗА (1-10):</span><input type="number" id="threat" value="1" style="width:40px;" onchange="autoSave()"></div>
+            <button class="panic-btn" onclick="rollPanicBtn()">ТЕСТ ВОЛИ D20</button>
             <div id="panic_log" class="panic-log">[ ОЖИДАНИЕ БРОСКА ]</div>
           </div>
         </div>
@@ -424,7 +425,7 @@
       </div>
     </section>
 
-    <!-- НИЖНЯЯ ЧАСТЬ: 18 НАВЫКОВ (В 2 КОЛОНКИ) -->
+    <!-- НИЖНЯЯ ЧАСТЬ: 19 НАВЫКОВ (В 2 КОЛОНКИ) -->
     <div class="box">
       <div class="box-title">НАВЫКИ / ДИСЦИПЛИНЫ</div>
       <div class="box-content" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 6px 8px;">
@@ -461,12 +462,12 @@
                 <td><span class="roll-btn" onclick="rollSkill('tac', 'Тактический огнестрел')">D20</span></td>
               </tr>
               <tr>
-                <td style="font-weight:bold; color:#fff;">Снайперские винтовки</td>
+                <td style="font-weight:bold; color:#fff;">Тяжелое оружие</td>
                 <td style="color:#aaa;">—</td>
-                <td><input type="number" id="sk_snp_rank" value="0" onchange="fastCalc(); autoSave();" style="width:40px;"></td>
-                <td><input type="number" id="sk_snp_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
-                <td id="sk_snp_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
-                <td><span class="roll-btn" onclick="rollSkill('snp', 'Снайперские винтовки')">D20</span></td>
+                <td><input type="number" id="sk_hvy_rank" value="0" onchange="fastCalc(); autoSave();" style="width:40px;"></td>
+                <td><input type="number" id="sk_hvy_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_hvy_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('hvy', 'Тяжелое оружие')">D20</span></td>
               </tr>
               <tr>
                 <td style="font-weight:bold; color:#fff;">Особое</td>
@@ -587,6 +588,14 @@
                 <td><input type="number" id="sk_int_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
                 <td id="sk_int_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
                 <td><span class="roll-btn" onclick="rollSkill('int', 'Запугивание')">D20</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; color:#fff;">Обман</td>
+                <td style="color:#aaa;">ХАР</td>
+                <td><input type="number" id="sk_dec_rank" value="0" onchange="fastCalc(); autoSave();" style="width:40px;"></td>
+                <td><input type="number" id="sk_dec_m" value="0" onchange="fastCalc(); autoSave();" style="width:30px;"></td>
+                <td id="sk_dec_tot" style="font-weight:bold; color:var(--accent); text-align:center;">0</td>
+                <td><span class="roll-btn" onclick="rollSkill('dec', 'Обман')">D20</span></td>
               </tr>
               <tr>
                 <td style="font-weight:bold; color:#fff;">Бюрократия</td>
@@ -766,10 +775,16 @@
     document.getElementById('customAlertModal').style.display = 'flex';
   }
 
+  function loadAdminRoster() {
+    const container = document.getElementById('adminTableContainer');
+    if(!container) return;
+    container.innerHTML = `<div style="text-align:center; padding: 20px; color: #6b7280; font-size:11px;">СИСТЕМА ШТАБА В РАЗРАБОТКЕ...<br>СИНХРОНИЗАЦИЯ AEON-NET ВРЕМЕННО ОТКЛЮЧЕНА</div>`;
+  }
+
   // --- ЛОГИКА КУБИКА D20 (BG3 STYLE) ---
   let isRolling = false;
   
-  function triggerDiceRoll(title, modifier, isPanic = false) {
+  function triggerDiceRoll(title, modifier, isPanic = false, dc = 0) {
       if (isRolling) return;
       isRolling = true;
       
@@ -822,13 +837,20 @@
                   const total = finalRoll + modifier;
                   
                   if (isPanic) {
-                      const panicText = total >= 15 ? '<span style="color:var(--accent);">ПАНИКА!</span>' : '<span style="color:#4ade80;">В НОРМЕ</span>';
-                      totalEl.innerHTML = `= ${total} [ ${panicText} ]`;
-                      document.getElementById('panic_log').innerHTML = `СТРЕСС (${modifier}) + D20 (${finalRoll}) = ${total} -> ${panicText}`;
-                      if (total >= 15) document.getElementById('panic_log').style.color = 'var(--accent)';
-                      else document.getElementById('panic_log').style.color = '#4ade80';
+                      const delta = dc - total;
+                      let panicText = '';
+                      if (delta <= 0) panicText = '<span style="color:#4ade80;">КОНТРОЛЬ</span>';
+                      else if (delta <= 4) panicText = '<span style="color:#facc15;">ЛЁГКИЙ СРЫВ</span>';
+                      else if (delta <= 9) panicText = '<span style="color:#f59e0b;">ПОТЕРЯ КОНТРОЛЯ</span>';
+                      else if (delta <= 14) panicText = '<span style="color:var(--accent);">ТЯЖЁЛЫЙ ШОК</span>';
+                      else panicText = '<span style="color:#991b1b; font-weight:bold;">КРИТ. СЛОМ</span>';
+                      
+                      totalEl.innerHTML = `vs DC ${dc}<br>= ${total} [ ${panicText} ]`;
+                      totalEl.style.fontSize = '24px';
+                      document.getElementById('panic_log').innerHTML = `DC: ${dc} | Итог: ${total}<br>Разница (Δ): <span style="color:#fff; font-weight:bold;">${delta > 0 ? delta : 0}</span> -> ${panicText}`;
                   } else {
                       totalEl.innerHTML = `= ${total}`;
+                      totalEl.style.fontSize = '34px';
                   }
                   totalEl.style.opacity = 1;
                   isRolling = false;
@@ -861,7 +883,10 @@
 
   function rollPanicBtn() {
       const stress = parseInt(document.getElementById('stress').value) || 0;
-      triggerDiceRoll('СТРЕСС', stress, true);
+      const threat = parseInt(document.getElementById('threat').value) || 1;
+      const willMod = parseInt(document.getElementById('sv_wis_tot').innerText) || 0;
+      const dc = stress + threat;
+      triggerDiceRoll('ПАНИКА (ВОЛЯ)', willMod, true, dc);
   }
   // --- КОНЕЦ АНИМАЦИИ ---
 
@@ -1212,12 +1237,12 @@
     document.getElementById('sv_dex_tot').innerText = (vals.dex_m || 0) + (parseInt(document.getElementById('sv_dex_m')?.value) || 0);
     document.getElementById('sv_wis_tot').innerText = (vals.wis_m || 0) + (parseInt(document.getElementById('sv_wis_m')?.value) || 0);
 
-    // 18 Навыков
+    // 19 Навыков (включая Тяжелое оружие)
     const skills = [
-      {id: 'mel', st: 'str_m'}, {id: 'cqc', st: null}, {id: 'tac', st: null}, {id: 'snp', st: null}, {id: 'spc', st: null},
+      {id: 'mel', st: 'str_m'}, {id: 'cqc', st: null}, {id: 'tac', st: null}, {id: 'hvy', st: null}, {id: 'spc', st: null},
       {id: 'ath', st: 'str_m'}, {id: 'ste', st: 'dex_m'}, {id: 'sur', st: 'con_m'}, {id: 'hac', st: 'dex_m'}, {id: 'awa', st: 'wis_m'},
       {id: 'mec', st: 'int_m'}, {id: 'ele', st: 'int_m'}, {id: 'med', st: 'int_m'}, {id: 'exp', st: 'int_m'},
-      {id: 'ins', st: 'wis_m'}, {id: 'per', st: 'cha_m'}, {id: 'int', st: 'cha_m'}, {id: 'bur', st: 'int_m'}
+      {id: 'ins', st: 'wis_m'}, {id: 'per', st: 'cha_m'}, {id: 'int', st: 'cha_m'}, {id: 'dec', st: 'cha_m'}, {id: 'bur', st: 'int_m'}
     ];
     
     skills.forEach(sk => {
@@ -1286,10 +1311,6 @@
     
     const elTopSpd = document.getElementById('top_speed_display');
     if(elTopSpd) elTopSpd.innerText = finalSpeed + ' кл';
-    
-    const displayWt = Math.round(totalWeight * 10) / 10;
-    const elTopWt = document.getElementById('top_weight_display');
-    if(elTopWt) elTopWt.innerText = `${displayWt} / ${carryTotal} кг`;
     
     const currentSp = armorSlotItem ? (armorSlotItem.sp || 0) : 0;
     const elCalcSpDisp = document.getElementById('calc_sp_display');
